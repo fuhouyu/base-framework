@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.fuhouyu</groupId>
+        <artifactId>base-framework</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>base-framework-dependencies</artifactId>
+    <name>Base Framework Dependencies</name>
+    <description>基础框架内部模块版本号定义</description>
+    <packaging>pom</packaging>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-context</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-cache-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-log-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-security-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-web</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-reseource-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
+</project>

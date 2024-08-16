@@ -1,0 +1,12 @@
+spring:
+  data:
+    redis:
+      host:
+      password:
+      port:
+      database: 0
+base:
+  framework:
+    cache:
+      service:
+        cache-service-type: caffeine

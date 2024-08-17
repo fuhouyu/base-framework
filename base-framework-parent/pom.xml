@@ -26,6 +26,8 @@
         <kryo5.version>5.6.0</kryo5.version>
         <jackson-bom.version>2.17.2</jackson-bom.version>
         <aliyun-sdk-oss.version>3.17.4</aliyun-sdk-oss.version>
+        <bcprov-jdk18on.version>1.78.1</bcprov-jdk18on.version>
+        <hutool-crypto.version>5.8.31</hutool-crypto.version>
     </properties>
 
 
@@ -90,6 +92,16 @@
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
                 <version>${aliyun-sdk-oss.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bcprov-jdk18on.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-crypto</artifactId>
+                <version>${hutool-crypto.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

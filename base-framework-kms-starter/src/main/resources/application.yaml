@@ -1,0 +1,6 @@
+base:
+  framework:
+    kms:
+      default:
+        sm2:
+          auto-generate: true

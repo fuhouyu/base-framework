@@ -48,6 +48,11 @@ public class LogRecordEntity {
     private String content;
 
     /**
+     * 错误信息，如果存在
+     */
+    private String errorMessage;
+
+    /**
      * 操作人
      */
     private String operationUser;
@@ -140,7 +145,25 @@ public class LogRecordEntity {
         return isSuccess;
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public Boolean getSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(Boolean success) {
+        isSuccess = success;
+    }
+
     public void setIsSuccess(Boolean success) {
+
+
         isSuccess = success;
     }
 
@@ -151,6 +174,7 @@ public class LogRecordEntity {
                 ", moduleName='" + moduleName + '\'' +
                 ", operationType='" + operationType + '\'' +
                 ", content='" + content + '\'' +
+                ", errorMessage='" + errorMessage + '\'' +
                 ", operationUser='" + operationUser + '\'' +
                 ", operationTime='" + operationTime + '\'' +
                 ", requestId='" + requestId + '\'' +

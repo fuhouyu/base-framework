@@ -1,0 +1,5 @@
+base:
+  framework:
+    log-record:
+      enabled: true
+      system-name: test-application

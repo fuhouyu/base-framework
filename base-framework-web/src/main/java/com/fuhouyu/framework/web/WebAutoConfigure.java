@@ -46,4 +46,5 @@ public class WebAutoConfigure {
     public WebExceptionHandler webExceptionHandler() {
         return new WebExceptionHandler();
     }
+
 }

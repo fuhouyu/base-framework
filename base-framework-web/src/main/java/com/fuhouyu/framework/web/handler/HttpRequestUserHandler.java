@@ -54,6 +54,10 @@ public class HttpRequestUserHandler implements AsyncHandlerInterceptor {
      */
     private final Class<? extends User> subUserType;
 
+    public HttpRequestUserHandler(Class<? extends User> subUserType) {
+        this(null, subUserType);
+    }
+
     public HttpRequestUserHandler(List<UserExtensionHandlerInterceptor> userExtensionInterceptors,
                                   Class<? extends User> subUserType) {
         this.userExtensionInterceptors = userExtensionInterceptors;

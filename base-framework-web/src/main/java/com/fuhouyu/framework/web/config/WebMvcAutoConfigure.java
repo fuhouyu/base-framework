@@ -18,6 +18,7 @@ package com.fuhouyu.framework.web.config;
 
 import com.fuhouyu.framework.context.user.DefaultUserDetail;
 import com.fuhouyu.framework.context.user.User;
+import com.fuhouyu.framework.utils.ClassUtils;
 import com.fuhouyu.framework.web.handler.HttpRequestUserHandler;
 import com.fuhouyu.framework.web.handler.UserExtensionHandlerInterceptor;
 import com.fuhouyu.framework.web.properties.WebProperties;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,11 +64,20 @@ public class WebMvcAutoConfigure implements WebMvcConfigurer {
      * @return 拦截器
      */
     private AsyncHandlerInterceptor getHttpHandlerInterceptor() {
-        Class<User> userType = this.getUserClassName();
+        return new HttpRequestUserHandler(this.getUserExtensionHandlerInterceptors(),
+                this.getUserClassName());
+    }
+
+    /**
+     * 获取可能存在的user扩展处理器
+     *
+     * @return 用户扩展处理器
+     */
+    private List<UserExtensionHandlerInterceptor> getUserExtensionHandlerInterceptors() {
         String[] beanNamesForType = applicationContext.getBeanNamesForType(
                 UserExtensionHandlerInterceptor.class);
         if (beanNamesForType.length == 0) {
-            return new HttpRequestUserHandler(null, userType);
+            return Collections.emptyList();
         }
         // 如果存在用户扩展项，进行设置
         List<UserExtensionHandlerInterceptor> list = new ArrayList<>(
@@ -77,19 +88,13 @@ public class WebMvcAutoConfigure implements WebMvcConfigurer {
         }
         OrderComparator.sort(list);
         AnnotationAwareOrderComparator.sort(list);
-        return new HttpRequestUserHandler(list, userType);
+        return list;
     }
 
     @SuppressWarnings("unchecked")
     private <T extends User> Class<T> getUserClassName() {
         String userClassName = webProperties.getUserClassName();
-        if (Objects.isNull(userClassName)) {
-            return (Class<T>) DefaultUserDetail.class;
-        }
-        try {
-            return (Class<T>) Class.forName(userClassName);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("User class not found: " + userClassName, e);
-        }
+        return Objects.isNull(userClassName) ? (Class<T>) DefaultUserDetail.class :
+                ClassUtils.loadClass(userClassName);
     }
 }

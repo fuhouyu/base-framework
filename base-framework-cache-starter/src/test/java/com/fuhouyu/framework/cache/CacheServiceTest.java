@@ -29,10 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * <p>
@@ -43,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 2024/8/13 22:06
  */
 @SpringBootTest(classes = {
-        CacheServiceAutoConfigure.class,
+        CacheAutoConfigure.class,
         RedisAutoConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})

@@ -1,0 +1,7 @@
+base:
+  framework:
+    web:
+      user-class-name: com.fuhouyu.framework.context.user.DefaultUserDetail
+    cache:
+      service:
+        cache-service-type: caffeine

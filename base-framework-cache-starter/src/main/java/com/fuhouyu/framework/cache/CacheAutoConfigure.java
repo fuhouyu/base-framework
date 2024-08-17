@@ -14,37 +14,28 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web;
+package com.fuhouyu.framework.cache;
 
-import com.fuhouyu.framework.web.config.WebMvcAutoConfigure;
-import com.fuhouyu.framework.web.exception.WebExceptionHandler;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
 /**
  * <p>
- * web 组件自动装配类
+ * 缓存自动装配类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/15 20:18
+ * @since 2024/8/13 21:00
  */
-@Import({WebMvcAutoConfigure.class})
-@ComponentScan(basePackageClasses = WebAutoConfigure.class)
-@ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.web.properties")
-public class WebAutoConfigure {
+@Import({RedisCacheAutoConfigure.class, CaffeineCacheAutoconfigure.class})
+@EnableConfigurationProperties(CacheProperties.class)
+@ConfigurationPropertiesScan(basePackageClasses = CacheAutoConfigure.class)
+@AutoConfiguration(after = RedisAutoConfiguration.class)
+public class CacheAutoConfigure {
 
-
-    /**
-     * 异常处理器
-     *
-     * @return 异常处理器
-     */
-    @Bean
-    public WebExceptionHandler webExceptionHandler() {
-        return new WebExceptionHandler();
-    }
 
 }

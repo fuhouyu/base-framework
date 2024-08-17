@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.cache.CacheServiceAutoConfigure;
+import com.fuhouyu.framework.cache.CacheAutoConfigure;
 import com.fuhouyu.framework.cache.CaffeineCacheAutoconfigure;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.security.token.DefaultOAuth2Token;
@@ -47,7 +47,7 @@ import java.util.Collections;
  * @since 2024/8/14 22:35
  */
 @SpringBootTest(classes = {
-        CacheServiceAutoConfigure.class,
+        CacheAutoConfigure.class,
         RedisAutoConfiguration.class,
         CaffeineCacheAutoconfigure.class
 })

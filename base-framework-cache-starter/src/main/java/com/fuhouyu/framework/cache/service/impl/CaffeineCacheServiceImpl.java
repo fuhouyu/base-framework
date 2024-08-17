@@ -20,13 +20,7 @@ package com.fuhouyu.framework.cache.service.impl;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.github.benmanes.caffeine.cache.Cache;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**

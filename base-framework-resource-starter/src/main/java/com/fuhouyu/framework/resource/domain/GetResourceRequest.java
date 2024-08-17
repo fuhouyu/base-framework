@@ -48,7 +48,7 @@ public class GetResourceRequest extends BaseResourceRequest {
 
 
     public void setRange(long start, long end) {
-        range = new long[] {start, end};
+        range = new long[]{start, end};
     }
 
     public int getTrafficLimit() {

@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>base-framework-web</artifactId>
+    <artifactId>base-framework-web-starter</artifactId>
     <name>Base Framework Web</name>
     <description>web 相关组件</description>
 
@@ -59,6 +59,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fuhouyu</groupId>
+            <artifactId>base-framework-cache-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
         </dependency>
     </dependencies>
 

@@ -14,54 +14,45 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.log.annotaions;
-
-import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+package com.fuhouyu.framework.web.annotaions;
 
 import java.lang.annotation.*;
 
 /**
  * <p>
- * 日志记录
+ * 防重复提交注解
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 09:07
+ * @since 2024/8/17 18:31
  */
-@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
+@Target({ElementType.METHOD})
 @Documented
-public @interface LogRecord {
+public @interface NoRepeatSubmit {
 
     /**
-     * 日志记录的内容，可编写SpEL表达式
+     * 重复提交的错误信息
      *
-     * @return 日志记录的内容
+     * @return 重复提交的错误信息
      */
-    String content();
+    String message() default "Duplicate submission is not allowed.";
 
     /**
-     * 日志分类:如用户管理/菜单管理
+     * 会从请求头中获取当前的token value
+     * 如果值不存在，或该值与cache中的不匹配，将会抛出
      *
-     * @return 日志分类
+     * @return token键名
+     * @see NoRepeatSubmit#message()
      */
-    String category() default "";
+    String headerToken() default "X-Form-Token";
+
 
     /**
-     * 操作类型
+     * 默认对post、put生效
      *
-     * @return 操作类型
-     * @see OperationTypeEnum
+     * @return post put生效
      */
-    OperationTypeEnum operationType();
-
-    /**
-     * 模块名称
-     *
-     * @return 模块名称
-     */
-    String moduleName() default "";
-
+    String[] httpMethods() default {"POST", "PUT"};
 
 }

@@ -14,24 +14,30 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.security.constants;
+package com.fuhouyu.framework.web;
+
+import com.fuhouyu.framework.cache.service.CacheService;
+import com.fuhouyu.framework.web.aspectj.NoRepeatSubmitAspectj;
+import org.springframework.context.annotation.Bean;
 
 /**
  * <p>
- * api常量
+ * form表单自动装配类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/15 16:35
+ * @since 2024/8/17 23:07
  */
-public class SecurityBaseApiConstant {
+public class FormAutoConfigure {
 
+    private final CacheService<String, Object> cacheService;
 
-    public static final String VERSION = "v1/";
+    public FormAutoConfigure(CacheService<String, Object> cacheService) {
+        this.cacheService = cacheService;
+    }
 
-    public static final String BASE_USER_AUTH_API = VERSION + "/auth";
-
-    private SecurityBaseApiConstant() {
-
+    @Bean
+    public NoRepeatSubmitAspectj noDuplicateSubmitAspect() {
+        return new NoRepeatSubmitAspectj(cacheService);
     }
 }

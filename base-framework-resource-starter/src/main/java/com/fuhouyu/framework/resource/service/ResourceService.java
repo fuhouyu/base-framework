@@ -16,25 +16,7 @@
 
 package com.fuhouyu.framework.resource.service;
 
-import com.fuhouyu.framework.resource.domain.CopyResourceResult;
-import com.fuhouyu.framework.resource.domain.DownloadResourceRequest;
-import com.fuhouyu.framework.resource.domain.DownloadResourceResult;
-import com.fuhouyu.framework.resource.domain.GetResourceRequest;
-import com.fuhouyu.framework.resource.domain.GetResourceResult;
-import com.fuhouyu.framework.resource.domain.InitiateUploadMultipartRequest;
-import com.fuhouyu.framework.resource.domain.InitiateUploadMultipartResult;
-import com.fuhouyu.framework.resource.domain.ListMultipartsRequest;
-import com.fuhouyu.framework.resource.domain.ListMultipartsResult;
-import com.fuhouyu.framework.resource.domain.ListResourceRequest;
-import com.fuhouyu.framework.resource.domain.ListResourceResult;
-import com.fuhouyu.framework.resource.domain.PutResourceRequest;
-import com.fuhouyu.framework.resource.domain.PutResourceResult;
-import com.fuhouyu.framework.resource.domain.ResourceMetadata;
-import com.fuhouyu.framework.resource.domain.UploadAbortMultipartRequest;
-import com.fuhouyu.framework.resource.domain.UploadCompleteMultipartRequest;
-import com.fuhouyu.framework.resource.domain.UploadCompleteMultipartResult;
-import com.fuhouyu.framework.resource.domain.UploadMultipartRequest;
-import com.fuhouyu.framework.resource.domain.UploadMultipartResult;
+import com.fuhouyu.framework.resource.domain.*;
 import com.fuhouyu.framework.resource.exception.ResourceException;
 
 import java.io.File;

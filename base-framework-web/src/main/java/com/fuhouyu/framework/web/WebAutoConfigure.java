@@ -18,6 +18,7 @@ package com.fuhouyu.framework.web;
 
 import com.fuhouyu.framework.web.config.WebMvcAutoConfigure;
 import com.fuhouyu.framework.web.exception.WebExceptionHandler;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Import;
  */
 @Import({WebMvcAutoConfigure.class})
 @ComponentScan(basePackageClasses = WebAutoConfigure.class)
+@ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.web.properties")
 public class WebAutoConfigure {
 
 

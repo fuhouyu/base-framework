@@ -17,8 +17,10 @@
 package com.fuhouyu.framework.web.config;
 
 import com.fuhouyu.framework.context.user.DefaultUserDetail;
+import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.web.handler.HttpRequestUserHandler;
 import com.fuhouyu.framework.web.handler.UserExtensionHandlerInterceptor;
+import com.fuhouyu.framework.web.properties.WebProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
@@ -28,6 +30,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -41,8 +44,11 @@ public class WebMvcAutoConfigure implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
 
-    public WebMvcAutoConfigure(ApplicationContext applicationContext) {
+    private final WebProperties webProperties;
+
+    public WebMvcAutoConfigure(ApplicationContext applicationContext, WebProperties webProperties) {
         this.applicationContext = applicationContext;
+        this.webProperties = webProperties;
     }
 
     @Override
@@ -56,11 +62,11 @@ public class WebMvcAutoConfigure implements WebMvcConfigurer {
      * @return 拦截器
      */
     private AsyncHandlerInterceptor getHttpHandlerInterceptor() {
-
+        Class<User> userType = this.getUserClassName();
         String[] beanNamesForType = applicationContext.getBeanNamesForType(
                 UserExtensionHandlerInterceptor.class);
         if (beanNamesForType.length == 0) {
-            return new HttpRequestUserHandler(null, DefaultUserDetail.class);
+            return new HttpRequestUserHandler(null, userType);
         }
         // 如果存在用户扩展项，进行设置
         List<UserExtensionHandlerInterceptor> list = new ArrayList<>(
@@ -71,6 +77,19 @@ public class WebMvcAutoConfigure implements WebMvcConfigurer {
         }
         OrderComparator.sort(list);
         AnnotationAwareOrderComparator.sort(list);
-        return new HttpRequestUserHandler(null, DefaultUserDetail.class);
+        return new HttpRequestUserHandler(list, userType);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends User> Class<T> getUserClassName() {
+        String userClassName = webProperties.getUserClassName();
+        if (Objects.isNull(userClassName)) {
+            return (Class<T>) DefaultUserDetail.class;
+        }
+        try {
+            return (Class<T>) Class.forName(userClassName);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("User class not found: " + userClassName, e);
+        }
     }
 }

@@ -1,0 +1,4 @@
+base:
+  framework:
+    web:
+      user-class-name: com.fuhouyu.framework.context.user.DefaultUserDetail

@@ -16,6 +16,8 @@
 
 package com.fuhouyu.framework.context.user;
 
+import com.fuhouyu.framework.context.Context;
+
 /**
  * <p>
  * 用户上下文默认实现
@@ -24,17 +26,17 @@ package com.fuhouyu.framework.context.user;
  * @author fuhouyu
  * @since 2024/8/14 10:56
  */
-public class UserContextImpl implements UserContext {
+public class UserContextImpl implements Context<User> {
 
     private User user;
 
     @Override
-    public User getUser() {
+    public User getObject() {
         return this.user;
     }
 
     @Override
-    public void setUser(User user) {
+    public void setObject(User user) {
         this.user = user;
     }
 }

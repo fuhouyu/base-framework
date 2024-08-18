@@ -147,7 +147,7 @@ public class LogRecordAspectj {
             isSuccess = false;
         }
         logRecordEntity.setIsSuccess(isSuccess);
-        logRecordEntity.setOperationUser(UserContextHolder.getContext().getUser().getUsername());
+        logRecordEntity.setOperationUser(UserContextHolder.getContext().getObject().getUsername());
         logRecordEntity.setOperationTime(LocalDateTime.now().format(DATE_TIME_FORMATTER));
         logRecordEntity.setCategory(logRecordEntity.getCategory());
 

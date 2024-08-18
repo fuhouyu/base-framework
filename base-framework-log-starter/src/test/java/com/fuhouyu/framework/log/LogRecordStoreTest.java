@@ -16,8 +16,8 @@
 
 package com.fuhouyu.framework.log;
 
+import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.user.DefaultUserDetail;
-import com.fuhouyu.framework.context.user.UserContext;
 import com.fuhouyu.framework.context.user.UserContextHolder;
 import com.fuhouyu.framework.model.response.RestResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,10 +50,10 @@ class LogRecordStoreTest {
 
     @BeforeEach
     void setUp() {
-        UserContext context = UserContextHolder.createEmptyContext();
+        Context context = UserContextHolder.createEmptyContext();
         DefaultUserDetail defaultUserDetail = new DefaultUserDetail();
         defaultUserDetail.setUsername("test-username");
-        context.setUser(defaultUserDetail);
+        context.setObject(defaultUserDetail);
 
     }
 

@@ -17,8 +17,8 @@
 package com.fuhouyu.framework.web.handler;
 
 import com.fuhouyu.framework.constants.HttpRequestHeaderConstant;
+import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.framework.context.user.UserContext;
 import com.fuhouyu.framework.context.user.UserContextHolder;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
@@ -73,8 +73,8 @@ public class HttpRequestUserHandler implements AsyncHandlerInterceptor {
         }
         userInfo = URLDecoder.decode(userInfo, Charset.defaultCharset());
         User user = JacksonUtil.readValue(userInfo, subUserType);
-        UserContext userContext = UserContextHolder.createEmptyContext();
-        userContext.setUser(user);
+        Context<User> context = UserContextHolder.createEmptyContext();
+        context.setObject(user);
         if (CollectionUtils.isEmpty(userExtensionInterceptors)) {
             return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
         }

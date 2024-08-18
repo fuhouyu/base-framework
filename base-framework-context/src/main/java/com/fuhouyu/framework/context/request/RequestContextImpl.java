@@ -14,33 +14,43 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.context.user;
+package com.fuhouyu.framework.context.request;
 
-import com.fuhouyu.framework.context.AbstractThredLocalContextHolderStrategy;
 import com.fuhouyu.framework.context.Context;
 
 /**
  * <p>
- * 本地线程的用户上下文实现
+ * 请求上下文的默认实现
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 10:40
+ * @since 2024/8/18 16:04
  */
-public class ThreadLocalUserContextHolder extends AbstractThredLocalContextHolderStrategy<User> {
+public class RequestContextImpl implements Context<Request> {
 
-    private static final InheritableThreadLocal<Context<User>> CONTEXT_HOLDER = new InheritableThreadLocal<>();
+    private Request request;
 
-    protected ThreadLocalUserContextHolder() {
-        super(CONTEXT_HOLDER);
+    public RequestContextImpl() {
     }
 
+    public RequestContextImpl(Request request) {
+        this.request = request;
+    }
 
     @Override
-    public Context<User> createEmptyContext() {
-        UserContextImpl userContext = new UserContextImpl();
-        super.setContext(userContext);
-        return userContext;
+    public Request getObject() {
+        return request;
     }
 
+    @Override
+    public void setObject(Request request) {
+        this.request = request;
+    }
+
+    @Override
+    public String toString() {
+        return "RequestContextImpl{" +
+                "request=" + request +
+                '}';
+    }
 }

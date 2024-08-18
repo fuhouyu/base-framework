@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.context.user;
+package com.fuhouyu.framework.context;
 
 /**
  * <p>
- * 用户上下文
+ * 上下文接口
  * </p>
  *
  * @author fuhouyu
  * @since 2024/8/14 10:33
  */
-public interface UserContext {
+public interface Context<T> {
 
     /**
-     * 获取上下文中的用户信息
+     * 获取上下文中的对象
      *
-     * @return 用户信息
+     * @return 上下文对象
      */
-    User getUser();
+    T getObject();
 
     /**
-     * 设置用户
+     * 设置上下文对象
      *
-     * @param user 用户
+     * @param t 上下文对象
      */
-    void setUser(User user);
+    void setObject(T t);
 }

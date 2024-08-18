@@ -45,8 +45,9 @@
         <module>base-framework-context</module>
         <module>base-framework-common</module>
         <module>base-framework-security-starter</module>
-        <module>base-framework-web</module>
+        <module>base-framework-web-starter</module>
         <module>base-framework-resource-starter</module>
+        <module>base-framework-kms-starter</module>
     </modules>
 
     <properties>

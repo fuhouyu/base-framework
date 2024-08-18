@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.security.service;
 
-import com.fuhouyu.framework.security.domain.dto.ApplicationDTO;
+import com.fuhouyu.framework.security.model.dto.ApplicationDTO;
 import com.fuhouyu.framework.security.token.DefaultOAuth2Token;
 import com.fuhouyu.framework.security.token.TokenStore;
 import org.slf4j.Logger;

@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.log.core;
 
 import com.fuhouyu.framework.context.user.UserContextHolder;
-import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.model.LogRecord;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import org.aspectj.lang.JoinPoint;
@@ -28,9 +28,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.ParseException;
 
 import java.lang.reflect.Method;
@@ -53,6 +54,8 @@ import java.util.Optional;
 public class LogRecordAspectj {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    private final ParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogRecordAspectj.class);
 
@@ -90,7 +93,7 @@ public class LogRecordAspectj {
      * @param jsonResult 返回参数
      */
     @AfterReturning(pointcut = "@annotation(logRecord)", returning = "jsonResult")
-    public void doAfterReturning(JoinPoint joinPoint, LogRecord logRecord, Object jsonResult) {
+    public void doAfterReturning(JoinPoint joinPoint, com.fuhouyu.framework.log.annotaions.LogRecord logRecord, Object jsonResult) {
         handleLog(joinPoint, logRecord, null, jsonResult);
     }
 
@@ -102,21 +105,19 @@ public class LogRecordAspectj {
      * @param e         异常
      */
     @AfterThrowing(value = "@annotation(logRecord)", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, LogRecord logRecord, Exception e) {
+    public void doAfterThrowing(JoinPoint joinPoint, com.fuhouyu.framework.log.annotaions.LogRecord logRecord, Exception e) {
         handleLog(joinPoint, logRecord, e, null);
     }
 
-    protected void handleLog(final JoinPoint joinPoint, LogRecord logRecord, final Exception e, Object objectResult) {
+    protected void handleLog(final JoinPoint joinPoint, com.fuhouyu.framework.log.annotaions.LogRecord logRecord, final Exception e, Object objectResult) {
         Signature signature = joinPoint.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
         Method method = methodSignature.getMethod();
         Object[] args = joinPoint.getArgs();
-        Class<?> targetClass = AopProxyUtils.ultimateTargetClass(joinPoint.getTarget());
-        LogEvaluationContextRootObject rootObject = new LogEvaluationContextRootObject(method, args, targetClass);
-        MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(rootObject,
-                rootObject.method(),
-                rootObject.args(),
-                evaluator.getDiscoverer());
+        MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(joinPoint.getTarget(),
+                method,
+                args,
+                discoverer);
         context.setBeanResolver(this.beanFactoryResolver);
         // 如果返回值存在，则设置返回值
         // 使SpEL表达式可以获取到结果中的值
@@ -129,22 +130,27 @@ public class LogRecordAspectj {
             result = JacksonUtil.writeValueAsString(content);
         } catch (ParseException ex) {
             LoggerUtil.error(LOGGER, "log content: {} parse failed", logRecord.content(), ex);
-            return;
+            throw new RuntimeException(ex);
         } catch (Exception ex) {
             LoggerUtil.error(LOGGER, "log other error: {} ", content, ex);
-            return;
+            throw new RuntimeException(ex);
         }
-        LogRecordEntity logRecordEntity = new LogRecordEntity();
+        LogRecord logRecordEntity = new LogRecord();
         logRecordEntity.setSystemName(systemName);
         logRecordEntity.setModuleName(logRecord.moduleName());
         logRecordEntity.setOperationType(logRecord.operationType().name());
 
-        logRecordEntity.setContent(Objects.isNull(e) ? result : String.format("%s method execute error, message: %s",
-                methodSignature.getMethod().getName(), e.getMessage()));
+        logRecordEntity.setContent(result);
+        boolean isSuccess = true;
+        if (Objects.nonNull(e)) {
+            logRecordEntity.setErrorMessage(e.getMessage());
+            isSuccess = false;
+        }
+        logRecordEntity.setIsSuccess(isSuccess);
         logRecordEntity.setOperationUser(UserContextHolder.getContext().getUser().getUsername());
         logRecordEntity.setOperationTime(LocalDateTime.now().format(DATE_TIME_FORMATTER));
         logRecordEntity.setCategory(logRecordEntity.getCategory());
-        logRecordEntity.setIsSuccess(e == null);
+
         for (LogRecordStoreService logRecordStoreService : logRecordStoreServiceList) {
             logRecordStoreService.saveLogRecord(logRecordEntity);
         }

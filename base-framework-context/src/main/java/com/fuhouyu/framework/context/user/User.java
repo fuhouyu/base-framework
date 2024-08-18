@@ -16,6 +16,8 @@
 
 package com.fuhouyu.framework.context.user;
 
+import java.util.Map;
+
 /**
  * <p>
  * 用户接口
@@ -67,6 +69,12 @@ public interface User {
      * @return 第三方账号id
      */
     String getRefAccountId();
+
+
+    /**
+     * 获取用户扩展信息
+     */
+    Map<String, Object> getAdditionalInformation();
 
 
 }

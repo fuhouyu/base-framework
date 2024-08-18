@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.resource.service;
 
-import com.fuhouyu.framework.resource.domain.ResourceMetadata;
+import com.fuhouyu.framework.resource.model.ResourceMetadata;
 
 /**
  * <p>

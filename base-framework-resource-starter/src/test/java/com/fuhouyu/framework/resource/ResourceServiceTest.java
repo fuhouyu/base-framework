@@ -17,11 +17,11 @@
 package com.fuhouyu.framework.resource;
 
 
-import com.fuhouyu.framework.resource.domain.DownloadResourceRequest;
-import com.fuhouyu.framework.resource.domain.DownloadResourceResult;
-import com.fuhouyu.framework.resource.domain.PutResourceRequest;
-import com.fuhouyu.framework.resource.domain.PutResourceResult;
 import com.fuhouyu.framework.resource.exception.ResourceException;
+import com.fuhouyu.framework.resource.model.DownloadResourceRequest;
+import com.fuhouyu.framework.resource.model.DownloadResourceResult;
+import com.fuhouyu.framework.resource.model.PutResourceRequest;
+import com.fuhouyu.framework.resource.model.PutResourceResult;
 import com.fuhouyu.framework.resource.service.ResourceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;

@@ -24,15 +24,11 @@ package com.fuhouyu.framework.constants;
  * @author fuhouyu
  * @since 2024/8/14 12:57
  */
-public class ConfigPropertiesConstant {
+public interface ConfigPropertiesConstant {
 
     /**
      * 配置类的前缀
      */
-    public static final String PROPERTIES_PREFIX = "base.framework.";
+    String PROPERTIES_PREFIX = "base.framework.";
 
-
-    private ConfigPropertiesConstant() {
-
-    }
 }

@@ -33,7 +33,7 @@ public interface Request {
      *
      * @return 来源ip
      */
-    String requestIp();
+    String getRequestIp();
 
 
     /**

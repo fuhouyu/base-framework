@@ -28,6 +28,7 @@
         <aliyun-sdk-oss.version>3.17.4</aliyun-sdk-oss.version>
         <bcprov-jdk18on.version>1.78.1</bcprov-jdk18on.version>
         <hutool-crypto.version>5.8.31</hutool-crypto.version>
+        <commons-lang3.version>3.16.0</commons-lang3.version>
     </properties>
 
 
@@ -102,6 +103,11 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-crypto</artifactId>
                 <version>${hutool-crypto.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

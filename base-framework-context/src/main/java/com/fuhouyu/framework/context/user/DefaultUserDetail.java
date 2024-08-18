@@ -19,6 +19,7 @@ package com.fuhouyu.framework.context.user;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * <p>
@@ -44,6 +45,8 @@ public class DefaultUserDetail implements Serializable, User {
     private String gender;
 
     private String refAccountId;
+
+    private Map<String, Object> additionalInformation;
 
     @Override
     public Long getId() {
@@ -100,6 +103,15 @@ public class DefaultUserDetail implements Serializable, User {
     }
 
     @Override
+    public Map<String, Object> getAdditionalInformation() {
+        return additionalInformation;
+    }
+
+    public void setAdditionalInformation(Map<String, Object> additionalInformation) {
+        this.additionalInformation = additionalInformation;
+    }
+
+    @Override
     public String toString() {
         return "DefaultUserDetail{" +
                 "id=" + id +
@@ -108,6 +120,7 @@ public class DefaultUserDetail implements Serializable, User {
                 ", nickname='" + nickname + '\'' +
                 ", gender='" + gender + '\'' +
                 ", refAccountId='" + refAccountId + '\'' +
+                ", additionalInformation=" + additionalInformation +
                 '}';
     }
 }

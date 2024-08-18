@@ -45,7 +45,7 @@
             </dependency>
             <dependency>
                 <groupId>com.fuhouyu</groupId>
-                <artifactId>base-framework-web</artifactId>
+                <artifactId>base-framework-web-starter</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

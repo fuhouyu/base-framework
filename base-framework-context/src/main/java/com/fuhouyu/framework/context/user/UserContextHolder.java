@@ -53,6 +53,6 @@ public class UserContextHolder {
     }
 
     public static UserContext createEmptyContext() {
-        return CONTEXT_HOLDER_STRATEGY.getContext();
+        return CONTEXT_HOLDER_STRATEGY.createEmptyContext();
     }
 }

@@ -40,7 +40,7 @@ import java.util.Set;
 public class DefaultAuthenticationKeyGenerator implements AuthenticationKeyGenerator {
 
 
-    private static final String[] FILTER_ATTR = new String[] {
+    private static final String[] FILTER_ATTR = new String[]{
             "password", "secret", "authorities", "principal"
     };
 

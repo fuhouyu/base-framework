@@ -14,25 +14,41 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.log.core;
-
-import com.fuhouyu.framework.log.model.LogRecord;
+package com.fuhouyu.framework.resource.model;
 
 /**
  * <p>
- * 日志存储接口
+ * 文件资源所属者
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 11:56
+ * @since 2024/8/16 18:11
  */
-public interface LogRecordStoreService {
+public class ResourceOwner {
 
-    /**
-     * 保存日志记录
-     *
-     * @param logRecord 日志记录
-     */
-    void saveLogRecord(LogRecord logRecord);
 
+    private final String id;
+
+    private final String displayName;
+
+    public ResourceOwner(String id, String displayName) {
+        this.id = id;
+        this.displayName = displayName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    @Override
+    public String toString() {
+        return "FileResourceOwner{" +
+                "id='" + id + '\'' +
+                ", displayName='" + displayName + '\'' +
+                '}';
+    }
 }

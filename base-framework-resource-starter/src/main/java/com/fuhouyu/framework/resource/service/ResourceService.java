@@ -16,8 +16,8 @@
 
 package com.fuhouyu.framework.resource.service;
 
-import com.fuhouyu.framework.resource.domain.*;
 import com.fuhouyu.framework.resource.exception.ResourceException;
+import com.fuhouyu.framework.resource.model.*;
 
 import java.io.File;
 

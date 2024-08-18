@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.log.core;
 
 import com.fuhouyu.framework.context.user.UserContextHolder;
-import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.model.LogRecord;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import org.aspectj.lang.JoinPoint;
@@ -93,7 +93,7 @@ public class LogRecordAspectj {
      * @param jsonResult 返回参数
      */
     @AfterReturning(pointcut = "@annotation(logRecord)", returning = "jsonResult")
-    public void doAfterReturning(JoinPoint joinPoint, LogRecord logRecord, Object jsonResult) {
+    public void doAfterReturning(JoinPoint joinPoint, com.fuhouyu.framework.log.annotaions.LogRecord logRecord, Object jsonResult) {
         handleLog(joinPoint, logRecord, null, jsonResult);
     }
 
@@ -105,11 +105,11 @@ public class LogRecordAspectj {
      * @param e         异常
      */
     @AfterThrowing(value = "@annotation(logRecord)", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, LogRecord logRecord, Exception e) {
+    public void doAfterThrowing(JoinPoint joinPoint, com.fuhouyu.framework.log.annotaions.LogRecord logRecord, Exception e) {
         handleLog(joinPoint, logRecord, e, null);
     }
 
-    protected void handleLog(final JoinPoint joinPoint, LogRecord logRecord, final Exception e, Object objectResult) {
+    protected void handleLog(final JoinPoint joinPoint, com.fuhouyu.framework.log.annotaions.LogRecord logRecord, final Exception e, Object objectResult) {
         Signature signature = joinPoint.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
         Method method = methodSignature.getMethod();
@@ -135,7 +135,7 @@ public class LogRecordAspectj {
             LoggerUtil.error(LOGGER, "log other error: {} ", content, ex);
             throw new RuntimeException(ex);
         }
-        LogRecordEntity logRecordEntity = new LogRecordEntity();
+        LogRecord logRecordEntity = new LogRecord();
         logRecordEntity.setSystemName(systemName);
         logRecordEntity.setModuleName(logRecord.moduleName());
         logRecordEntity.setOperationType(logRecord.operationType().name());

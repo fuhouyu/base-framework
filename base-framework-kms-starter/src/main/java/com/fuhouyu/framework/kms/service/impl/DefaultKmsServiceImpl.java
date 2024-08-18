@@ -17,7 +17,6 @@
 package com.fuhouyu.framework.kms.service.impl;
 
 
-import cn.hutool.crypto.SmUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.SM2;
 import cn.hutool.crypto.digest.SM3;
@@ -100,72 +99,21 @@ public class DefaultKmsServiceImpl implements KmsService {
     }
 
     @Override
-    public byte[] signature(byte[] originData, String salt) {
-        return SmUtil.sm3WithSalt(salt.getBytes(StandardCharsets.UTF_8)).digest(originData);
-    }
-
-    @Override
     public boolean verifyDigest(byte[] signatureData, byte[] originData) {
         return Arrays.equals(this.sm3.digest(originData), signatureData);
     }
 
-    @Override
-    public boolean verifyDigest(byte[] signatureData, byte[] originData, String salt) {
-        return Arrays.equals(SmUtil.sm3WithSalt(salt.getBytes(StandardCharsets.UTF_8)).digest(originData), signatureData);
-    }
 
     @Override
     public byte[] symmetryEncrypt(byte[] originData) {
         return this.sm4.encrypt(originData);
     }
 
-    @Override
-    public byte[] symmetryEncrypt(byte[] originData, String secretKey) {
-        return SmUtil.sm4(secretKey.getBytes(StandardCharsets.UTF_8)).encrypt(originData);
-    }
 
-    @Override
-    public byte[] symmetryEncrypt(byte[] originData, byte[] iv) {
-        return SmUtil.sm4().setIv(iv).encrypt(originData);
-    }
-
-    @Override
-    public byte[] symmetryEncrypt(byte[] originData, String secretKey, byte[] iv) {
-        return SmUtil.sm4(secretKey.getBytes(StandardCharsets.UTF_8)).setIv(iv).encrypt(originData);
-    }
 
     @Override
     public byte[] symmetryDecrypt(byte[] encryptData) {
         return this.sm4.decrypt(encryptData);
-    }
-
-    @Override
-    public byte[] symmetryDecrypt(byte[] encryptData, String secretKey) {
-        return SmUtil.sm4(secretKey.getBytes(StandardCharsets.UTF_8)).decrypt(encryptData);
-    }
-
-
-    @Override
-    public byte[] symmetryDecrypt(byte[] encryptData, byte[] iv) {
-        return SmUtil.sm4().setIv(iv).decrypt(encryptData);
-    }
-
-    @Override
-    public byte[] symmetryDecrypt(byte[] encryptData, String secretKey, byte[] iv) {
-        SM4 sm4 = SmUtil.sm4(secretKey.getBytes());
-        if (Objects.nonNull(iv)) {
-            sm4.setIv(iv);
-        }
-        return sm4.decrypt(encryptData);
-    }
-
-    @Override
-    public byte[] symmetryDecrypt(byte[] encryptData, byte[] secretKey, byte[] iv) {
-        SM4 sm4 = SmUtil.sm4(secretKey);
-        if (Objects.nonNull(iv)) {
-            sm4.setIv(iv);
-        }
-        return sm4.decrypt(encryptData);
     }
 
     @Override

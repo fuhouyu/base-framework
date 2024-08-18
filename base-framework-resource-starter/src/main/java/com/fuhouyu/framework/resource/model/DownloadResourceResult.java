@@ -14,25 +14,35 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.log.core;
-
-import com.fuhouyu.framework.log.model.LogRecord;
+package com.fuhouyu.framework.resource.model;
 
 /**
  * <p>
- * 日志存储接口
+ * 文件下载的结果
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 11:56
+ * @since 2024/8/16 17:19
  */
-public interface LogRecordStoreService {
+public class DownloadResourceResult {
 
     /**
-     * 保存日志记录
-     *
-     * @param logRecord 日志记录
+     * 文件元数据
      */
-    void saveLogRecord(LogRecord logRecord);
+    private ResourceMetadata resourceMetadata;
 
+    public DownloadResourceResult() {
+    }
+
+    public DownloadResourceResult(ResourceMetadata resourceMetadata) {
+        this.resourceMetadata = resourceMetadata;
+    }
+
+    public ResourceMetadata getFileResourceMetadata() {
+        return resourceMetadata;
+    }
+
+    public void setFileResourceMetadata(ResourceMetadata resourceMetadata) {
+        this.resourceMetadata = resourceMetadata;
+    }
 }

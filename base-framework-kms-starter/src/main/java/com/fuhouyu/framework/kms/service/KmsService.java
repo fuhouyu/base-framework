@@ -65,16 +65,6 @@ public interface KmsService {
     byte[] signature(byte[] originData);
 
     /**
-     * 对数据进行签名，返回签名后的数
-     *
-     * @param originData 原始数据
-     * @param salt       盐值
-     * @return 签名后的字节数组
-     */
-    byte[] signature(byte[] originData,
-                     String salt);
-
-    /**
      * 签名验证
      *
      * @param signatureData 签名数据
@@ -84,17 +74,6 @@ public interface KmsService {
     boolean verifyDigest(byte[] signatureData,
                          byte[] originData);
 
-    /**
-     * 签名验证
-     *
-     * @param signatureData 签名数据
-     * @param originData    原始数据
-     * @param salt          盐值
-     * @return true/false
-     */
-    boolean verifyDigest(byte[] signatureData,
-                         byte[] originData,
-                         String salt);
 
 
     /**
@@ -106,38 +85,6 @@ public interface KmsService {
     byte[] symmetryEncrypt(byte[] originData);
 
 
-    /**
-     * 对称加密
-     *
-     * @param originData 原始数据
-     * @param secretKey  密钥
-     * @return 加密后的字节数组
-     */
-    byte[] symmetryEncrypt(byte[] originData,
-                           String secretKey);
-
-
-    /**
-     * 对称加密
-     *
-     * @param originData 原始数据
-     * @param iv         向量
-     * @return 加密后的字节数组
-     */
-    byte[] symmetryEncrypt(byte[] originData,
-                           byte[] iv);
-
-    /**
-     * 对称加密
-     *
-     * @param originData 原始数据
-     * @param secretKey  密钥
-     * @param iv         向量
-     * @return 加密后的字节数组
-     */
-    byte[] symmetryEncrypt(byte[] originData,
-                           String secretKey,
-                           byte[] iv);
 
     /**
      * 对称解密
@@ -147,50 +94,6 @@ public interface KmsService {
      */
     byte[] symmetryDecrypt(byte[] encryptData);
 
-    /**
-     * 对称解密
-     *
-     * @param encryptData 加密的字节数组
-     * @param secretKey   密钥
-     * @return 解密后的字节数组
-     */
-    byte[] symmetryDecrypt(byte[] encryptData,
-                           String secretKey);
-
-
-    /**
-     * 对称解密
-     *
-     * @param encryptData 加密的字节数组
-     * @param iv          向量
-     * @return 加密后的字节数组
-     */
-    byte[] symmetryDecrypt(byte[] encryptData,
-                           byte[] iv);
-
-    /**
-     * 对称解密
-     *
-     * @param encryptData 加密的字节数组
-     * @param secretKey   密钥
-     * @param iv          向量
-     * @return 加密后的字节数组
-     */
-    byte[] symmetryDecrypt(byte[] encryptData,
-                           String secretKey,
-                           byte[] iv);
-
-    /**
-     * 对称解密
-     *
-     * @param encryptData 加密的字节数组
-     * @param secretKey   密钥
-     * @param iv          向量
-     * @return 加密后的字节数组
-     */
-    byte[] symmetryDecrypt(byte[] encryptData,
-                           byte[] secretKey,
-                           byte[] iv);
 
     /**
      * 根据传入的filed值，计算mac值

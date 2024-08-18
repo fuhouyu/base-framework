@@ -15,5 +15,5 @@
 | base-framework-resource-starter |               资源组件                |   待完善 |
 | base-framework-security-starter |  安全认证组件，用户认证，token存储等  |   待完善 |
 | base-framework-web-starter              | web相关组件，常用拦截器，用户信息解析 |   待完善 |
-| base-framework-kms-starter              | 对称非对称组件 |   待完善 |
+| base-framework-kms-starter              | 对称非对称加解密组件 |   待完善 |
 

@@ -27,10 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.Assert;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * <p>
@@ -102,6 +99,62 @@ class ResourceServiceTest {
     void testUploadFile() throws ResourceException {
         PutResourceRequest putResourceRequest = new PutResourceRequest("/Users/fuhouyu/Downloads/", "tmp/1.zip", new File(LOCAL_FILE_PARENT + "/2024-7-11-23-03-31-EFI.zip"));
         PutResourceResult putResourceResult = this.resourceService.uploadFile(putResourceRequest);
-        System.out.println(putResourceResult);
+        Assert.notNull(putResourceResult, "返回结果为空");
+
+        GetResourceRequest getResourceRequest = new GetResourceRequest("/Users/fuhouyu/Downloads/", "tmp/1.zip");
+        GetResourceResult getResourceResult = resourceService.getFile(getResourceRequest);
+        ResourceMetadata resourceMetadata = getResourceResult.getResourceMetadata();
+        Assert.notNull(resourceMetadata, "文件元数据为空");
     }
+
+
+    @Test
+    void testInitUploadId() throws ResourceException, IOException {
+        final String localFilePath = LOCAL_FILE_PARENT + "/2024-7-11-23-03-31-EFI.zip";
+
+        InitiateUploadMultipartRequest initiateUploadMultipartRequest = new InitiateUploadMultipartRequest("/Users/fuhouyu/Downloads",
+                "tmp2/testFile.zip");
+        InitiateUploadMultipartResult initiateUploadMultipartResult = resourceService.initiateMultipartUpload(initiateUploadMultipartRequest);
+        Assert.notNull(initiateUploadMultipartResult, "初始化上传id 返回的结果为空");
+
+        uploadPartFile(localFilePath, initiateUploadMultipartResult.getUploadId());
+
+        ListMultipartRequest listMultipartRequest = new ListMultipartRequest();
+        listMultipartRequest.setUploadId(initiateUploadMultipartResult.getUploadId());
+        ListMultipartResult listMultipartResult = resourceService.listParts(listMultipartRequest);
+        Assert.notNull(listMultipartResult, "列出分片 返回的文件不正确");
+
+
+        UploadCompleteMultipartRequest uploadCompleteMultipartRequest = new UploadCompleteMultipartRequest();
+        uploadCompleteMultipartRequest.setUploadId(initiateUploadMultipartResult.getUploadId());
+
+        resourceService.completeMultipartUpload(uploadCompleteMultipartRequest);
+    }
+
+
+    private void uploadPartFile(String filePath,
+                                String uploadId) throws IOException, ResourceException {
+        // 单次上传1m
+        int length = 1024 * 1024;
+        try (RandomAccessFile fileAccess = new RandomAccessFile(filePath, "r")) {
+            long fileSize = fileAccess.length();
+            long count = fileSize / length;
+            int seek = 0;
+            for (int i = 0; i <= count; i++) {
+                byte[] bytes = new byte[length];
+                fileAccess.seek(seek);
+                fileAccess.read(bytes);
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+                UploadMultipartRequest uploadMultipartRequest = new UploadMultipartRequest();
+                uploadMultipartRequest.setUploadId(uploadId);
+                uploadMultipartRequest.setInputStream(byteArrayInputStream);
+                uploadMultipartRequest.setPartNumber(i);
+                resourceService.multipartFileUpload(uploadMultipartRequest);
+                seek += length;
+            }
+
+        }
+
+    }
+
 }

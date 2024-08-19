@@ -14,32 +14,23 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.resource.service;
-
-import com.fuhouyu.framework.resource.model.ResourceMetadata;
+package com.fuhouyu.framework.service;
 
 /**
  * <p>
- * oss元数据转换的基类
+ * 回调接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/16 17:05
+ * @since 2024/8/19 14:24
  */
-public interface BaseOssMetadata<T> {
+@FunctionalInterface
+public interface Callback<T> {
+
 
     /**
-     * 将文件资源元数据，转换为oss的元数据类型
-     *
-     * @return oss文件元数据类型
+     * 回调接口
+     * @param t t
      */
-    T getOssMetadata(ResourceMetadata resourceMetadata);
-
-    /**
-     * 将oss元数据类型转换为自定义的文件资源元数据
-     *
-     * @param ossMetadata oss元数据
-     * @return 文件资源元数据
-     */
-    ResourceMetadata getFileResourceMetadata(T ossMetadata);
+    void call(T t);
 }

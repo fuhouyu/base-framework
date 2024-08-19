@@ -42,6 +42,9 @@ public class BaseResourceRequest {
      */
     private final String versionId;
 
+    public BaseResourceRequest() {
+        this(null, null);
+    }
 
     public BaseResourceRequest(String bucketName) {
         this(bucketName, null, null);

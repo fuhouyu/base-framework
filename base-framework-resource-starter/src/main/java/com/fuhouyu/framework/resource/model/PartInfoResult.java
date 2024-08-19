@@ -28,13 +28,13 @@ import java.util.Date;
  */
 public class PartInfoResult {
 
-    private int partNumber;
+    private final int partNumber;
 
-    private Date lastModified;
+    private final Date lastModified;
 
-    private String etag;
+    private final String etag;
 
-    private long size;
+    private final long size;
 
     public PartInfoResult(int partNumber, Date lastModified, String etag, long size) {
         this.partNumber = partNumber;

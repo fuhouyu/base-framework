@@ -16,22 +16,27 @@
 
 package com.fuhouyu.framework.resource.service.impl;
 
+import com.fuhouyu.framework.resource.constants.FileResourceMetadataConstant;
 import com.fuhouyu.framework.resource.exception.ResourceException;
 import com.fuhouyu.framework.resource.model.*;
 import com.fuhouyu.framework.resource.service.ResourceService;
 import com.fuhouyu.framework.utils.FileUtil;
-import org.apache.commons.codec.binary.Hex;
+import com.fuhouyu.framework.utils.LoggerUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -43,9 +48,32 @@ import java.util.UUID;
  */
 public class LocalFileServiceImpl implements ResourceService {
 
-    private static final int DEFAULT_BYTES_LENGTH = 1024 * 1024;
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalFileServiceImpl.class);
+
+    private static final int DEFAULT_BYTES_LENGTH = 8192;
 
     private static final String TMP_DIRECT = "/tmp";
+
+    private static final String SPACER = ":";
+
+    private static final MessageDigest MESSAGE_DIGEST;
+
+    static {
+        MESSAGE_DIGEST = initMessageDigest();
+    }
+
+    /**
+     * 初始化md5摘要算法
+     *
+     * @return md5摘要算法
+     */
+    private static MessageDigest initMessageDigest() {
+        try {
+            return MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     @Override
     public GetResourceResult getFile(GetResourceRequest genericDownloadFileRequest) throws ResourceException {
@@ -54,6 +82,7 @@ public class LocalFileServiceImpl implements ResourceService {
         byte[] bytes = this.doDownloadFile(bucketName, objectKey, genericDownloadFileRequest.getRange());
         GetResourceResult getResourceResult = new GetResourceResult(bucketName, objectKey);
         getResourceResult.setObjectContent(new ByteArrayInputStream(bytes));
+        getResourceResult.setResourceMetadata(this.getFileResourceMetadata(Paths.get(bucketName, objectKey)));
         return getResourceResult;
     }
 
@@ -61,21 +90,22 @@ public class LocalFileServiceImpl implements ResourceService {
     public ResourceMetadata getFile(GetResourceRequest genericDownloadFileRequest, File file) throws ResourceException {
         String bucketName = genericDownloadFileRequest.getBucketName();
         String objectKey = genericDownloadFileRequest.getObjectKey();
-        try (FileChannel readFileChannel = FileChannel.open(Paths.get(bucketName, objectKey), StandardOpenOption.READ);
-             FileChannel writeFileChannel = FileChannel.open(file.toPath(), StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
-            readFileChannel.transferTo(0, readFileChannel.size(), writeFileChannel);
+        Path sourcePath = Paths.get(bucketName, objectKey);
+        try {
+            FileUtil.copyFile(sourcePath,
+                    file.toPath());
+            return this.getFileResourceMetadata(sourcePath);
         } catch (IOException e) {
             throw new ResourceException(e.getMessage(), e);
         }
-        // 这里先返回一个空的metadata
-        return new ResourceMetadata();
     }
+
 
     @Override
     public DownloadResourceResult downloadFile(DownloadResourceRequest ossDownloadFileRequest) throws ResourceException {
         GetResourceRequest getResourceRequest = new GetResourceRequest(ossDownloadFileRequest.getBucketName(), ossDownloadFileRequest.getObjectKey());
-        this.getFile(getResourceRequest, new File(ossDownloadFileRequest.getDownloadFile()));
-        return new DownloadResourceResult(new ResourceMetadata());
+        ResourceMetadata resourceMetadata = this.getFile(getResourceRequest, new File(ossDownloadFileRequest.getDownloadFile()));
+        return new DownloadResourceResult(resourceMetadata);
     }
 
     @Override
@@ -83,90 +113,179 @@ public class LocalFileServiceImpl implements ResourceService {
         String objectKey = putResourceRequest.getObjectKey();
         String bucketName = putResourceRequest.getBucketName();
         File file = putResourceRequest.getFile();
-        byte[] bytes = new byte[DEFAULT_BYTES_LENGTH];
-        String etag;
+
         Path path = Paths.get(bucketName, objectKey);
 
         FileUtil.createDirectorIfNotExists(path.getParent());
         FileUtil.deleteFileIfExists(path);
-        try (InputStream origanlInputStream = Objects.nonNull(file) ? new FileInputStream(file)
-                : putResourceRequest.getInputStream();
-             FileChannel writeFileChannel = FileChannel.open(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
+        try (InputStream inputStream = Objects.nonNull(file) ? new FileInputStream(file) : putResourceRequest.getInputStream()) {
+            FileUtil.copyFile(inputStream, path);
+            // 设置文件的元数据
+            String etag = FileUtil.calculateFileDigest(path, MESSAGE_DIGEST);
+            FileUtil.setFileAttribute(path, FileResourceMetadataConstant.ETAG, etag);
+            FileUtil.setFileLastModifiedTime(path);
 
-            int readLength = bytes.length;
-            int totalFileSize = origanlInputStream.available();
-            MessageDigest messageDigest = this.getMd5();
-
-            int position = 0;
-
-            while (origanlInputStream.read(bytes) != -1) {
-                if (position + readLength > totalFileSize) {
-                    readLength = totalFileSize - position;
-                }
-                int ignored = writeFileChannel.write(ByteBuffer.wrap(bytes, 0, readLength));
-                messageDigest.update(bytes, 0,
-                        readLength);
-                position += readLength;
-            }
-
-            etag = Hex.encodeHexString(messageDigest.digest());
+            return new PutResourceResult(bucketName, objectKey, etag);
         } catch (FileNotFoundException e) {
-            throw new ResourceException(
-                    String.format("%s 上传的文件不存在", file.getAbsolutePath()), e);
+            throw new ResourceException(String.format("%s 文件不存在", file.getAbsolutePath()), e);
         } catch (IOException e) {
             throw new ResourceException(e.getMessage(), e);
         }
-        return new PutResourceResult(bucketName, objectKey, etag);
     }
+
 
     @Override
     public InitiateUploadMultipartResult initiateMultipartUpload(InitiateUploadMultipartRequest request) throws ResourceException {
         String bucketName = request.getBucketName();
+        String objectKey = request.getObjectKey();
         String uploadId = UUID.randomUUID().toString().replace("-", "")
                 .substring(16);
-        Path path = Paths.get(TMP_DIRECT, bucketName, uploadId);
+        Path path = Paths.get(TMP_DIRECT, uploadId);
         FileUtil.createDirectorIfNotExists(path);
-        return null;
+        try {
+            // 写入桶和objectKey，后续使用
+            FileUtil.writeFile(Paths.get(TMP_DIRECT, uploadId, uploadId),
+                    new ByteArrayInputStream(String.format("%s%s%s", bucketName, SPACER, objectKey).getBytes(StandardCharsets.UTF_8)));
+        } catch (IOException e) {
+            throw new ResourceException(e.getMessage(), e);
+        }
+        return new InitiateUploadMultipartResult(bucketName, objectKey, uploadId);
     }
 
     @Override
     public UploadMultipartResult multipartFileUpload(UploadMultipartRequest fileResourceRequest) throws ResourceException {
-        return null;
+        String uploadId = fileResourceRequest.getUploadId();
+        InputStream inputStream = fileResourceRequest.getInputStream();
+        int partNumber = fileResourceRequest.getPartNumber();
+        Path tmpUploadFilePath = Paths.get(TMP_DIRECT, uploadId);
+        if (!Files.isDirectory(tmpUploadFilePath)) {
+            throw new ResourceException("上传id不正确 " + uploadId);
+        }
+        try (inputStream) {
+            Path partFile = Paths.get(TMP_DIRECT, uploadId, String.valueOf(partNumber));
+            FileUtil.writeFile(partFile, inputStream);
+            String etag = FileUtil.calculateFileDigest(partFile, MESSAGE_DIGEST);
+
+            FileUtil.setFileAttribute(partFile, FileResourceMetadataConstant.ETAG, etag);
+            FileUtil.setFileLastModifiedTime(partFile);
+
+            return new UploadMultipartResult(partNumber, fileResourceRequest.getPartSize(), etag);
+        } catch (IOException e) {
+            throw new ResourceException(e.getMessage(), e);
+        }
     }
 
     @Override
     public UploadCompleteMultipartResult completeMultipartUpload(UploadCompleteMultipartRequest request) throws ResourceException {
-        return null;
+        String uploadId = request.getUploadId();
+        Path tmpUploadFilePath = Paths.get(TMP_DIRECT, uploadId);
+        if (!Files.isDirectory(tmpUploadFilePath)) {
+            throw new ResourceException("当前上传的文件分片不存在  " + uploadId);
+        }
+        String[] bucketNameAndObjectKey;
+        try {
+            Path bucketNameAndObjectPath = Paths.get(TMP_DIRECT, uploadId, uploadId);
+            bucketNameAndObjectKey = new String(Files.readAllBytes(bucketNameAndObjectPath)).split(SPACER);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String bucketName = bucketNameAndObjectKey[0];
+        String objectKey = bucketNameAndObjectKey[1];
+        Path targetPath = Paths.get(bucketName, objectKey);
+
+        FileUtil.deleteFileIfExists(targetPath);
+        String etag = this.mergeFile(tmpUploadFilePath, targetPath, uploadId);
+
+        UploadCompleteMultipartResult uploadCompleteMultipartResult
+                = new UploadCompleteMultipartResult();
+        uploadCompleteMultipartResult.setBucketName(bucketName);
+        uploadCompleteMultipartResult.setObjectKey(objectKey);
+        uploadCompleteMultipartResult.setEtag(etag);
+        return uploadCompleteMultipartResult;
     }
 
+
     @Override
-    public ListMultipartsResult listParts(ListMultipartsRequest listMultipartRequest) throws ResourceException {
-        return null;
+    public ListMultipartResult listParts(ListMultipartRequest listMultipartRequest) throws ResourceException {
+        String uploadId = listMultipartRequest.getUploadId();
+        int maxParts = listMultipartRequest.getMaxParts();
+        int partNumberMaker = listMultipartRequest.getPartNumberMaker();
+        Path tmpPath = Paths.get(TMP_DIRECT, uploadId);
+
+        ListMultipartResult listMultipartResult = new ListMultipartResult(uploadId);
+        List<PartInfoResult> list = new LinkedList<>();
+        listMultipartResult.setPartInfoResult(list);
+        listMultipartResult.setNextPartNumberMaker(partNumberMaker + maxParts);
+
+
+        try (Stream<Path> partList = this.listFilePath(tmpPath, uploadId)
+                .skip(partNumberMaker)
+                .limit(maxParts)) {
+
+            partList.forEach(part -> {
+                try {
+                    Date fileLastModifiedTime = FileUtil.getFileLastModifiedTime(part);
+                    String etag = FileUtil.readFileAttribute(part, FileResourceMetadataConstant.ETAG);
+                    PartInfoResult partInfoResult = new PartInfoResult(
+                            Integer.parseInt(part.getFileName().toString()),
+                            fileLastModifiedTime,
+                            etag,
+                            part.toFile().length()
+                    );
+                    list.add(partInfoResult);
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(e.getMessage(), e);
+                }
+
+            });
+        }
+        return listMultipartResult;
     }
 
     @Override
     public void abortMultipartFileUpload(UploadAbortMultipartRequest uploadAbortMultipartRequest) throws ResourceException {
-
+        String uploadId = uploadAbortMultipartRequest.getUploadId();
+        Path tmpPath = Paths.get(TMP_DIRECT, uploadId);
+        try {
+            FileUtil.deleteDirect(tmpPath);
+        } catch (IOException e) {
+            throw new ResourceException(e.getMessage(), e);
+        }
     }
 
     @Override
     public boolean doesObjectExist(String bucketName, String objectKey) {
-        return false;
+        return Files.exists(Paths.get(bucketName, objectKey));
     }
 
     @Override
     public ListResourceResult listFiles(ListResourceRequest listFileRequest) throws ResourceException {
-        return null;
+        throw new UnsupportedOperationException("这里暂时不做实现");
     }
 
     @Override
     public CopyResourceResult copyFile(String sourceBucketName, String sourceObjectKey, String destBucketName, String destObjectKey) throws ResourceException {
-        return null;
+        try {
+            Path targetPath = Paths.get(destBucketName, destBucketName);
+            FileUtil.copyFile(Paths.get(sourceBucketName, sourceObjectKey),
+                    targetPath);
+            String etag = FileUtil.calculateFileDigest(targetPath, MESSAGE_DIGEST);
+            FileUtil.setFileAttribute(targetPath,
+                    FileResourceMetadataConstant.ETAG,
+                    etag);
+            Date lastModifiedTime = FileUtil.setFileLastModifiedTime(targetPath);
+            CopyResourceResult copyResourceResult = new CopyResourceResult(destBucketName, destObjectKey);
+            copyResourceResult.setEtag(etag);
+            copyResourceResult.setLastModified(lastModifiedTime);
+            return copyResourceResult;
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void deleteFile(String bucketName, String objectKey) throws ResourceException {
-
+        FileUtil.deleteFileIfExists(Paths.get(bucketName, objectKey));
     }
 
 
@@ -244,16 +363,88 @@ public class LocalFileServiceImpl implements ResourceService {
         }
     }
 
+
     /**
-     * 获取md5
+     * 设置文件属性
      *
-     * @return 摘要算法
+     * @param path             路径
+     * @param resourceMetadata 文件资源元数据
+     * @throws IOException io异常
      */
-    private MessageDigest getMd5() {
+    private void setFileMetadata(Path path, ResourceMetadata resourceMetadata) throws IOException {
+        if (Objects.isNull(resourceMetadata)) {
+            return;
+        }
+        FileUtil.setFileAttributeAll(path, resourceMetadata.getUserMetadata());
+    }
+
+    /**
+     * 从文件中获取元数据返回
+     *
+     * @param path path
+     * @return 资源元数据
+     * @throws ResourceException 读取资源元数据异常
+     */
+    private ResourceMetadata getFileResourceMetadata(Path path) throws ResourceException {
+        ResourceMetadata resourceMetadata = new ResourceMetadata();
+        Map<String, String> fileAttributes;
         try {
-            return MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
+            fileAttributes = FileUtil.readFileAttributes(path);
+            resourceMetadata.setHeader(FileResourceMetadataConstant.LAST_MODIFIED, FileUtil.getFileLastModifiedTime(path));
+        } catch (IOException e) {
+            LoggerUtil.error(LOGGER, "获取资源文件:{} 中的用户自定义元数据错误:{}",
+                    path.getFileName(), e.getMessage(), e);
+            throw new ResourceException(e.getMessage(), e);
+        }
+        resourceMetadata.setUserMetadata(fileAttributes);
+        return resourceMetadata;
+    }
+
+    /**
+     * 合并文件，返回文件etag
+     *
+     * @param tmpUploadFilePath 分片文件路径
+     * @param targetPath        目标路径
+     * @param uploadId          上传的文件id
+     * @return etag
+     */
+    public String mergeFile(Path tmpUploadFilePath, Path targetPath, String uploadId) throws ResourceException {
+        try (Stream<Path> partFileList = this.listFilePath(tmpUploadFilePath, uploadId)) {
+            partFileList
+                    .forEach(filePath -> {
+                        try (FileChannel sourceFileChannel = FileChannel.open(filePath, StandardOpenOption.READ);
+                             FileChannel targetFileChannel = FileChannel.open(targetPath,
+                                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.APPEND)) {
+                            sourceFileChannel.transferTo(0, sourceFileChannel.size(), targetFileChannel);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+            FileUtil.deleteDirect(tmpUploadFilePath);
+            return FileUtil.calculateFileDigest(targetPath, MESSAGE_DIGEST);
+        } catch (IOException e) {
+            throw new ResourceException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 列出父级路径下的所有分片的文件
+     *
+     * @param parentPath 父级路径
+     * @param uploadId   上传的文件id
+     * @return 上传的文件路径
+     * @throws ResourceException 资源服务异常
+     */
+    private Stream<Path> listFilePath(Path parentPath, String uploadId) throws ResourceException {
+        if (!Files.exists(parentPath)) {
+            throw new ResourceException("分片文件不存在");
+        }
+        try {
+            return Files.list(parentPath)
+                    .filter(f -> !f.getFileName().endsWith(uploadId))
+                    .sorted(Comparator.comparingInt(o -> Integer.parseInt(o.getFileName().toString())));
+        } catch (IOException e) {
+            throw new ResourceException(e.getMessage(), e);
         }
     }
 }

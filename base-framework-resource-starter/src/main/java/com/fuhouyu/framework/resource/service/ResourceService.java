@@ -97,7 +97,7 @@ public interface ResourceService {
      * @param listMultipartRequest 列举分片上传的请求.
      * @return 分片上传的响应.
      */
-    ListMultipartsResult listParts(ListMultipartsRequest listMultipartRequest) throws ResourceException;
+    ListMultipartResult listParts(ListMultipartRequest listMultipartRequest) throws ResourceException;
 
     /**
      * 取消分片上传.

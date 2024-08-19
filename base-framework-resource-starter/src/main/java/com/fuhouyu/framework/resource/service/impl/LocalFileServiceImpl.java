@@ -142,10 +142,11 @@ public class LocalFileServiceImpl implements ResourceService {
                 .substring(16);
         Path path = Paths.get(TMP_DIRECT, uploadId);
         FileUtil.createDirectorIfNotExists(path);
-        try {
+        try (ByteArrayInputStream byteArrayInputStream =
+                     new ByteArrayInputStream(String.format("%s%s%s", bucketName, SPACER, objectKey).getBytes(StandardCharsets.UTF_8))) {
             // 写入桶和objectKey，后续使用
             FileUtil.writeFile(Paths.get(TMP_DIRECT, uploadId, uploadId),
-                    new ByteArrayInputStream(String.format("%s%s%s", bucketName, SPACER, objectKey).getBytes(StandardCharsets.UTF_8)));
+                    byteArrayInputStream);
         } catch (IOException e) {
             throw new ResourceException(e.getMessage(), e);
         }

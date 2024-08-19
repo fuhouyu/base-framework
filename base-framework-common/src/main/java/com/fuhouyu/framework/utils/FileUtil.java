@@ -185,14 +185,13 @@ public class FileUtil {
         }
         if (Files.isDirectory(directPath)) {
             try (Stream<Path> walk = Files.walk(directPath)) {
-                walk.sorted(Comparator.reverseOrder())
-                        .forEach(p -> {
-                            try {
-                                Files.delete(p);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
+                walk.forEach(p -> {
+                    try {
+                        Files.delete(p);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             }
         }
         Files.deleteIfExists(directPath);

@@ -35,12 +35,16 @@ public class PartEtag {
     /**
      * 分片大小.
      */
-    private final long partSize;
+    private long partSize;
 
     /**
      * etag.
      */
     private final String etag;
+
+    public PartEtag(int partNumber, String etag) {
+        this(partNumber, -1, etag);
+    }
 
     public PartEtag(int partNumber, long partSize, String etag) {
         this.partNumber = partNumber;

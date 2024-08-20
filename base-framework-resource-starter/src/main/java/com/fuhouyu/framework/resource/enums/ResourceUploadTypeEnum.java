@@ -45,6 +45,5 @@ public enum ResourceUploadTypeEnum {
      */
     QI_NIU,
 
-    ;
 
 }

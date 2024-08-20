@@ -1,0 +1,4 @@
+base:
+  framework:
+    resource:
+      ali-oss-config:

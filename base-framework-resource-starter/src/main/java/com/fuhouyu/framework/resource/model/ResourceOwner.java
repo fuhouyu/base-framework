@@ -24,25 +24,8 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 18:11
  */
-public class ResourceOwner {
+public record ResourceOwner(String id, String displayName) {
 
-
-    private final String id;
-
-    private final String displayName;
-
-    public ResourceOwner(String id, String displayName) {
-        this.id = id;
-        this.displayName = displayName;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
 
     @Override
     public String toString() {

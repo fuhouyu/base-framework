@@ -51,8 +51,8 @@ public class KryoTokenSerializer implements TokenStoreSerializationStrategy {
                 // Configure the Kryo instance.
                 kryo.setRegistrationRequired(false);
                 // 设置初始化策略，如果没有默认无参构造器，那么就需要设置此项,使用此策略构造一个无参构造器
-                Set<?> unmodifiableSet = Collections.unmodifiableSet(Collections.emptySet());
-                List<?> unmodifiableList = Collections.unmodifiableList(Collections.emptyList());
+                Set<?> unmodifiableSet = Collections.unmodifiableSet(new HashSet<>(0));
+                List<?> unmodifiableList = Collections.unmodifiableList(new ArrayList<>(0));
                 kryo.register(unmodifiableSet.getClass(),
                         new CollectionSerializer(unmodifiableSet));
                 kryo.register(unmodifiableList.getClass(),

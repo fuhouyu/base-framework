@@ -63,7 +63,6 @@ public class OpenPlatformAuthProperties {
          */
         WECHAT_APPLETS,
 
-        ;
 
     }
 

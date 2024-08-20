@@ -35,5 +35,5 @@ public enum PageOrderDirectionEnum {
      * 倒序
      */
     DESC,
-    ;
+
 }

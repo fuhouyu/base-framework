@@ -23,15 +23,13 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * <p>
@@ -183,18 +181,27 @@ public class FileUtil {
         if (!Files.exists(directPath)) {
             return;
         }
-        if (Files.isDirectory(directPath)) {
-            try (Stream<Path> walk = Files.walk(directPath)) {
-                walk.forEach(p -> {
-                    try {
-                        Files.delete(p);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            }
+        if (!Files.isDirectory(directPath)) {
+            Files.delete(directPath);
+            return;
         }
-        Files.deleteIfExists(directPath);
+        Files.walkFileTree(directPath, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc == null) {
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+                throw exc;
+            }
+        });
     }
 
     /**

@@ -26,13 +26,7 @@ import java.util.*;
  * @author fuhouyu
  * @since 2024/8/15 15:05
  */
-public class HttpRequestHeader {
-
-    private final Map<String, List<String>> headers;
-
-    public HttpRequestHeader(Map<String, List<String>> headers) {
-        this.headers = headers;
-    }
+public record HttpRequestHeader(Map<String, List<String>> headers) {
 
     public static HttpRequestHeader createDefault() {
         HttpRequestHeader httpRequestHeader = new HttpRequestHeader(new HashMap<>());
@@ -69,9 +63,5 @@ public class HttpRequestHeader {
         }
         this.headers.putAll(addHeader);
         return this;
-    }
-
-    public Map<String, List<String>> getHeaders() {
-        return headers;
     }
 }

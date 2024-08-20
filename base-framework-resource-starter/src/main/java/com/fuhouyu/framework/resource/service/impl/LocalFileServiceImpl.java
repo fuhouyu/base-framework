@@ -20,6 +20,7 @@ import com.fuhouyu.framework.resource.constants.FileResourceMetadataConstant;
 import com.fuhouyu.framework.resource.exception.ResourceException;
 import com.fuhouyu.framework.resource.model.*;
 import com.fuhouyu.framework.resource.service.ResourceService;
+import com.fuhouyu.framework.service.Callback;
 import com.fuhouyu.framework.utils.FileUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import org.slf4j.Logger;
@@ -195,6 +196,7 @@ public class LocalFileServiceImpl implements ResourceService {
         Path targetPath = Paths.get(bucketName, objectKey);
 
         FileUtil.deleteFileIfExists(targetPath);
+        FileUtil.createDirectorIfNotExists(targetPath.getParent());
         String etag = this.mergeFile(tmpUploadFilePath, targetPath, uploadId);
 
         UploadCompleteMultipartResult uploadCompleteMultipartResult
@@ -219,29 +221,20 @@ public class LocalFileServiceImpl implements ResourceService {
         listMultipartResult.setNextPartNumberMaker(partNumberMaker + maxParts);
 
 
-        try (Stream<Path> partList = this.listFilePath(tmpPath, uploadId)
-                .skip(partNumberMaker)
-                .limit(maxParts)) {
-
-            partList.forEach(part -> {
-                try {
-                    Date fileLastModifiedTime = FileUtil.getFileLastModifiedTime(part);
-                    String etag = FileUtil.readFileAttribute(part, FileResourceMetadataConstant.ETAG);
-                    PartInfoResult partInfoResult = new PartInfoResult(
-                            Integer.parseInt(part.getFileName().toString()),
-                            fileLastModifiedTime,
-                            etag,
-                            part.toFile().length()
-                    );
-                    list.add(partInfoResult);
-                } catch (IOException e) {
-                    throw new IllegalArgumentException(e.getMessage(), e);
-                }
-
-            });
-        }
+        this.listFilePathCallback(tmpPath, uploadId, (paths) ->
+                paths.filter(f -> !f.getFileName().endsWith(uploadId))
+                        .sorted(Comparator.comparingInt(o -> Integer.parseInt(o.getFileName().toString())))
+                        .skip(partNumberMaker)
+                        .limit(maxParts).forEach(part -> {
+                            try {
+                                list.add(this.getFilePartInfoResult(part));
+                            } catch (ResourceException e) {
+                                throw new IllegalArgumentException(e);
+                            }
+                        }));
         return listMultipartResult;
     }
+
 
     @Override
     public void abortMultipartFileUpload(UploadAbortMultipartRequest uploadAbortMultipartRequest) throws ResourceException {
@@ -410,17 +403,20 @@ public class LocalFileServiceImpl implements ResourceService {
      * @return etag
      */
     public String mergeFile(Path tmpUploadFilePath, Path targetPath, String uploadId) throws ResourceException {
-        try (Stream<Path> partFileList = this.listFilePath(tmpUploadFilePath, uploadId)) {
-            partFileList
-                    .forEach(filePath -> {
-                        try (FileChannel sourceFileChannel = FileChannel.open(filePath, StandardOpenOption.READ);
-                             FileChannel targetFileChannel = FileChannel.open(targetPath,
-                                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.APPEND)) {
-                            sourceFileChannel.transferTo(0, sourceFileChannel.size(), targetFileChannel);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+        try {
+            this.listFilePathCallback(tmpUploadFilePath, uploadId, (paths) -> {
+                paths.filter(f -> !f.getFileName().endsWith(uploadId))
+                        .sorted(Comparator.comparingInt(o -> Integer.parseInt(o.getFileName().toString())))
+                        .forEach(filePath -> {
+                            try (FileChannel sourceFileChannel = FileChannel.open(filePath, StandardOpenOption.READ);
+                                 FileChannel targetFileChannel = FileChannel.open(targetPath,
+                                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.APPEND)) {
+                                sourceFileChannel.transferTo(0, sourceFileChannel.size(), targetFileChannel);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+            });
             FileUtil.deleteDirect(tmpUploadFilePath);
             return FileUtil.calculateFileDigest(targetPath, MESSAGE_DIGEST);
         } catch (IOException e) {
@@ -436,16 +432,40 @@ public class LocalFileServiceImpl implements ResourceService {
      * @return 上传的文件路径
      * @throws ResourceException 资源服务异常
      */
-    private Stream<Path> listFilePath(Path parentPath, String uploadId) throws ResourceException {
+    private void listFilePathCallback(Path parentPath, String uploadId,
+                                      Callback<Stream<Path>> filesCallback) throws ResourceException {
         if (!Files.exists(parentPath)) {
             throw new ResourceException("分片文件不存在");
         }
-        try {
-            return Files.list(parentPath)
-                    .filter(f -> !f.getFileName().endsWith(uploadId))
-                    .sorted(Comparator.comparingInt(o -> Integer.parseInt(o.getFileName().toString())));
+        try (Stream<Path> pathStream = Files.list(parentPath)) {
+            filesCallback.call(pathStream);
         } catch (IOException e) {
             throw new ResourceException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * 获取文件分片详情
+     *
+     * @param part 分片文件路径
+     * @return 分片文件详情
+     * @throws ResourceException 资源异常
+     */
+    private PartInfoResult getFilePartInfoResult(Path part) throws ResourceException {
+        Date fileLastModifiedTime;
+        String etag;
+        try {
+            fileLastModifiedTime = FileUtil.getFileLastModifiedTime(part);
+            etag = FileUtil.readFileAttribute(part, FileResourceMetadataConstant.ETAG);
+        } catch (IOException e) {
+            throw new ResourceException(e.getMessage(), e);
+        }
+
+        return new PartInfoResult(
+                Integer.parseInt(part.getFileName().toString()),
+                fileLastModifiedTime,
+                etag,
+                part.toFile().length()
+        );
     }
 }

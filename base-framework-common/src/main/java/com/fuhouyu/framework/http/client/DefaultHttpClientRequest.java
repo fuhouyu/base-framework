@@ -127,7 +127,7 @@ public class DefaultHttpClientRequest implements AsyncHttpClientRequest {
      */
     private void setHeader(HttpRequestHeader httpRequestHeader,
                            HttpUriRequestBase requestBase) {
-        Set<Map.Entry<String, List<String>>> entries = httpRequestHeader.getHeaders().entrySet();
+        Set<Map.Entry<String, List<String>>> entries = httpRequestHeader.headers().entrySet();
         for (Map.Entry<String, List<String>> entry : entries) {
             StringBuilder sb = new StringBuilder();
             for (String value : entry.getValue()) {

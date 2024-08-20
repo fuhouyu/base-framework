@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.context.user;
+package com.fuhouyu.framework.service;
 
 /**
  * <p>
- * 用户上下文
+ * 回调接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 10:33
+ * @since 2024/8/19 14:24
  */
-public interface UserContext {
+@FunctionalInterface
+public interface Callback<T> {
+
 
     /**
-     * 获取上下文中的用户信息
-     *
-     * @return 用户信息
+     * 回调接口
+     * @param t t
      */
-    User getUser();
-
-    /**
-     * 设置用户
-     *
-     * @param user 用户
-     */
-    void setUser(User user);
+    void call(T t);
 }

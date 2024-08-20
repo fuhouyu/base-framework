@@ -24,15 +24,49 @@ package com.fuhouyu.framework.constants;
  * @author fuhouyu
  * @since 2024/8/15 19:54
  */
-public class HttpRequestHeaderConstant {
+public interface HttpRequestHeaderConstant {
+
+    // 自定义请求头
+    /**
+     * 自定义的用户详情请求头
+     */
+    String USERINFO_HEADER = "X-Custom-Userinfo";
+
+    // 标准请求头
 
     /**
-     * 自定义的用户头
+     * 客户端版本
      */
-    public static final String USERINFO_HEADER = "X-Custom-Userinfo";
+    String CLIENT_VERSION_HEADER = "Client-Version";
 
-    private HttpRequestHeaderConstant() {
+    /**
+     * 用户代理
+     */
+    String USER_AGENT_HEADER = "User-Agent";
 
-    }
+    /**
+     * 消息内容类型
+     */
+    String CONTENT_TYPE = "Content-Type";
 
+    /**
+     * 消息内容长度
+     */
+    String CONTENT_LENGTH = "Content-Length";
+
+    /**
+     * 消息内容编码
+     */
+    String CONTENT_ENCODING = "Content-Encoding";
+
+    // nginx转发的请求头
+    /**
+     * 真实ip地址
+     */
+    String X_REAL_IP = "X-Real-IP";
+
+    /**
+     * 来自
+     */
+    String X_FORWARDED_FOR = "X-Forwarded-For";
 }

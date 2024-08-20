@@ -26,7 +26,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/8/16 17:57
  */
-public class ListMultipartsResult extends BaseResourceResult {
+public class ListMultipartResult extends BaseResourceResult {
 
     private boolean truncated;
 
@@ -34,10 +34,16 @@ public class ListMultipartsResult extends BaseResourceResult {
 
     private String uploadId;
 
-    private List<PartInfoResult> partInfoResponse;
+    private List<PartInfoResult> partInfoResult;
 
-    public ListMultipartsResult(String bucketName, String objectKey,
-                                String uploadId) {
+
+    public ListMultipartResult(String uploadId) {
+        this.uploadId = uploadId;
+    }
+
+
+    public ListMultipartResult(String bucketName, String objectKey,
+                               String uploadId) {
         super(bucketName, objectKey);
         this.uploadId = uploadId;
     }
@@ -66,12 +72,12 @@ public class ListMultipartsResult extends BaseResourceResult {
         this.uploadId = uploadId;
     }
 
-    public List<PartInfoResult> getPartInfoResponse() {
-        return partInfoResponse;
+    public List<PartInfoResult> getPartInfoResult() {
+        return partInfoResult;
     }
 
-    public void setPartInfoResponse(List<PartInfoResult> partInfoResponse) {
-        this.partInfoResponse = partInfoResponse;
+    public void setPartInfoResult(List<PartInfoResult> partInfoResult) {
+        this.partInfoResult = partInfoResult;
     }
 
     @Override
@@ -80,7 +86,7 @@ public class ListMultipartsResult extends BaseResourceResult {
                 "truncated=" + truncated +
                 ", nextPartNumberMaker=" + nextPartNumberMaker +
                 ", uploadId='" + uploadId + '\'' +
-                ", partInfoResponse=" + partInfoResponse +
+                ", partInfoResponse=" + partInfoResult +
                 '}';
     }
 }

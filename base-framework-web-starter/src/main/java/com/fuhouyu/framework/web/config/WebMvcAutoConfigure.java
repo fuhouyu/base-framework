@@ -19,6 +19,7 @@ package com.fuhouyu.framework.web.config;
 import com.fuhouyu.framework.context.user.DefaultUserDetail;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.utils.ClassUtils;
+import com.fuhouyu.framework.web.handler.HttpRequestContextHandler;
 import com.fuhouyu.framework.web.handler.HttpRequestUserHandler;
 import com.fuhouyu.framework.web.handler.UserExtensionHandlerInterceptor;
 import com.fuhouyu.framework.web.properties.WebProperties;
@@ -55,6 +56,7 @@ public class WebMvcAutoConfigure implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new HttpRequestContextHandler()).addPathPatterns("/**");
         registry.addInterceptor(this.getHttpHandlerInterceptor()).addPathPatterns("/**");
     }
 

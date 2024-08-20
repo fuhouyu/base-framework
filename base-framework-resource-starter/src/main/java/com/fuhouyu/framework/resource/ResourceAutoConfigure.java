@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Import;
  * @since 2024/8/16 18:36
  */
 @ComponentScan(basePackageClasses = ResourceAutoConfigure.class)
-@Import({AliYunOssAutoConfigure.class})
+@Import({AliYunOssAutoConfigure.class, LocalFileResourceAutoConfigure.class})
 @ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.resource.properties")
 public class ResourceAutoConfigure {
 

@@ -24,7 +24,7 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 17:53
  */
-public class ListMultipartsRequest extends BaseResourceRequest {
+public class ListMultipartRequest extends BaseResourceRequest {
 
     /**
      * 指定List的起始位置。只有分片号大于此参数值的分片会被列举.
@@ -34,20 +34,14 @@ public class ListMultipartsRequest extends BaseResourceRequest {
     /**
      * 最大列举的分片数，默认1000.
      */
-    private int maxParts;
+    private int maxParts = 1000;
 
     /**
      * 上传的id.
      */
     private String uploadId;
 
-    public ListMultipartsRequest(String bucketName, String objectKey) {
-        super(bucketName, objectKey);
-    }
 
-    public ListMultipartsRequest(String bucketName, String objectKey, String versionId) {
-        super(bucketName, objectKey, versionId);
-    }
 
     public int getPartNumberMaker() {
         return partNumberMaker;

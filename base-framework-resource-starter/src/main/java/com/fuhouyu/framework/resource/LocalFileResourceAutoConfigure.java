@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.resource.service;
+package com.fuhouyu.framework.resource;
 
-import com.fuhouyu.framework.resource.model.ResourceMetadata;
+import com.fuhouyu.framework.resource.service.ResourceService;
+import com.fuhouyu.framework.resource.service.impl.LocalFileServiceImpl;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
 
 /**
  * <p>
- * oss元数据转换的基类
+ * 本地文件资源自动装配类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/16 17:05
+ * @since 2024/8/18 17:28
  */
-public interface BaseOssMetadata<T> {
+public class LocalFileResourceAutoConfigure {
+
 
     /**
-     * 将文件资源元数据，转换为oss的元数据类型
+     * 本地资源文件bean
      *
-     * @return oss文件元数据类型
+     * @return bean对象
      */
-    T getOssMetadata(ResourceMetadata resourceMetadata);
-
-    /**
-     * 将oss元数据类型转换为自定义的文件资源元数据
-     *
-     * @param ossMetadata oss元数据
-     * @return 文件资源元数据
-     */
-    ResourceMetadata getFileResourceMetadata(T ossMetadata);
+    @Bean
+    @ConditionalOnMissingBean(Resource.class)
+    public ResourceService localFileResourceService() {
+        return new LocalFileServiceImpl();
+    }
 }

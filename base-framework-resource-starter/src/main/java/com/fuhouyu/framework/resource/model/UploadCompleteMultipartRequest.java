@@ -40,11 +40,6 @@ public class UploadCompleteMultipartRequest extends BaseResourceRequest {
      */
     private List<PartEtag> partEtagList = new ArrayList<>();
 
-
-    public UploadCompleteMultipartRequest(String bucketName, String objectKey) {
-        super(bucketName, objectKey);
-    }
-
     public String getUploadId() {
         return uploadId;
     }

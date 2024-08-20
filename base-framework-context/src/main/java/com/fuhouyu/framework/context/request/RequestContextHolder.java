@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.context.user;
+package com.fuhouyu.framework.context.request;
 
 import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
@@ -23,18 +23,18 @@ import java.util.Objects;
 
 /**
  * <p>
- * 用户上下文
+ * 请求上下文实现
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 11:25
+ * @since 2024/8/18 16:01
  */
-public class UserContextHolder {
+public class RequestContextHolder {
 
-    private static final ContextHolderStrategy<Context<User>> CONTEXT_HOLDER_STRATEGY;
+    private static final ContextHolderStrategy<Context<Request>> CONTEXT_HOLDER_STRATEGY;
 
     static {
-        CONTEXT_HOLDER_STRATEGY = new ThreadLocalUserContextHolder();
+        CONTEXT_HOLDER_STRATEGY = new ThreadLocalRequestContextHolder();
     }
 
     public static void clearContext() {
@@ -42,18 +42,18 @@ public class UserContextHolder {
     }
 
 
-    public static Context<User> getContext() {
+    public static Context<Request> getContext() {
         return CONTEXT_HOLDER_STRATEGY.getContext();
     }
 
-    public static void setContext(Context<User> context) {
+    public static void setContext(Context<Request> context) {
         if (Objects.isNull(context)) {
-            throw new IllegalArgumentException("user context is null");
+            throw new IllegalArgumentException("Request context is null");
         }
         CONTEXT_HOLDER_STRATEGY.setContext(context);
     }
 
-    public static Context<User> createEmptyContext() {
+    public static Context<Request> createEmptyContext() {
         return CONTEXT_HOLDER_STRATEGY.createEmptyContext();
     }
 }

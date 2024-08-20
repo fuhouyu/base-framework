@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.constants;
+package com.fuhouyu.framework.context;
 
 /**
  * <p>
- * 配置类的常量
+ * 上下文接口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 12:57
+ * @since 2024/8/14 10:33
  */
-public interface ConfigPropertiesConstant {
+public interface Context<T> {
 
     /**
-     * 配置类的前缀
+     * 获取上下文中的对象
+     *
+     * @return 上下文对象
      */
-    String PROPERTIES_PREFIX = "base.framework.";
+    T getObject();
 
+    /**
+     * 设置上下文对象
+     *
+     * @param t 上下文对象
+     */
+    void setObject(T t);
 }

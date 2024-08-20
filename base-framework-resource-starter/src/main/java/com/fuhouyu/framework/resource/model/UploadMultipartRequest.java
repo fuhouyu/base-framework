@@ -54,12 +54,20 @@ public class UploadMultipartRequest extends BaseResourceRequest {
     private InputStream inputStream;
 
 
-    public UploadMultipartRequest(String bucketName, String objectKey) {
-        super(bucketName, objectKey);
+    public UploadMultipartRequest() {
     }
 
-    public UploadMultipartRequest(String bucketName, String objectKey, String versionId) {
-        super(bucketName, objectKey, versionId);
+    public UploadMultipartRequest(String bucketName, String key) {
+        super(bucketName, key);
+    }
+
+    public UploadMultipartRequest(String bucketName, String key, String uploadId, int partNumber, InputStream inputStream,
+                                  long partSize) {
+        super(bucketName, key);
+        this.uploadId = uploadId;
+        this.partNumber = partNumber;
+        this.inputStream = inputStream;
+        this.partSize = partSize;
     }
 
     public String getUploadId() {

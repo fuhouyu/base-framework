@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.constants;
+package com.fuhouyu.framework.resource.constants;
 
 /**
  * <p>
- * 配置类的常量
+ * 文件资源元数据
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 12:57
+ * @since 2024/8/19 15:33
  */
-public interface ConfigPropertiesConstant {
+public interface FileResourceMetadataConstant {
 
-    /**
-     * 配置类的前缀
-     */
-    String PROPERTIES_PREFIX = "base.framework.";
+    String ETAG = "etag";
 
+    String LAST_MODIFIED = "Last-Modified";
 }

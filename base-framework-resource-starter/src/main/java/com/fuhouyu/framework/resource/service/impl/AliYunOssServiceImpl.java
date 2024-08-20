@@ -200,7 +200,7 @@ public class AliYunOssServiceImpl implements ResourceService {
     }
 
     @Override
-    public ListMultipartsResult listParts(ListMultipartsRequest listMultipartRequest) throws ResourceException {
+    public ListMultipartResult listParts(ListMultipartRequest listMultipartRequest) throws ResourceException {
         ListPartsRequest listPartsRequest = new ListPartsRequest(
                 listMultipartRequest.getBucketName(),
                 listMultipartRequest.getObjectKey(), listMultipartRequest.getUploadId());
@@ -338,9 +338,9 @@ public class AliYunOssServiceImpl implements ResourceService {
      * @param partListing 阿里云分片集合
      * @return 分片后的响应
      */
-    private ListMultipartsResult getListMultiPartFileResult(PartListing partListing) {
+    private ListMultipartResult getListMultiPartFileResult(PartListing partListing) {
         List<PartInfoResult> list = new ArrayList<>(partListing.getParts().size());
-        ListMultipartsResult listMultiPartFileResponse = new ListMultipartsResult(
+        ListMultipartResult listMultiPartFileResponse = new ListMultipartResult(
                 partListing.getBucketName(), partListing.getKey(),
                 partListing.getUploadId());
         listMultiPartFileResponse.setNextPartNumberMaker(partListing.getNextPartNumberMarker());
@@ -350,7 +350,7 @@ public class AliYunOssServiceImpl implements ResourceService {
                     part.getLastModified(), part.getETag(), part.getSize());
             list.add(partInfoResponse);
         }
-        listMultiPartFileResponse.setPartInfoResponse(list);
+        listMultiPartFileResponse.setPartInfoResult(list);
         return listMultiPartFileResponse;
     }
 

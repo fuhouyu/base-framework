@@ -16,7 +16,6 @@
 
 package com.fuhouyu.framework.utils;
 
-import org.apache.hc.client5.http.utils.Hex;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -264,7 +263,7 @@ public class FileUtil {
                 digest.update(byteBuffer);
                 byteBuffer.clear();
             }
-            return Hex.encodeHexString(digest.digest());
+            return HexUtil.toHexString(digest.digest());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -283,7 +282,7 @@ public class FileUtil {
         while (inputStream.read(bytes) != -1) {
             digest.update(bytes);
         }
-        return Hex.encodeHexString(digest.digest());
+        return HexUtil.toHexString(digest.digest());
     }
 
 }

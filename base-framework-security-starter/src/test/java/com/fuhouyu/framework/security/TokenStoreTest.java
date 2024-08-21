@@ -17,7 +17,6 @@
 package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.CacheAutoConfigure;
-import com.fuhouyu.framework.cache.CaffeineCacheAutoconfigure;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.security.token.DefaultOAuth2Token;
 import com.fuhouyu.framework.security.token.TokenStore;
@@ -26,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,8 +46,6 @@ import java.util.Collections;
  */
 @SpringBootTest(classes = {
         CacheAutoConfigure.class,
-        RedisAutoConfiguration.class,
-        CaffeineCacheAutoconfigure.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @EnabledIfSystemProperty(named = "run.tests", matches = "true")

@@ -262,6 +262,8 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
      */
     private void addPolicyExpireTime(K key, V value, long timeout, TimeUnit unit) {
         cache.policy().expireVariably()
-                .ifPresent(e -> e.put(key, value, timeout, unit));
+                .ifPresent(e -> {
+                    V ignored = e.put(key, value, timeout, unit);
+                });
     }
 }

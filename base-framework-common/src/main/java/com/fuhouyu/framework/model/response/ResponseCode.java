@@ -24,7 +24,7 @@ package com.fuhouyu.framework.model.response;
  * @author fuhouyu
  * @since 2024/8/13 17:39
  */
-public interface ResponseCodeStatus {
+public interface ResponseCode {
 
     /**
      * 获取响应码

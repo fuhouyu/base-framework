@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.web.exception;
 
-import com.fuhouyu.framework.model.response.ResponseCodeStatus;
+import com.fuhouyu.framework.model.response.ResponseCode;
 
 /**
  * <p>
@@ -32,15 +32,15 @@ public class WebServiceException extends RuntimeException {
 
     private final String message;
 
-    private final ResponseCodeStatus responseStatus;
+    private final ResponseCode responseStatus;
 
-    public WebServiceException(ResponseCodeStatus responseStatus) {
+    public WebServiceException(ResponseCode responseStatus) {
         this.responseStatus = responseStatus;
         this.status = responseStatus.getCode();
         this.message = responseStatus.getMessage();
     }
 
-    public WebServiceException(ResponseCodeStatus responseStatus, String errorMessage) {
+    public WebServiceException(ResponseCode responseStatus, String errorMessage) {
         this.status = responseStatus.getCode();
         this.message = errorMessage;
         this.responseStatus = responseStatus;
@@ -55,7 +55,7 @@ public class WebServiceException extends RuntimeException {
         return message;
     }
 
-    public ResponseCodeStatus getResponseStatus() {
+    public ResponseCode getResponseStatus() {
         return responseStatus;
     }
 }

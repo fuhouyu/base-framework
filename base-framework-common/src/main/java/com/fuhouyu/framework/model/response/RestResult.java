@@ -120,9 +120,9 @@ public class RestResult<T> implements Serializable {
         private BaseResponseBuilder() {
         }
 
-        public BaseResponseBuilder<T> withResponseCodeStatus(ResponseCodeStatus responseCodeStatus) {
-            this.code = responseCodeStatus.getCode();
-            this.message = responseCodeStatus.getMessage();
+        public BaseResponseBuilder<T> withResponseCodeStatus(ResponseCode responseCode) {
+            this.code = responseCode.getCode();
+            this.message = responseCode.getMessage();
             return this;
         }
 

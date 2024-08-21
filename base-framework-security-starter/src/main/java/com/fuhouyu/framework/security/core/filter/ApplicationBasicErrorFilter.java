@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.security.core.filter;
 
-import com.fuhouyu.framework.model.response.ResponseCodeStatusEnum;
+import com.fuhouyu.framework.model.response.ResponseCodeEnum;
 import com.fuhouyu.framework.model.response.ResponseHelper;
 import com.fuhouyu.framework.model.response.RestResult;
 import com.fuhouyu.framework.utils.JacksonUtil;
@@ -43,7 +43,7 @@ public class ApplicationBasicErrorFilter extends BasicAuthenticationFilter {
      */
     public ApplicationBasicErrorFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager, (request, response, authException) -> {
-            RestResult<String> restResult = ResponseHelper.failed(ResponseCodeStatusEnum.NOT_AUTH, authException.getMessage());
+            RestResult<String> restResult = ResponseHelper.failed(ResponseCodeEnum.NOT_AUTH, authException.getMessage());
             String body = JacksonUtil.writeValueAsString(restResult);
             try (ServletOutputStream outputStream = response.getOutputStream()) {
                 outputStream.write(body.getBytes(StandardCharsets.UTF_8));

@@ -57,24 +57,7 @@ public class LocalFileServiceImpl implements ResourceService {
 
     private static final String SPACER = ":";
 
-    private static final MessageDigest MESSAGE_DIGEST;
 
-    static {
-        MESSAGE_DIGEST = initMessageDigest();
-    }
-
-    /**
-     * 初始化md5摘要算法
-     *
-     * @return md5摘要算法
-     */
-    private static MessageDigest initMessageDigest() {
-        try {
-            return MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
 
     @Override
     public GetResourceResult getFile(GetResourceRequest genericDownloadFileRequest) throws ResourceException {
@@ -122,7 +105,7 @@ public class LocalFileServiceImpl implements ResourceService {
         try (InputStream inputStream = Objects.nonNull(file) ? new FileInputStream(file) : putResourceRequest.getInputStream()) {
             FileUtil.copyFile(inputStream, path);
             // 设置文件的元数据
-            String etag = FileUtil.calculateFileDigest(path, MESSAGE_DIGEST);
+            String etag = FileUtil.calculateFileDigest(path, this.getMd5MessageDigest());
             FileUtil.setFileAttribute(path, FileResourceMetadataConstant.ETAG, etag);
             FileUtil.setFileLastModifiedTime(path);
 
@@ -166,7 +149,7 @@ public class LocalFileServiceImpl implements ResourceService {
         try (inputStream) {
             Path partFile = Paths.get(TMP_DIRECT, uploadId, String.valueOf(partNumber));
             FileUtil.writeFile(partFile, inputStream);
-            String etag = FileUtil.calculateFileDigest(partFile, MESSAGE_DIGEST);
+            String etag = FileUtil.calculateFileDigest(partFile, this.getMd5MessageDigest());
 
             FileUtil.setFileAttribute(partFile, FileResourceMetadataConstant.ETAG, etag);
             FileUtil.setFileLastModifiedTime(partFile);
@@ -263,7 +246,7 @@ public class LocalFileServiceImpl implements ResourceService {
             Path targetPath = Paths.get(destBucketName, destBucketName);
             FileUtil.copyFile(Paths.get(sourceBucketName, sourceObjectKey),
                     targetPath);
-            String etag = FileUtil.calculateFileDigest(targetPath, MESSAGE_DIGEST);
+            String etag = FileUtil.calculateFileDigest(targetPath, this.getMd5MessageDigest());
             FileUtil.setFileAttribute(targetPath,
                     FileResourceMetadataConstant.ETAG,
                     etag);
@@ -418,7 +401,7 @@ public class LocalFileServiceImpl implements ResourceService {
                         });
             });
             FileUtil.deleteDirect(tmpUploadFilePath);
-            return FileUtil.calculateFileDigest(targetPath, MESSAGE_DIGEST);
+            return FileUtil.calculateFileDigest(targetPath, this.getMd5MessageDigest());
         } catch (IOException e) {
             throw new ResourceException(e.getMessage(), e);
         }
@@ -429,7 +412,6 @@ public class LocalFileServiceImpl implements ResourceService {
      *
      * @param parentPath 父级路径
      * @param uploadId   上传的文件id
-     * @return 上传的文件路径
      * @throws ResourceException 资源服务异常
      */
     private void listFilePathCallback(Path parentPath, String uploadId,
@@ -467,5 +449,18 @@ public class LocalFileServiceImpl implements ResourceService {
                 etag,
                 part.toFile().length()
         );
+    }
+
+    /**
+     * 初始化md5摘要算法
+     *
+     * @return md5摘要算法
+     */
+    private MessageDigest getMd5MessageDigest() {
+        try {
+            return MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("No Such Algorithm" + e.getMessage(), e);
+        }
     }
 }

@@ -24,7 +24,7 @@ package com.fuhouyu.framework.model.response;
  * @author fuhouyu
  * @since 2024/8/13 17:40
  */
-public enum ResponseCodeStatusEnum implements ResponseCodeStatus {
+public enum ResponseCodeEnum implements ResponseCode {
 
     // 200
 
@@ -55,6 +55,11 @@ public enum ResponseCodeStatusEnum implements ResponseCodeStatus {
     METHOD_NOT_ALLOWED(405, "不支持的方法"),
 
     /**
+     * 不支持的媒体类型
+     */
+    NOT_SUPPORT_MEDIA_TYPE(415, "不支持的媒体类型"),
+
+    /**
      * 服务内部错误
      */
     SERVER_ERROR(500, "服务器内部错误"),
@@ -66,7 +71,7 @@ public enum ResponseCodeStatusEnum implements ResponseCodeStatus {
     private final String message;
 
 
-    ResponseCodeStatusEnum(int code, String message) {
+    ResponseCodeEnum(int code, String message) {
         this.code = code;
         this.message = message;
     }

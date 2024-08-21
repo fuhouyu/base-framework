@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.web.exception;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fuhouyu.framework.model.response.ResponseCodeStatusEnum;
+import com.fuhouyu.framework.model.response.ResponseCodeEnum;
 import com.fuhouyu.framework.model.response.ResponseHelper;
 import com.fuhouyu.framework.model.response.RestResult;
 import com.fuhouyu.framework.utils.JacksonUtil;
@@ -26,11 +26,15 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestValueException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.server.ResponseStatusException;
@@ -65,7 +69,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(Exception.class)
     public RestResult<Void> exceptionHandle(ServletWebRequest request, Exception e) {
         this.printExceptionLog(e, Exception.class.getSimpleName(), request);
-        return ResponseHelper.failed(ResponseCodeStatusEnum.SERVER_ERROR);
+        return ResponseHelper.failed(ResponseCodeEnum.SERVER_ERROR);
     }
 
     /**
@@ -78,7 +82,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public RestResult<Void> noResourceFoundException(ServletWebRequest request, NoResourceFoundException e) {
         this.printExceptionLog(e, Exception.class.getSimpleName(), request);
-        return ResponseHelper.failed(ResponseCodeStatusEnum.NOT_FOUND,
+        return ResponseHelper.failed(ResponseCodeEnum.NOT_FOUND,
                 String.format("当前访问地址：%s 不存在", e.getMessage().replace("No static resource ", "").trim()));
     }
 
@@ -92,7 +96,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public RestResult<Void> methodNotSupportException(ServletWebRequest request, HttpRequestMethodNotSupportedException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
-        return ResponseHelper.failed(ResponseCodeStatusEnum.METHOD_NOT_ALLOWED);
+        return ResponseHelper.failed(ResponseCodeEnum.METHOD_NOT_ALLOWED);
     }
 
     /**
@@ -105,20 +109,7 @@ public class WebExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     public RestResult<Void> notFoundException(ServletWebRequest request, ResponseStatusException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
-        return ResponseHelper.failed(ResponseCodeStatusEnum.SERVER_ERROR, e.getMessage());
-    }
-
-    /**
-     * 请求参数异常
-     *
-     * @param request 请求
-     * @param e       异常
-     * @return 包装后的异常信息
-     */
-    @ExceptionHandler(MissingRequestValueException.class)
-    public RestResult<Void> parameterException(ServletWebRequest request, MissingRequestValueException e) {
-        this.printExceptionLog(e, e.getClass().getSimpleName(), request);
-        return ResponseHelper.failed(ResponseCodeStatusEnum.INVALID_PARAM, e.getMessage());
+        return ResponseHelper.failed(ResponseCodeEnum.SERVER_ERROR, e.getMessage());
     }
 
     /**
@@ -146,23 +137,57 @@ public class WebExceptionHandler {
             errorMessageMap.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
-        return ResponseHelper.failed(ResponseCodeStatusEnum.INVALID_PARAM, JacksonUtil.writeValueAsString(errorMessageMap));
+        return ResponseHelper.failed(ResponseCodeEnum.INVALID_PARAM, JacksonUtil.writeValueAsString(errorMessageMap));
     }
 
 
     /**
-     * 请求入参转换异常
+     * 参数异常都会在这里进行统一抛出。
      *
      * @param request 请求
-     * @param e       请求入参转换异常
-     * @return 包装后的异常信息
+     * @param e       http缺少参数异常
+     * @return 包装后的响应
      */
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public RestResult<Void> readableException(ServletWebRequest request, HttpMessageNotReadableException e) {
+    @ExceptionHandler(value = {
+            MissingServletRequestParameterException.class,
+            IllegalArgumentException.class,
+            HttpMessageNotReadableException.class,
+            MissingRequestValueException.class,
+            NumberFormatException.class,
+            HttpMessageConversionException.class
+    })
+    public RestResult<String> handleHttpMediaTypeException(ServletWebRequest request,
+                                                           Exception e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
-        // 直接返回参数异常
-        return ResponseHelper.failed(ResponseCodeStatusEnum.INVALID_PARAM, e.getMessage());
+        return ResponseHelper.failed(ResponseCodeEnum.INVALID_PARAM, e.getMessage());
     }
+
+    /**
+     * 任何数据库的异常都会在这里进行抛出
+     *
+     * @param e       异常信息
+     * @param request web请求
+     * @return 包装后的响应
+     */
+    @ExceptionHandler(value = DataAccessException.class)
+    public RestResult<String> handleDataAccessException(ServletWebRequest request, DataAccessException e) {
+        this.printExceptionLog(e, e.getClass().getSimpleName(), request);
+        return ResponseHelper.failed(ResponseCodeEnum.SERVER_ERROR, e.getMessage());
+    }
+
+    /**
+     * 媒体类型错误
+     *
+     * @param request 请求
+     * @param e       媒体请求异常
+     * @return 包装后的响应
+     */
+    @ExceptionHandler(HttpMediaTypeException.class)
+    public RestResult<String> handleHttpMediaTypeException(ServletWebRequest request, HttpMediaTypeException e) {
+        this.printExceptionLog(e, e.getClass().getSimpleName(), request);
+        return ResponseHelper.failed(ResponseCodeEnum.NOT_SUPPORT_MEDIA_TYPE, e.getMessage());
+    }
+
 
     /**
      * 入参的body体中的参数异常拦截器 如 @RequestBody @Size(min = 1, message= "xxx") List<Integer> list
@@ -181,7 +206,7 @@ public class WebExceptionHandler {
             sb.append(message).append("\n");
         }
         // 直接返回参数异常
-        return ResponseHelper.failed(ResponseCodeStatusEnum.INVALID_PARAM, sb.toString());
+        return ResponseHelper.failed(ResponseCodeEnum.INVALID_PARAM, sb.toString());
     }
 
     /**
@@ -197,7 +222,7 @@ public class WebExceptionHandler {
         String requestUrl = request.getRequest().getRequestURI();
         LoggerUtil.error(LOGGER,
                 """
-                        异常: {}
+                        异常名称: {}
                         请求方式: {}
                         请求路径: {}
                         请求头参数: {}

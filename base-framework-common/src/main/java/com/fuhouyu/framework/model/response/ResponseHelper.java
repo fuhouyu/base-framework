@@ -32,7 +32,7 @@ public class ResponseHelper {
 
     public static <T> RestResult<T> success(T data) {
         return RestResult.<T>builder()
-                .withResponseCodeStatus(ResponseCodeStatusEnum.SUCCESS)
+                .withResponseCodeStatus(ResponseCodeEnum.SUCCESS)
                 .withData(data).build();
     }
 
@@ -47,11 +47,11 @@ public class ResponseHelper {
                 .build();
     }
 
-    public static <T> RestResult<T> failed(ResponseCodeStatus responseCodeStatus) {
-        return failed(responseCodeStatus.getCode(), responseCodeStatus.getMessage());
+    public static <T> RestResult<T> failed(ResponseCode responseCode) {
+        return failed(responseCode.getCode(), responseCode.getMessage());
     }
 
-    public static <T> RestResult<T> failed(ResponseCodeStatus responseCodeStatus, String message) {
-        return failed(responseCodeStatus.getCode(), message);
+    public static <T> RestResult<T> failed(ResponseCode responseCode, String message) {
+        return failed(responseCode.getCode(), message);
     }
 }

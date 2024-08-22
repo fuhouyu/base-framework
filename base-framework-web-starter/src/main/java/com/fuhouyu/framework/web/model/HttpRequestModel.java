@@ -28,7 +28,7 @@ import java.util.Map;
  * @author fuhouyu
  * @since 2024/8/18 16:44
  */
-public class HttpRequestDetail implements Request {
+public class HttpRequestModel implements Request {
 
     private String requestIp;
 

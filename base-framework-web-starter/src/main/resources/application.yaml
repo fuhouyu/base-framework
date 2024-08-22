@@ -1,3 +1,6 @@
+spring:
+  application:
+    name: test
 base:
   framework:
     web:
@@ -5,3 +8,7 @@ base:
     cache:
       service:
         cache-service-type: caffeine
+    kms:
+      default:
+        sm2:
+          auto-generate: true

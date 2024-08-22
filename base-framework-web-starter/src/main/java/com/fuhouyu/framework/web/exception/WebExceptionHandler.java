@@ -35,6 +35,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -52,6 +53,7 @@ import java.util.TreeMap;
  * @author fuhouyu
  * @since 2024/8/15 20:22
  */
+@RestControllerAdvice
 public class WebExceptionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebExceptionHandler.class);

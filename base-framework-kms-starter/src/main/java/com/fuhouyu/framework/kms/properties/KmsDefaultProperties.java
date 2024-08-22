@@ -90,7 +90,7 @@ public class KmsDefaultProperties {
         /**
          * 未设置时，是否自动进行生成
          */
-        private Boolean isAutoGenerate;
+        private boolean autoGenerate;
 
         /**
          * 自动生成后存储的路径
@@ -123,12 +123,12 @@ public class KmsDefaultProperties {
             this.privateKey = privateKey;
         }
 
-        public Boolean getAutoGenerate() {
-            return isAutoGenerate;
+        public boolean getAutoGenerate() {
+            return autoGenerate;
         }
 
-        public void setAutoGenerate(Boolean autoGenerate) {
-            isAutoGenerate = autoGenerate;
+        public void setAutoGenerate(boolean autoGenerate) {
+            this.autoGenerate = autoGenerate;
         }
 
         public String getAutoGenerateLocalPath() {
@@ -142,7 +142,7 @@ public class KmsDefaultProperties {
         @Override
         public String toString() {
             return "Sm2Properties{" +
-                    "isAutoGenerate=" + isAutoGenerate +
+                    "isAutoGenerate=" + autoGenerate +
                     ", autoGenerateLocalPath='" + autoGenerateLocalPath + '\'' +
                     ", publicKey='" + publicKey + '\'' +
                     ", privateKey='" + privateKey + '\'' +

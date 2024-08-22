@@ -33,6 +33,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -69,6 +70,8 @@ public class DefaultKmsAutoConfigure {
      * @return 默认的kms实现
      */
     @Bean
+    @Primary
+    @ConditionalOnMissingBean(KmsService.class)
     public KmsService kmsService() {
 
         SM2 sm2 = this.initSm2();

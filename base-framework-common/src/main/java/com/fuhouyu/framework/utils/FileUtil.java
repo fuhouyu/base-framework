@@ -263,7 +263,7 @@ public class FileUtil {
                 digest.update(byteBuffer);
                 byteBuffer.clear();
             }
-            return HexUtil.toHexString(digest.digest());
+            return HexUtil.encodeToHexString(digest.digest());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -282,7 +282,7 @@ public class FileUtil {
         while (inputStream.read(bytes) != -1) {
             digest.update(bytes);
         }
-        return HexUtil.toHexString(digest.digest());
+        return HexUtil.encodeToHexString(digest.digest());
     }
 
 }

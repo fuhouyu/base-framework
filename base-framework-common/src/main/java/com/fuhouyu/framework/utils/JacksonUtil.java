@@ -97,6 +97,18 @@ public class JacksonUtil {
     }
 
     /**
+     * 从字节数组中进行lfrw
+     *
+     * @param bytes 需要转换的字符串
+     * @param clazz 转换后的对象
+     * @param <T>   转换的类型
+     * @return 转换后的对象
+     */
+    public static <T> T readValue(byte[] bytes, Class<T> clazz) {
+        return tryParse(() -> OBJECT_MAPPER.readValue(bytes, clazz));
+    }
+
+    /**
      * 从字符串中读取对象
      *
      * @param str          json字符串

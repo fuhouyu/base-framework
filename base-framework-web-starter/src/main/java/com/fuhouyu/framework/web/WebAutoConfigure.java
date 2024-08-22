@@ -16,8 +16,11 @@
 
 package com.fuhouyu.framework.web;
 
+import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.web.config.WebMvcAutoConfigure;
-import com.fuhouyu.framework.web.exception.WebExceptionHandler;
+import com.fuhouyu.framework.web.filter.DefaultHttpBodyFilter;
+import com.fuhouyu.framework.web.filter.HttpBodyFilter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,13 +41,14 @@ public class WebAutoConfigure {
 
 
     /**
-     * 异常处理器
-     *
-     * @return 异常处理器
+     * 返回一个默认加解密body的过滤器
+     * @param kmsService kms
+     * @return body 过滤器
      */
     @Bean
-    public WebExceptionHandler webExceptionHandler() {
-        return new WebExceptionHandler();
+    @ConditionalOnMissingBean(HttpBodyFilter.class)
+    public HttpBodyFilter httpBodyFilter(KmsService kmsService) {
+        return new DefaultHttpBodyFilter(kmsService);
     }
 
 }

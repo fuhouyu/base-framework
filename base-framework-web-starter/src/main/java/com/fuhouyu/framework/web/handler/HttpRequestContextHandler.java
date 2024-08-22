@@ -20,7 +20,7 @@ import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.request.RequestContextHolder;
 import com.fuhouyu.framework.utils.HttpRequestUtil;
-import com.fuhouyu.framework.web.model.HttpRequestDetail;
+import com.fuhouyu.framework.web.model.HttpRequestModel;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
@@ -42,15 +42,15 @@ public class HttpRequestContextHandler implements AsyncHandlerInterceptor {
     public boolean preHandle(@NonNull HttpServletRequest request,
                              @NonNull HttpServletResponse response,
                              @NonNull Object handler) throws Exception {
-        HttpRequestDetail httpRequestDetail = new HttpRequestDetail();
-        httpRequestDetail.setRequestHost(request.getServerName());
-        httpRequestDetail.setRequestIp(HttpRequestUtil.getRemoteIp(request));
-        httpRequestDetail.setUserAgent(HttpRequestUtil.getUserAgent(request));
-        httpRequestDetail.setRequestTarget(String.format("%s %s",
+        HttpRequestModel httpRequestModel = new HttpRequestModel();
+        httpRequestModel.setRequestHost(request.getServerName());
+        httpRequestModel.setRequestIp(HttpRequestUtil.getRemoteIp(request));
+        httpRequestModel.setUserAgent(HttpRequestUtil.getUserAgent(request));
+        httpRequestModel.setRequestTarget(String.format("%s %s",
                 request.getMethod().toUpperCase(Locale.ROOT), request.getRequestURI()));
 
         Context<Request> requestContext = RequestContextHolder.createEmptyContext();
-        requestContext.setObject(httpRequestDetail);
+        requestContext.setObject(httpRequestModel);
 
         return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
     }

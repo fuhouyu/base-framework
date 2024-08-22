@@ -43,8 +43,8 @@ public class HexUtil {
      * @param str 需要转换的字符串
      * @return 十六进制字符串
      */
-    public static String toHexString(String str) {
-        return toHexString(str.getBytes(StandardCharsets.UTF_8));
+    public static String encodeToHexString(String str) {
+        return encodeToHexString(str.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -53,12 +53,31 @@ public class HexUtil {
      * @param bytes 字节数组
      * @return 十六进制字符串
      */
-    public static String toHexString(final byte[] bytes) {
+    public static String encodeToHexString(final byte[] bytes) {
 
         final char[] out = new char[bytes.length * 2];
 
         encodeHex(bytes, bytes.length, out);
         return new String(out);
+    }
+
+    /**
+     * 进行十六进制的解码
+     *
+     * @param hexStr 十六进制字符串
+     * @return 字节数组对象
+     */
+    public static byte[] decodeHex(String hexStr) {
+        int len = hexStr.length();
+        if (len % 2 != 0) {
+            throw new IllegalArgumentException("Hex string must have an even length");
+        }
+        byte[] bytes = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            bytes[i / 2] = (byte) ((Character.digit(hexStr.charAt(i), 16) << 4)
+                    + Character.digit(hexStr.charAt(i + 1), 16));
+        }
+        return bytes;
     }
 
     private static void encodeHex(final byte[] data, final int dataLen,

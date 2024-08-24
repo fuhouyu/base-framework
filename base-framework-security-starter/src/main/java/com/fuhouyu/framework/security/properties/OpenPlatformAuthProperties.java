@@ -61,7 +61,7 @@ public class OpenPlatformAuthProperties {
         /**
          * 微信小程序
          */
-        WECHAT_APPLETS,
+        WECHAT_APPLET,
 
 
     }

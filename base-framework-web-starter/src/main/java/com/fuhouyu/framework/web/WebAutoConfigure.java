@@ -20,6 +20,7 @@ import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.web.config.WebMvcAutoConfigure;
 import com.fuhouyu.framework.web.filter.DefaultHttpBodyFilter;
 import com.fuhouyu.framework.web.filter.HttpBodyFilter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
@@ -47,6 +48,7 @@ public class WebAutoConfigure {
      */
     @Bean
     @ConditionalOnMissingBean(HttpBodyFilter.class)
+    @ConditionalOnBean(KmsService.class)
     public HttpBodyFilter httpBodyFilter(KmsService kmsService) {
         return new DefaultHttpBodyFilter(kmsService);
     }

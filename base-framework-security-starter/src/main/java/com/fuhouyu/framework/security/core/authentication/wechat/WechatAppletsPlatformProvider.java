@@ -46,6 +46,7 @@ public class WechatAppletsPlatformProvider extends AbstractAuthenticationProvide
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WechatAppletsPlatformProvider.class);
 
+    // TODO 这里的restTemplate 后续待抽离
     private final RestTemplate restTemplate;
 
     private final UserDetailsService userDetailsService;

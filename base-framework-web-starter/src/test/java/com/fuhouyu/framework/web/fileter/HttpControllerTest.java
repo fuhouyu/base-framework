@@ -35,6 +35,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * <p>
  * http controller测试类
@@ -74,7 +76,7 @@ class HttpControllerTest {
                 MockMvcRequestBuilders.post("/v1/test/enc")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JacksonUtil.writeValueAsBytes(map))
-        );
+        ).andExpect(status().isOk());
 
     }
 

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.fuhouyu</groupId>
-        <artifactId>base-framework</artifactId>
+        <artifactId>base-framework-parent</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -18,6 +18,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--内部依赖-->
             <dependency>
                 <groupId>com.fuhouyu</groupId>
                 <artifactId>base-framework-context</artifactId>
@@ -51,6 +52,11 @@
             <dependency>
                 <groupId>com.fuhouyu</groupId>
                 <artifactId>base-framework-reseource-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-kms-starter</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>

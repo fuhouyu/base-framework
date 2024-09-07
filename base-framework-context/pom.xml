@@ -14,18 +14,6 @@
     <name>Base Framework Context</name>
     <description>上下文组件，主要定义相应的上下文组件，如用户上下文</description>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.fuhouyu</groupId>
-                <artifactId>base-framework-dependencies</artifactId>
-                <version>${revision}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

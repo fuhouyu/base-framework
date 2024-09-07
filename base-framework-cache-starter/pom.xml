@@ -15,18 +15,6 @@
     <description>基础框架缓存starter</description>
     <packaging>jar</packaging>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.fuhouyu</groupId>
-                <artifactId>base-framework-dependencies</artifactId>
-                <version>${revision}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

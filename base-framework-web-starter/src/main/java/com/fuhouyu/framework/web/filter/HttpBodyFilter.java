@@ -31,11 +31,19 @@ public interface HttpBodyFilter {
 
 
     /**
-     * 加密的body字节数组
+     * 对已经加密过的字节数组进行解密
      *
      * @param encryptBodyBytes 加密的body字节数组
      * @return 解密后的字节数组对象
      */
     byte[] decryptionBody(byte[] encryptBodyBytes);
 
+
+    /**
+     * 对原始数据进行加密
+     *
+     * @param originBody 原始body
+     * @return 加密后的数据
+     */
+    byte[] encryptionBody(byte[] originBody);
 }

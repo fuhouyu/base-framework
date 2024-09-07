@@ -54,6 +54,10 @@ public class DefaultHttpBodyFilter implements HttpBodyFilter {
         return kmsService.asymmetricDecrypt(HexUtil.decodeHex(httpBodyEncryptionModel.getBody()));
     }
 
+    @Override
+    public byte[] encryptionBody(byte[] originBody) {
+        return kmsService.asymmetricEncrypt(originBody);
+    }
 }
 
 /**

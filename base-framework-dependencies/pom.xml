@@ -12,7 +12,7 @@
 
     <artifactId>base-framework-dependencies</artifactId>
     <name>Base Framework Dependencies</name>
-    <description>基础框架内部模块版本号定义</description>
+    <description>基础框架依赖定义</description>
     <packaging>pom</packaging>
 
 

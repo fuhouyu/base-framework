@@ -14,18 +14,6 @@
     <name>Base Framework Log</name>
     <description>日志组件</description>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.fuhouyu</groupId>
-                <artifactId>base-framework-dependencies</artifactId>
-                <version>${revision}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.aspectj</groupId>

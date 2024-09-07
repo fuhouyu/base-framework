@@ -17,6 +17,7 @@
 package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.service.CacheService;
+import com.fuhouyu.framework.security.core.passwordencoder.PasswordEncoderFactory;
 import com.fuhouyu.framework.security.service.DefaultUserAuthServiceImpl;
 import com.fuhouyu.framework.security.service.UserAuthService;
 import com.fuhouyu.framework.security.token.TokenStore;
@@ -31,6 +32,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -76,11 +78,28 @@ public class SecurityAutoConfigure {
         return new ProviderManager(authenticationProviders);
     }
 
+    /**
+     * 创建userAuth bean
+     *
+     * @param tokenStore            token 存储对象
+     * @param authenticationManager 认证管理器
+     * @return userAuth Bean
+     */
     @Bean
     @Primary
-    @ConditionalOnMissingBean(UserAuthService.class)
     public UserAuthService userAuthService(TokenStore tokenStore, AuthenticationManager authenticationManager) {
         return new DefaultUserAuthServiceImpl(tokenStore, authenticationManager);
+    }
+
+    /**
+     * 返回sm3 密码编码器的bean，当passwordEncoder不存在时，则会创建。
+     *
+     * @return sm3 密码编码器bean
+     */
+    @Bean
+    @ConditionalOnMissingBean(PasswordEncoder.class)
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactory.createDelegatingPasswordEncoder("sm3");
     }
 
     /**

@@ -16,22 +16,11 @@
 
 package com.fuhouyu.framework.security.authentication;
 
-import com.fuhouyu.framework.security.core.authentication.wechat.WechatAppletsPlatformProvider;
-import com.fuhouyu.framework.security.properties.OpenPlatformAuthProperties;
-import com.fuhouyu.framework.security.service.DefaultUserAuthServiceImpl;
-import com.fuhouyu.framework.security.service.UserAuthService;
-import com.fuhouyu.framework.security.token.TokenStore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 /**
  * <p>
@@ -51,22 +40,27 @@ public class AuthenticationProviderTest {
     }
 
     @Bean
-    @Primary
-    public AuthenticationManager authenticationManager(
-            List<AuthenticationProvider> authenticationProviders,
-            OpenPlatformAuthProperties openPlatformAuthProperties,
-            RestTemplate restTemplate) {
-        WechatAppletsPlatformProvider wechatAppletsPlatformProvider = new WechatAppletsPlatformProvider(restTemplate,
-                new InMemoryUserDetailsManager(), openPlatformAuthProperties.getAuth()
-                .get(OpenPlatformAuthProperties.OpenPlatformAuthTypeEnum.WECHAT_APPLET));
-        authenticationProviders.add(wechatAppletsPlatformProvider);
-        return new ProviderManager(authenticationProviders);
+    public UserDetailsService userDetailsService() {
+        return new InMemoryUserDetailsManager();
     }
 
-    @Bean
-    @Primary
-    @ConditionalOnMissingBean(UserAuthService.class)
-    public UserAuthService userAuthService(TokenStore tokenStore, AuthenticationManager authenticationManager) {
-        return new DefaultUserAuthServiceImpl(tokenStore, authenticationManager);
-    }
+//    @Bean
+//    @Primary
+//    public AuthenticationManager authenticationManager(
+//            List<AuthenticationProvider> authenticationProviders,
+//            OpenPlatformAuthProperties openPlatformAuthProperties,
+//            RestTemplate restTemplate) {
+//        WechatAppletsPlatformProvider wechatAppletsPlatformProvider = new WechatAppletsPlatformProvider(restTemplate,
+//                new InMemoryUserDetailsManager(), openPlatformAuthProperties.getAuth()
+//                .get(OpenPlatformAuthProperties.OpenPlatformAuthTypeEnum.WECHAT_APPLET));
+//        authenticationProviders.add(wechatAppletsPlatformProvider);
+//        return new ProviderManager(authenticationProviders);
+//    }
+//
+//    @Bean
+//    @Primary
+//    @ConditionalOnMissingBean(UserAuthService.class)
+//    public UserAuthService userAuthService(TokenStore tokenStore, AuthenticationManager authenticationManager) {
+//        return new DefaultUserAuthServiceImpl(tokenStore, authenticationManager);
+//    }
 }

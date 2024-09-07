@@ -14,18 +14,6 @@
     <name>Base Framework Common</name>
     <description>公共组件，定义常用的常量、枚举等</description>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.fuhouyu</groupId>
-                <artifactId>base-framework-dependencies</artifactId>
-                <version>${revision}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.fuhouyu</groupId>
-        <artifactId>base-framework</artifactId>
+        <artifactId>base-framework-parent</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -18,7 +18,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.fuhouyu</groupId>
-                <artifactId>base-framework-parent</artifactId>
+                <artifactId>base-framework-dependencies</artifactId>
                 <version>${revision}</version>
                 <scope>import</scope>
                 <type>pom</type>

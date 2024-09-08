@@ -7,7 +7,7 @@ on:
       - develop
 
 jobs:
-  qodana:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: "Set up JDK 17"

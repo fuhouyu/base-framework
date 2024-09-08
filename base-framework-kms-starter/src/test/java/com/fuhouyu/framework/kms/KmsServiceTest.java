@@ -18,7 +18,6 @@ package com.fuhouyu.framework.kms;
 
 import com.fuhouyu.framework.kms.service.KmsService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -39,7 +38,6 @@ import java.util.Objects;
         KmsAutoConfigure.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
-@EnabledIfSystemProperty(named = "run.tests", matches = "true")
 class KmsServiceTest {
 
     private static final String ORIGIN_DATA = "test_enc";

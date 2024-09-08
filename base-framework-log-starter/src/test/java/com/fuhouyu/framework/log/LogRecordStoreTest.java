@@ -18,11 +18,11 @@ package com.fuhouyu.framework.log;
 
 import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.user.DefaultUserDetail;
+import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.context.user.UserContextHolder;
 import com.fuhouyu.framework.model.response.RestResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -41,7 +41,6 @@ import org.springframework.util.Assert;
         LogRecordAutoConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
-@EnabledIfSystemProperty(named = "run.tests", matches = "true")
 @EnableAspectJAutoProxy
 class LogRecordStoreTest {
 
@@ -50,7 +49,7 @@ class LogRecordStoreTest {
 
     @BeforeEach
     void setUp() {
-        Context context = UserContextHolder.createEmptyContext();
+        Context<User> context = UserContextHolder.createEmptyContext();
         DefaultUserDetail defaultUserDetail = new DefaultUserDetail();
         defaultUserDetail.setUsername("test-username");
         context.setObject(defaultUserDetail);

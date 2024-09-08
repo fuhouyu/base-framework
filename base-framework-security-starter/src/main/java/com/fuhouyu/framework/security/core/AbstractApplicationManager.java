@@ -61,5 +61,11 @@ public abstract class AbstractApplicationManager implements AuthenticationManage
         return authentication;
     }
 
+    /**
+     * 通过applicationId 查询出相应的应用信息
+     *
+     * @param applicationId 应用id
+     * @return 应用dto对象
+     */
     public abstract ApplicationDTO queryApplication(String applicationId);
 }

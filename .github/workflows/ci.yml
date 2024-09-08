@@ -31,4 +31,13 @@ jobs:
         uses: codecov/codecov-action@v4.2.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./*/target/surefire-reports/*.xml
+          verbose: true
+          fail_ci_if_error: true
+          files:
+            - ./base-framework-cache-starter/target/site/jacoco/jacoco.xml
+            - ./base-framework-context/target/site/jacoco/jacoco.xml
+            - ./base-framework-kms-starter/target/site/jacoco/jacoco.xml
+            - ./base-framework-log-starter/target/site/jacoco/jacoco.xml
+            - ./base-framework-resource-starter/target/site/jacoco/jacoco.xml
+            - ./base-framework-security-starter/target/site/jacoco/jacoco.xml
+            - ./base-framework-web-starter/target/site/jacoco/jacoco.xml

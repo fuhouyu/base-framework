@@ -93,10 +93,11 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void putHash(K key, K hashKey, V value, long timeout, TimeUnit unit) {
         Map<K, V> v = this.getHashByCache(key);
         v.put(hashKey, value);
-        this.addPolicyExpireTime(key, value, timeout, unit);
+        this.addPolicyExpireTime(key, (V) v, timeout, unit);
     }
 
     @Override
@@ -164,7 +165,7 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
     @Override
     @SuppressWarnings("unchecked")
     public void addToSet(K key, V value, long timeout, TimeUnit unit) {
-        HashSet<V> v = this.getSetByCache(key);
+        Set<V> v = this.getSetByCache(key);
         this.addPolicyExpireTime(key, (V) v, timeout, unit);
     }
 
@@ -212,12 +213,13 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
      */
     @SuppressWarnings("unchecked")
     private Map<K, V> getHashByCache(K key) {
-        Map<K, V> v = (Map<K, V>) cache.getIfPresent(key);
+        V v = cache.getIfPresent(key);
         if (Objects.isNull(v)) {
-            v = new HashMap<>();
-            cache.put(key, (V) v);
+            Map<K, V> map = new HashMap<>();
+            cache.put(key, (V) map);
+            return map;
         }
-        return v;
+        return (Map<K, V>) v;
     }
 
     /**
@@ -228,12 +230,13 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
      */
     @SuppressWarnings("unchecked")
     private List<V> getListByCache(K key) {
-        List<V> v = (List<V>) cache.getIfPresent(key);
+        V v = cache.getIfPresent(key);
         if (Objects.isNull(v)) {
-            v = new LinkedList<>();
-            cache.put(key, (V) v);
+            List<V> list = new LinkedList<>();
+            cache.put(key, (V) list);
+            return list;
         }
-        return v;
+        return (List<V>) v;
     }
 
     /**
@@ -243,13 +246,14 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
      * @return hash
      */
     @SuppressWarnings("unchecked")
-    private HashSet<V> getSetByCache(K key) {
-        HashSet<V> v = (HashSet<V>) cache.getIfPresent(key);
+    private Set<V> getSetByCache(K key) {
+        V v = cache.getIfPresent(key);
         if (Objects.isNull(v)) {
-            v = new HashSet<>();
-            cache.put(key, (V) v);
+            Set<V> set = new HashSet<>();
+            cache.put(key, (V) set);
+            return set;
         }
-        return v;
+        return (Set<V>) v;
     }
 
     /**

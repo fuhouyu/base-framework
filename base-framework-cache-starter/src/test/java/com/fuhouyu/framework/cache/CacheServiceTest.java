@@ -17,8 +17,8 @@
 package com.fuhouyu.framework.cache;
 
 import com.fuhouyu.framework.cache.service.CacheService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +27,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,92 +45,99 @@ import static org.junit.jupiter.api.Assertions.*;
         RedisAutoConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
-@EnabledIfSystemProperty(named = "run.tests", matches = "true")
 class CacheServiceTest {
 
-    private static final String BIG_KEY = "big_key";
 
-    private static final String HASH_KEY = "hash_key";
+    private String cacheBigKey;
 
-    private static final String VALUE_STR = "value";
-
-    private static final List<String> LIST_OBJ = List.of("value");
+    private String cacheValue;
 
     @Autowired
     private CacheService<String, Object> cacheService;
 
+    @BeforeEach
+    void setup() {
+        cacheBigKey = UUID.randomUUID().toString();
+        cacheValue = UUID.randomUUID().toString().replace("-", "").substring(8);
+    }
+
     @Test
     void testStringCache() throws InterruptedException {
-        cacheService.set(BIG_KEY, VALUE_STR);
-        assertEquals(VALUE_STR, cacheService.get(BIG_KEY));
-        assertNotEquals("", VALUE_STR);
+
+        cacheService.set(cacheBigKey, cacheValue);
+        assertEquals(cacheValue, cacheService.get(cacheBigKey));
+        assertNotEquals("", cacheValue);
 
 
-        cacheService.set(BIG_KEY, VALUE_STR, 3, TimeUnit.SECONDS);
-        assertEquals(VALUE_STR, cacheService.get(BIG_KEY));
+        cacheService.set(cacheBigKey, cacheValue, 3, TimeUnit.SECONDS);
+        assertEquals(cacheValue, cacheService.get(cacheBigKey));
         Thread.sleep(1000 * 3);
-        assertNull(cacheService.get(BIG_KEY));
+        assertNull(cacheService.get(cacheBigKey));
 
-        cacheService.set(BIG_KEY, LIST_OBJ);
-        assertEquals(LIST_OBJ, cacheService.get(BIG_KEY));
-        cacheService.delete(BIG_KEY);
-        assertNull(cacheService.get(BIG_KEY));
+        List<String> list = List.of(cacheValue);
+        cacheService.set(cacheBigKey, list);
+        assertEquals(list, cacheService.get(cacheBigKey));
+        cacheService.delete(cacheBigKey);
+        assertNull(cacheService.get(cacheBigKey));
     }
 
     @Test
     void testHashCache() throws InterruptedException {
-        cacheService.putHash(BIG_KEY, HASH_KEY, VALUE_STR);
-        assertEquals(VALUE_STR, cacheService.getHash(BIG_KEY, HASH_KEY));
+        String hashKey = UUID.randomUUID().toString().replace("-", "").substring(8);
+        cacheService.putHash(cacheBigKey, hashKey, cacheValue);
+        assertEquals(cacheValue, cacheService.getHash(cacheBigKey, hashKey));
 
 
-        Map<String, Object> hashMap = cacheService.getHashAll(BIG_KEY);
+        Map<String, Object> hashMap = cacheService.getHashAll(cacheBigKey);
         hashMap.forEach((key, value) -> {
-            assertEquals(HASH_KEY, key);
-            assertEquals(VALUE_STR, value);
+            assertEquals(hashKey, key);
+            assertEquals(cacheValue, value);
         });
 
-        cacheService.putHash(BIG_KEY, HASH_KEY, VALUE_STR, 3, TimeUnit.SECONDS);
-        assertEquals(VALUE_STR, cacheService.getHash(BIG_KEY, HASH_KEY));
+        cacheService.putHash(cacheBigKey, hashKey, cacheValue, 3, TimeUnit.SECONDS);
+        assertEquals(cacheValue, cacheService.getHash(cacheBigKey, hashKey));
         Thread.sleep(1000 * 3);
-        assertNull(cacheService.getHash(BIG_KEY, HASH_KEY));
+        assertNull(cacheService.getHash(cacheBigKey, hashKey));
 
-        cacheService.putHash(BIG_KEY, HASH_KEY, LIST_OBJ);
-        assertEquals(LIST_OBJ, cacheService.getHash(BIG_KEY, HASH_KEY));
-        cacheService.deleteHash(BIG_KEY, HASH_KEY);
-        assertNull(cacheService.getHash(BIG_KEY, HASH_KEY));
+        List<String> list = List.of(cacheValue);
+        cacheService.putHash(cacheBigKey, hashKey, list);
+        assertEquals(list, cacheService.getHash(cacheBigKey, hashKey));
+        cacheService.deleteHash(cacheBigKey, hashKey);
+        assertNull(cacheService.getHash(cacheBigKey, hashKey));
 
     }
 
     @Test
     void testSetCache() throws InterruptedException {
-        cacheService.addToSet(BIG_KEY, VALUE_STR);
-        cacheService.getSet(BIG_KEY).forEach(value -> assertEquals(VALUE_STR, value));
+        cacheService.addToSet(cacheBigKey, cacheValue);
+        cacheService.getSet(cacheBigKey).forEach(value -> assertEquals(cacheValue, value));
 
-        assertNotEquals("", VALUE_STR);
+        assertNotEquals("", cacheValue);
 
-        cacheService.addToSet(BIG_KEY, VALUE_STR, 3, TimeUnit.SECONDS);
-        cacheService.getSet(BIG_KEY).forEach(value -> assertEquals(VALUE_STR, value));
+        cacheService.addToSet(cacheBigKey, cacheValue, 3, TimeUnit.SECONDS);
+        cacheService.getSet(cacheBigKey).forEach(value -> assertEquals(cacheValue, value));
         Thread.sleep(1000 * 3);
-        assertTrue(cacheService.getSet(BIG_KEY).isEmpty());
+        assertTrue(cacheService.getSet(cacheBigKey).isEmpty());
     }
 
     @Test
     void testListCache() throws InterruptedException {
-        cacheService.pushToList(BIG_KEY, VALUE_STR);
-        cacheService.getList(BIG_KEY).forEach(value -> assertEquals(VALUE_STR, value));
+        cacheService.pushToList(cacheBigKey, cacheValue);
+        cacheService.getList(cacheBigKey).forEach(value -> assertEquals(cacheValue, value));
 
-        assertNotEquals("", VALUE_STR);
+        assertNotEquals("", cacheValue);
 
-        cacheService.pushToList(BIG_KEY, VALUE_STR, 3, TimeUnit.SECONDS);
-        cacheService.getList(BIG_KEY).forEach(value -> assertEquals(VALUE_STR, value));
+        cacheService.pushToList(cacheBigKey, cacheValue, 3, TimeUnit.SECONDS);
+        cacheService.getList(cacheBigKey).forEach(value -> assertEquals(cacheValue, value));
         Thread.sleep(1000 * 3);
-        assertTrue(cacheService.getList(BIG_KEY).isEmpty());
+        assertTrue(cacheService.getList(cacheBigKey).isEmpty());
     }
 
     @Test
     void testBytes() {
-        cacheService.set(BIG_KEY.getBytes(StandardCharsets.UTF_8), VALUE_STR.getBytes(StandardCharsets.UTF_8));
-        byte[] bytes = cacheService.get(BIG_KEY.getBytes(StandardCharsets.UTF_8));
-        assertEquals(VALUE_STR, new String(bytes, StandardCharsets.UTF_8));
+        cacheService.set(cacheBigKey.getBytes(StandardCharsets.UTF_8), cacheValue.getBytes(StandardCharsets.UTF_8));
+        byte[] bytes = cacheService.get(cacheBigKey.getBytes(StandardCharsets.UTF_8));
+        assertEquals(cacheValue, new String(bytes, StandardCharsets.UTF_8));
+        cacheService.delete(cacheBigKey);
     }
 }

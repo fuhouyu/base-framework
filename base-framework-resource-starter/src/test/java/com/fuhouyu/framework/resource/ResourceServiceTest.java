@@ -20,14 +20,16 @@ package com.fuhouyu.framework.resource;
 import com.fuhouyu.framework.resource.exception.ResourceException;
 import com.fuhouyu.framework.resource.model.*;
 import com.fuhouyu.framework.resource.service.ResourceService;
+import com.fuhouyu.framework.utils.FileUtil;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.Assert;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 /**
  * <p>
@@ -38,70 +40,70 @@ import java.io.*;
  * @since 2024/8/16 20:24
  */
 @SpringBootTest(classes = {
-//        ResourceAutoConfigure.class
+//        ResourceAutoConfigure.class,
         LocalFileResourceAutoConfigure.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
-@EnabledIfSystemProperty(named = "run.tests", matches = "true")
 class ResourceServiceTest {
 
-    private static final String BUCKET_NAME = "resources-bucketss";
-
-    private static final String OBJECT_KEY = "docker-compose.yml";
-
-    private static final String LOCAL_FILE_PARENT = "/Users/fuhouyu/Documents";
+    private static final String BUCKET_NAME = "/tmp";
+    private static final String LOCAL_FILE_PARENT = "./";
+    private static final InputStream FILE_INPUT_STREAM =
+            new ByteArrayInputStream("test_file".getBytes(StandardCharsets.UTF_8));
+    private final String objectKey = "text.txt";
 
     @Autowired
     private ResourceService resourceService;
 
     @Test
     void testResourceUpload() throws ResourceException {
-        File file = new File("/Users/fuhouyu/Downloads/docker-compose.yml");
         PutResourceResult putResourceResult =
-                resourceService.uploadFile(new PutResourceRequest(BUCKET_NAME, OBJECT_KEY, file));
+                resourceService.uploadFile(new PutResourceRequest(BUCKET_NAME, objectKey, FILE_INPUT_STREAM));
         Assert.notNull(putResourceResult, "文件上传失败");
     }
 
 
     @Test
     void testResourceDownload() throws ResourceException {
-        File file = new File("/Users/fuhouyu/Downloads/docker-compose.ymlbak");
+        String filePath = LOCAL_FILE_PARENT + "resource_download.xml";
         DownloadResourceResult downloadResourceResult =
-                resourceService.downloadFile(new DownloadResourceRequest(BUCKET_NAME, OBJECT_KEY, file.getAbsolutePath(), 1000));
+                resourceService.downloadFile(new DownloadResourceRequest("./", "pom.xml", filePath, 1000));
         Assert.notNull(downloadResourceResult, "文件下载失败");
+        FileUtil.deleteFileIfExists(Path.of(filePath));
     }
 
     @Test
     void testResourceDelete() throws ResourceException {
-        resourceService.deleteFile(BUCKET_NAME, OBJECT_KEY);
-        Assert.isTrue((!resourceService.doesObjectExist(BUCKET_NAME, OBJECT_KEY)), "文件未被删除");
+        resourceService.deleteFile(BUCKET_NAME, objectKey);
+        Assert.isTrue((!resourceService.doesObjectExist(BUCKET_NAME, objectKey)), "文件未被删除");
     }
 
     @Test
     void testGetFile() throws ResourceException {
-        GetResourceRequest getResourceRequest = new GetResourceRequest(LOCAL_FILE_PARENT,
-                "2024-7-11-23-03-31-EFI.zip");
+        GetResourceRequest getResourceRequest = new GetResourceRequest(BUCKET_NAME,
+                objectKey);
         GetResourceResult getResourceResult = resourceService.getFile(getResourceRequest);
         InputStream objectContent = getResourceResult.getObjectContent();
         Assert.notNull(objectContent, "资源文件下载失败");
         // 测试下载文件的写入
+        String localFilePath = LOCAL_FILE_PARENT + "get_file.txt";
         try (objectContent;
-             FileOutputStream fileOutputStream = new FileOutputStream("/Users/fuhouyu/Downloads/2024-7-11-23-03-31-EFI.zipbak")) {
+             FileOutputStream fileOutputStream = new FileOutputStream(localFilePath)) {
             fileOutputStream.write(objectContent.readAllBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        ResourceMetadata resourceMetadata = resourceService.getFile(getResourceRequest, new File("/Users/fuhouyu/Downloads/2024-7-11-23-03-31-EFI.zipbak2"));
+        FileUtil.deleteFileIfExists(Path.of(localFilePath));
     }
 
     @Test
     void testUploadFile() throws ResourceException {
-        PutResourceRequest putResourceRequest = new PutResourceRequest("/Users/fuhouyu/Downloads/", "tmp/1.zip", new File(LOCAL_FILE_PARENT + "/2024-7-11-23-03-31-EFI.zip"));
+        PutResourceRequest putResourceRequest = new PutResourceRequest(BUCKET_NAME, objectKey, FILE_INPUT_STREAM);
         PutResourceResult putResourceResult = this.resourceService.uploadFile(putResourceRequest);
         Assert.notNull(putResourceResult, "返回结果为空");
 
-        GetResourceRequest getResourceRequest = new GetResourceRequest("/Users/fuhouyu/Downloads/", "tmp/1.zip");
+        GetResourceRequest getResourceRequest = new GetResourceRequest(BUCKET_NAME, objectKey);
         GetResourceResult getResourceResult = resourceService.getFile(getResourceRequest);
         ResourceMetadata resourceMetadata = getResourceResult.getResourceMetadata();
         Assert.notNull(resourceMetadata, "文件元数据为空");
@@ -110,10 +112,10 @@ class ResourceServiceTest {
 
     @Test
     void testInitUploadId() throws ResourceException, IOException {
-        final String localFilePath = LOCAL_FILE_PARENT + "/2024-7-11-23-03-31-EFI.zip";
+        String localFilePath = LOCAL_FILE_PARENT + "pom.xml";
 
-        InitiateUploadMultipartRequest initiateUploadMultipartRequest = new InitiateUploadMultipartRequest("/Users/fuhouyu/Downloads",
-                "tmp2/testFile.zip");
+        InitiateUploadMultipartRequest initiateUploadMultipartRequest = new InitiateUploadMultipartRequest(BUCKET_NAME,
+                objectKey);
         InitiateUploadMultipartResult initiateUploadMultipartResult = resourceService.initiateMultipartUpload(initiateUploadMultipartRequest);
         Assert.notNull(initiateUploadMultipartResult, "初始化上传id 返回的结果为空");
 

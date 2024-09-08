@@ -21,7 +21,6 @@ import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.utils.HexUtil;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -48,7 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = {"classpath:application.yaml"})
-@EnabledIfSystemProperty(named = "run.tests", matches = "true")
 @AutoConfigureMockMvc
 class HttpControllerTest {
 

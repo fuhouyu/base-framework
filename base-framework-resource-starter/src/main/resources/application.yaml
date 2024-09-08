@@ -1,4 +1,4 @@
 base:
   framework:
     resource:
-      ali-oss-config:
+      upload-type: local

@@ -18,7 +18,6 @@ package com.fuhouyu.framework.web;
 
 import com.fuhouyu.framework.web.config.WebMvcAutoConfigure;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -36,7 +35,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
         WebAutoConfigure.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
-@EnabledIfSystemProperty(named = "run.tests", matches = "true")
 class WebHandlerTest {
 
 

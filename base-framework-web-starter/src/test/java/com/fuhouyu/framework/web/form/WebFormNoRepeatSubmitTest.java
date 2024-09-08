@@ -18,11 +18,9 @@ package com.fuhouyu.framework.web.form;
 
 import com.fuhouyu.framework.cache.CacheAutoConfigure;
 import com.fuhouyu.framework.cache.CaffeineCacheAutoconfigure;
-import com.fuhouyu.framework.cache.RedisCacheAutoConfigure;
 import com.fuhouyu.framework.model.response.RestResult;
 import com.fuhouyu.framework.web.WebAutoConfigure;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -41,10 +39,8 @@ import org.springframework.util.Assert;
         WebAutoConfigure.class,
         CacheAutoConfigure.class,
         CaffeineCacheAutoconfigure.class,
-        RedisCacheAutoConfigure.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
-@EnabledIfSystemProperty(named = "run.tests", matches = "true")
 @EnableAspectJAutoProxy
 class WebFormNoRepeatSubmitTest {
 

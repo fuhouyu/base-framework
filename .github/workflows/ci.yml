@@ -22,6 +22,6 @@ jobs:
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
-        files: target/surefire-reports/*.xml
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./*/target/surefire-reports/*.xml

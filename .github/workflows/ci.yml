@@ -10,6 +10,13 @@ jobs:
   qodana:
     runs-on: ubuntu-latest
     steps:
+      - name: "Cache Maven Repos"
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -21,7 +28,7 @@ jobs:
         run: mvn clean test
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v4.2.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./*/target/surefire-reports/*.xml

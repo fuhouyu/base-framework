@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - develop
+  pull_request_target:
+    branches: [ develop ]
+
+permissions: read-all
 
 jobs:
   ci:

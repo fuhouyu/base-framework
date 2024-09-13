@@ -88,6 +88,7 @@
         <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <apache-rat-plugin.version>0.16.1</apache-rat-plugin.version>
+        <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
 
         <!--外部依赖项-->
         <spring-boot-dependencies.version>3.3.2</spring-boot-dependencies.version>
@@ -271,6 +272,11 @@
                     <artifactId>findbugs-maven-plugin</artifactId>
                     <version>${findbugs-maven-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <!--所有项目都依赖的 plugin-->
@@ -393,6 +399,22 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${basedir}</directory>
+                            <includes>
+                                <include>logs</include>
+                                <include>**/*.log</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
     </build>

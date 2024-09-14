@@ -47,7 +47,7 @@ public class DefaultUserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    public DefaultOAuth2Token userLogin(Authentication authentication) throws Exception {
+    public DefaultOAuth2Token generatorToken(Authentication authentication) throws Exception {
         Authentication authenticate = authenticationManager.authenticate(authentication);
         return this.getAccessToken(authenticate);
     }

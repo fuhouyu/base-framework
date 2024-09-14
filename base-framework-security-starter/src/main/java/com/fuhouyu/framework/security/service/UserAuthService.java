@@ -31,12 +31,12 @@ public interface UserAuthService {
 
 
     /**
-     * 用户登录接口
+     * 生成oauth2 Token
      *
      * @param authentication 认证对象
      * @return token对象
      * @throws Exception 登录情况下可能会出现的各种异常问题
      */
-    DefaultOAuth2Token userLogin(Authentication authentication) throws Exception;
+    DefaultOAuth2Token generatorToken(Authentication authentication) throws Exception;
 
 }

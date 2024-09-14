@@ -91,11 +91,11 @@
         <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
 
         <!--外部依赖项-->
-        <spring-boot-dependencies.version>3.3.2</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>3.3.3</spring-boot-dependencies.version>
         <spring-cloud-dependencies.version>2023.0.3</spring-cloud-dependencies.version>
         <spring-cloud-alibaba-dependencies.version>2023.0.1.2</spring-cloud-alibaba-dependencies.version>
         <springdoc-openapi-starter-webmvc-api.version>2.6.0</springdoc-openapi-starter-webmvc-api.version>
-        <spring-boot-starter-data-redis.version>3.3.2</spring-boot-starter-data-redis.version>
+        <spring-boot-starter-data-redis.version>3.3.3</spring-boot-starter-data-redis.version>
         <jedis.version>5.2.0-beta4</jedis.version>
         <kryo5.version>5.6.0</kryo5.version>
         <jackson-bom.version>2.17.2</jackson-bom.version>

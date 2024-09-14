@@ -52,7 +52,7 @@ class OpenPlatformAuthenticationTest {
     @Test
     void testWechatAppletLoginByCode() throws Exception {
         WechatAppletsPlatformProvider.WechatAppletsAuthenticationToken wechatAppletsAuthenticationToken = new WechatAppletsPlatformProvider.WechatAppletsAuthenticationToken(USER_LOGIN_CODE);
-        DefaultOAuth2Token defaultOAuth2Token = userAuthService.userLogin(wechatAppletsAuthenticationToken);
+        DefaultOAuth2Token defaultOAuth2Token = userAuthService.generatorToken(wechatAppletsAuthenticationToken);
         Assert.notNull(defaultOAuth2Token, "微信小程序登录失败");
     }
 }

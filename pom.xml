@@ -89,6 +89,7 @@
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <apache-rat-plugin.version>0.16.1</apache-rat-plugin.version>
         <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
+        <maven-easyj.version>1.1.5</maven-easyj.version>
 
         <!--外部依赖项-->
         <spring-boot-dependencies.version>3.3.3</spring-boot-dependencies.version>
@@ -277,6 +278,11 @@
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>${maven-clean-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>icu.easyj.maven.plugins</groupId>
+                    <artifactId>easyj-maven-plugin</artifactId>
+                    <version>${maven-easyj.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <!--所有项目都依赖的 plugin-->
@@ -290,6 +296,7 @@
                         <exclude>..gitignore</exclude>
                         <exclude>CHANGELOG.md</exclude>
                         <exclude>qodana.yaml</exclude>
+                        <exclude>.flattened-pom.xml</exclude>
                         <exclude>qodana.yaml</exclude>
                         <exclude>style/*</exclude>
                         <exclude>README.md</exclude>
@@ -415,6 +422,28 @@
                         </fileset>
                     </filesets>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>icu.easyj.maven.plugins</groupId>
+                <artifactId>easyj-maven-plugin</artifactId>
+                <configuration>
+                    <simplifiedPomFileName>.flattened-pom.xml</simplifiedPomFileName>
+                    <useTabIndent>true</useTabIndent>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten-pom</id>
+                        <goals>
+                            <goal>simplify-pom</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>clean-flattened-pom</id>
+                        <goals>
+                            <goal>clean-simplify-pom</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

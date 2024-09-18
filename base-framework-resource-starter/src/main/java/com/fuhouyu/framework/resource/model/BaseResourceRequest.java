@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 文件请求基类
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 10:59
  */
+@ToString
+@Getter
+@Setter
 public class BaseResourceRequest {
 
 
@@ -60,25 +67,4 @@ public class BaseResourceRequest {
         this.versionId = versionId;
     }
 
-
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    public String getObjectKey() {
-        return objectKey;
-    }
-
-    public String getVersionId() {
-        return versionId;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseFilRequest{" +
-                "bucketName='" + bucketName + '\'' +
-                ", objectKey='" + objectKey + '\'' +
-                ", versionId='" + versionId + '\'' +
-                '}';
-    }
 }

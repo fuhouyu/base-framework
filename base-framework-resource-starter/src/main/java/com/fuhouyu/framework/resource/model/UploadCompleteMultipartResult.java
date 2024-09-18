@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 文件合并后的结果
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 17:50
  */
+@ToString
+@Getter
+@Setter
 public class UploadCompleteMultipartResult extends BaseResourceResult {
 
     /**
@@ -51,27 +58,4 @@ public class UploadCompleteMultipartResult extends BaseResourceResult {
         this.versionId = versionId;
     }
 
-    public String getEtag() {
-        return etag;
-    }
-
-    public void setEtag(String etag) {
-        this.etag = etag;
-    }
-
-    public String getVersionId() {
-        return versionId;
-    }
-
-    public void setVersionId(String versionId) {
-        this.versionId = versionId;
-    }
-
-    @Override
-    public String toString() {
-        return "CompleteMultipartUploadResult{" +
-                "etag='" + etag + '\'' +
-                ", versionId='" + versionId + '\'' +
-                '}';
-    }
 }

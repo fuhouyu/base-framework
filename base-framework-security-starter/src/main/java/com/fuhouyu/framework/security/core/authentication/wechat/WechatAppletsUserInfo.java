@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.security.core.authentication.wechat;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -26,6 +29,9 @@ import com.fasterxml.jackson.annotation.JsonAlias;
  * @author fuhouyu
  * @since 2024/8/15 12:33
  */
+@ToString
+@Getter
+@Setter
 public class WechatAppletsUserInfo {
 
     /**
@@ -57,55 +63,4 @@ public class WechatAppletsUserInfo {
      */
     @JsonAlias("errcode")
     private Integer errCode;
-
-    public String getSessionKey() {
-        return sessionKey;
-    }
-
-    public void setSessionKey(String sessionKey) {
-        this.sessionKey = sessionKey;
-    }
-
-    public String getUnionId() {
-        return unionId;
-    }
-
-    public void setUnionId(String unionId) {
-        this.unionId = unionId;
-    }
-
-    public String getErrMsg() {
-        return errMsg;
-    }
-
-    public void setErrMsg(String errMsg) {
-        this.errMsg = errMsg;
-    }
-
-    public String getOpenId() {
-        return openId;
-    }
-
-    public void setOpenId(String openId) {
-        this.openId = openId;
-    }
-
-    public Integer getErrCode() {
-        return errCode;
-    }
-
-    public void setErrCode(Integer errCode) {
-        this.errCode = errCode;
-    }
-
-    @Override
-    public String toString() {
-        return "WechatAppletsUserInfo{" +
-                "sessionKey='" + sessionKey + '\'' +
-                ", unionId='" + unionId + '\'' +
-                ", errMsg='" + errMsg + '\'' +
-                ", openId='" + openId + '\'' +
-                ", errCode=" + errCode +
-                '}';
-    }
 }

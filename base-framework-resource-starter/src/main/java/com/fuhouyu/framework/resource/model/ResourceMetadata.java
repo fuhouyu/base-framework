@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,6 +32,9 @@ import java.util.TreeMap;
  * @author fuhouyu
  * @since 2024/8/16 15:42
  */
+@ToString
+@Getter
+@Setter
 public class ResourceMetadata implements Serializable {
 
     /**
@@ -84,22 +91,5 @@ public class ResourceMetadata implements Serializable {
         if (headers != null && !headers.isEmpty()) {
             this.metadata.putAll(headers);
         }
-    }
-
-
-    public Map<String, String> getUserMetadata() {
-        return userMetadata;
-    }
-
-    public void setUserMetadata(Map<String, String> userMetadata) {
-        this.userMetadata = userMetadata;
-    }
-
-    public Map<String, Object> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
     }
 }

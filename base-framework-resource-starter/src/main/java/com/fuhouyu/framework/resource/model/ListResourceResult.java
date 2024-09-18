@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.List;
 
 /**
@@ -26,6 +30,9 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/8/16 18:09
  */
+@ToString
+@Getter
+@Setter
 public class ListResourceResult extends BaseResourceResult {
 
     private List<ResourceSummary> resourceSummaryList;
@@ -54,90 +61,4 @@ public class ListResourceResult extends BaseResourceResult {
         this.resourceSummaryList = resourceSummaryList;
     }
 
-    public List<ResourceSummary> getFileResourceSummaryList() {
-        return resourceSummaryList;
-    }
-
-    public void setFileResourceSummaryList(List<ResourceSummary> resourceSummaryList) {
-        this.resourceSummaryList = resourceSummaryList;
-    }
-
-    public List<String> getCommonPrefixes() {
-        return commonPrefixes;
-    }
-
-    public void setCommonPrefixes(List<String> commonPrefixes) {
-        this.commonPrefixes = commonPrefixes;
-    }
-
-    public boolean isTruncated() {
-        return truncated;
-    }
-
-    public void setTruncated(boolean truncated) {
-        this.truncated = truncated;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public String getStartAfter() {
-        return startAfter;
-    }
-
-    public void setStartAfter(String startAfter) {
-        this.startAfter = startAfter;
-    }
-
-    public int getMaxKeys() {
-        return maxKeys;
-    }
-
-    public void setMaxKeys(int maxKeys) {
-        this.maxKeys = maxKeys;
-    }
-
-    public String getDelimiter() {
-        return delimiter;
-    }
-
-    public void setDelimiter(String delimiter) {
-        this.delimiter = delimiter;
-    }
-
-    public String getNextMarker() {
-        return nextMarker;
-    }
-
-    public void setNextMarker(String nextMarker) {
-        this.nextMarker = nextMarker;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    @Override
-    public String toString() {
-        return "ListFileResourceResult{" +
-                "fileResourceSummaryList=" + resourceSummaryList +
-                ", commonPrefixes=" + commonPrefixes +
-                ", truncated=" + truncated +
-                ", prefix='" + prefix + '\'' +
-                ", startAfter='" + startAfter + '\'' +
-                ", maxKeys=" + maxKeys +
-                ", delimiter='" + delimiter + '\'' +
-                ", nextMarker='" + nextMarker + '\'' +
-                ", location='" + location + '\'' +
-                '}';
-    }
 }

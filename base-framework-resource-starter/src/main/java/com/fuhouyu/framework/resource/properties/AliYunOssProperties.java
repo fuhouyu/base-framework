@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.properties;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 阿里云配置项
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.properties;
  * @author fuhouyu
  * @since 2024/8/16 18:33
  */
+@ToString
+@Getter
+@Setter
 public class AliYunOssProperties extends BaseOssResourceProperties {
 
     /**
@@ -41,43 +48,12 @@ public class AliYunOssProperties extends BaseOssResourceProperties {
      */
     private StsConfig sts;
 
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public boolean isEnableSts() {
-        return enableSts;
-    }
-
-    public void setEnableSts(boolean enableSts) {
-        this.enableSts = enableSts;
-    }
-
-    public StsConfig getSts() {
-        return sts;
-    }
-
-    public void setSts(StsConfig sts) {
-        this.sts = sts;
-    }
-
-    @Override
-    public String toString() {
-        return "AliYunOssProperties{" +
-                "region='" + region + '\'' +
-                ", enableSts=" + enableSts +
-                ", sts=" + sts +
-                '}';
-    }
-
     /**
      * stsConfig.
      */
+    @ToString
+    @Getter
+    @Setter
     public static class StsConfig {
 
         private String endpoint;
@@ -86,38 +62,6 @@ public class AliYunOssProperties extends BaseOssResourceProperties {
 
         private Integer expire;
 
-        public String getEndpoint() {
-            return endpoint;
-        }
-
-        public void setEndpoint(String endpoint) {
-            this.endpoint = endpoint;
-        }
-
-        public String getRoleArn() {
-            return roleArn;
-        }
-
-        public void setRoleArn(String roleArn) {
-            this.roleArn = roleArn;
-        }
-
-        public Integer getExpire() {
-            return expire;
-        }
-
-        public void setExpire(Integer expire) {
-            this.expire = expire;
-        }
-
-        @Override
-        public String toString() {
-            return "StsConfig{" +
-                    "endpoint='" + endpoint + '\'' +
-                    ", roleArn='" + roleArn + '\'' +
-                    ", expire=" + expire +
-                    '}';
-        }
     }
 
 

@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.security.properties;
 
 import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
@@ -30,6 +33,9 @@ import java.util.Map;
  * @since 2024/8/15 12:39
  */
 @ConfigurationProperties(prefix = OpenPlatformAuthProperties.PREFIX)
+@ToString
+@Getter
+@Setter
 public class OpenPlatformAuthProperties {
 
     public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "open-platform";
@@ -41,17 +47,6 @@ public class OpenPlatformAuthProperties {
 
     public Map<OpenPlatformAuthTypeEnum, AuthDetail> getAuth() {
         return auth;
-    }
-
-    public void setAuth(Map<OpenPlatformAuthTypeEnum, AuthDetail> auth) {
-        this.auth = auth;
-    }
-
-    @Override
-    public String toString() {
-        return "OpenPlatformAuthProperties{" +
-                "auth=" + auth +
-                '}';
     }
 
     /**
@@ -69,6 +64,9 @@ public class OpenPlatformAuthProperties {
     /**
      * 授权的详情
      */
+    @ToString
+    @Getter
+    @Setter
     public static class AuthDetail {
 
         /**
@@ -91,46 +89,5 @@ public class OpenPlatformAuthProperties {
          */
         private String userInfoUrl;
 
-        public String getClientId() {
-            return clientId;
-        }
-
-        public void setClientId(String clientId) {
-            this.clientId = clientId;
-        }
-
-        public String getClientSecret() {
-            return clientSecret;
-        }
-
-        public void setClientSecret(String clientSecret) {
-            this.clientSecret = clientSecret;
-        }
-
-        public String getLoginUrl() {
-            return loginUrl;
-        }
-
-        public void setLoginUrl(String loginUrl) {
-            this.loginUrl = loginUrl;
-        }
-
-        public String getUserInfoUrl() {
-            return userInfoUrl;
-        }
-
-        public void setUserInfoUrl(String userInfoUrl) {
-            this.userInfoUrl = userInfoUrl;
-        }
-
-        @Override
-        public String toString() {
-            return "AuthDetail{" +
-                    "clientId='" + clientId + '\'' +
-                    ", clientSecret='" + clientSecret + '\'' +
-                    ", loginUrl='" + loginUrl + '\'' +
-                    ", userInfoUrl='" + userInfoUrl + '\'' +
-                    '}';
-        }
     }
 }

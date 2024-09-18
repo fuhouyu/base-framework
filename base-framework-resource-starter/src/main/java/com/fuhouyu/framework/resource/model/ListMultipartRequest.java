@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  *
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 17:53
  */
+@ToString
+@Getter
+@Setter
 public class ListMultipartRequest extends BaseResourceRequest {
 
     /**
@@ -34,45 +41,10 @@ public class ListMultipartRequest extends BaseResourceRequest {
     /**
      * 最大列举的分片数，默认1000.
      */
-    private int maxParts = 1000;
+    private Integer maxParts = 1000;
 
     /**
      * 上传的id.
      */
     private String uploadId;
-
-
-
-    public int getPartNumberMaker() {
-        return partNumberMaker;
-    }
-
-    public void setPartNumberMaker(int partNumberMaker) {
-        this.partNumberMaker = partNumberMaker;
-    }
-
-    public int getMaxParts() {
-        return maxParts;
-    }
-
-    public void setMaxParts(int maxParts) {
-        this.maxParts = maxParts;
-    }
-
-    public String getUploadId() {
-        return uploadId;
-    }
-
-    public void setUploadId(String uploadId) {
-        this.uploadId = uploadId;
-    }
-
-    @Override
-    public String toString() {
-        return "FileResourceListPartsRequest{" +
-                "partNumberMaker=" + partNumberMaker +
-                ", maxParts=" + maxParts +
-                ", uploadId='" + uploadId + '\'' +
-                '}';
-    }
 }

@@ -105,6 +105,7 @@
         <bcprov-jdk18on.version>1.78.1</bcprov-jdk18on.version>
         <hutool-crypto.version>5.8.31</hutool-crypto.version>
         <commons-lang3.version>3.16.0</commons-lang3.version>
+        <lombok.version>1.18.34</lombok.version>
         <!--数据库相关依赖-->
         <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
         <pagehelper-spring-boot-starter.version>2.1.0</pagehelper-spring-boot-starter.version>
@@ -209,6 +210,11 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
             <!--内部依赖-->
             <dependency>
                 <groupId>com.fuhouyu</groupId>
@@ -256,6 +262,7 @@
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <build>

@@ -17,6 +17,10 @@
 package com.fuhouyu.framework.context.user;
 
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
@@ -29,6 +33,9 @@ import java.util.Map;
  * @author fuhouyu
  * @since 2024/8/14 09:49
  */
+@ToString
+@Getter
+@Setter
 public class DefaultUserDetail implements Serializable, User {
 
     @Serial
@@ -48,79 +55,4 @@ public class DefaultUserDetail implements Serializable, User {
 
     private Map<String, Object> additionalInformation;
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
-    }
-
-    @Override
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    @Override
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    @Override
-    public String getRefAccountId() {
-        return refAccountId;
-    }
-
-    public void setRefAccountId(String refAccountId) {
-        this.refAccountId = refAccountId;
-    }
-
-    @Override
-    public Map<String, Object> getAdditionalInformation() {
-        return additionalInformation;
-    }
-
-    public void setAdditionalInformation(Map<String, Object> additionalInformation) {
-        this.additionalInformation = additionalInformation;
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultUserDetail{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", realName='" + realName + '\'' +
-                ", nickname='" + nickname + '\'' +
-                ", gender='" + gender + '\'' +
-                ", refAccountId='" + refAccountId + '\'' +
-                ", additionalInformation=" + additionalInformation +
-                '}';
-    }
 }

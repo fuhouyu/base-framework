@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.List;
 
 /**
@@ -26,11 +30,14 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/8/16 17:57
  */
+@ToString
+@Getter
+@Setter
 public class ListMultipartResult extends BaseResourceResult {
 
-    private boolean truncated;
+    private Boolean truncated;
 
-    private int nextPartNumberMaker;
+    private Integer nextPartNumberMaker;
 
     private String uploadId;
 
@@ -48,45 +55,4 @@ public class ListMultipartResult extends BaseResourceResult {
         this.uploadId = uploadId;
     }
 
-    public boolean isTruncated() {
-        return truncated;
-    }
-
-    public void setTruncated(boolean truncated) {
-        this.truncated = truncated;
-    }
-
-    public int getNextPartNumberMaker() {
-        return nextPartNumberMaker;
-    }
-
-    public void setNextPartNumberMaker(int nextPartNumberMaker) {
-        this.nextPartNumberMaker = nextPartNumberMaker;
-    }
-
-    public String getUploadId() {
-        return uploadId;
-    }
-
-    public void setUploadId(String uploadId) {
-        this.uploadId = uploadId;
-    }
-
-    public List<PartInfoResult> getPartInfoResult() {
-        return partInfoResult;
-    }
-
-    public void setPartInfoResult(List<PartInfoResult> partInfoResult) {
-        this.partInfoResult = partInfoResult;
-    }
-
-    @Override
-    public String toString() {
-        return "FileResourceListPartsResult{" +
-                "truncated=" + truncated +
-                ", nextPartNumberMaker=" + nextPartNumberMaker +
-                ", uploadId='" + uploadId + '\'' +
-                ", partInfoResponse=" + partInfoResult +
-                '}';
-    }
 }

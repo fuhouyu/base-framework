@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.model.page;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -32,6 +35,9 @@ import java.util.List;
  * @since 2024/8/13 18:03
  */
 @Schema(name = "PageResult", description = "分页响应结果")
+@ToString
+@Getter
+@Setter
 public class PageResult<E> implements Serializable {
 
     @Serial
@@ -60,46 +66,4 @@ public class PageResult<E> implements Serializable {
      */
     @Schema(name = "list", description = "该值可能为空", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private List<E> list = Collections.emptyList();
-
-    @Override
-    public String toString() {
-        return "PageResult{" +
-                "totalCount=" + totalCount +
-                ", pageNumber=" + pageNumber +
-                ", pageSize=" + pageSize +
-                ", list=" + list +
-                '}';
-    }
-
-    public int getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public int getPageNumber() {
-        return pageNumber;
-    }
-
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber = pageNumber;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public List<E> getList() {
-        return list;
-    }
-
-    public void setList(List<E> list) {
-        this.list = list;
-    }
 }

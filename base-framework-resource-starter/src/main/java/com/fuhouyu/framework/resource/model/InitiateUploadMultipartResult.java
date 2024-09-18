@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 初始化文件上传结果对象
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 17:37
  */
+@ToString
+@Getter
+@Setter
 public class InitiateUploadMultipartResult extends BaseResourceResult {
 
     private String uploadId;
@@ -37,18 +44,4 @@ public class InitiateUploadMultipartResult extends BaseResourceResult {
         this.uploadId = uploadId;
     }
 
-    public String getUploadId() {
-        return uploadId;
-    }
-
-    public void setUploadId(String uploadId) {
-        this.uploadId = uploadId;
-    }
-
-    @Override
-    public String toString() {
-        return "InitiateMultipartUploadResult{" +
-                "uploadId='" + uploadId + '\'' +
-                '}';
-    }
 }

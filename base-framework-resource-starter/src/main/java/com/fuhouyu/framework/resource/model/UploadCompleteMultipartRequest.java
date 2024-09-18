@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +31,9 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/8/16 17:43
  */
+@ToString
+@Getter
+@Setter
 public class UploadCompleteMultipartRequest extends BaseResourceRequest {
 
     /**
@@ -40,27 +47,4 @@ public class UploadCompleteMultipartRequest extends BaseResourceRequest {
      */
     private List<PartEtag> partEtagList = new ArrayList<>();
 
-    public String getUploadId() {
-        return uploadId;
-    }
-
-    public void setUploadId(String uploadId) {
-        this.uploadId = uploadId;
-    }
-
-    public List<PartEtag> getPartEtagList() {
-        return partEtagList;
-    }
-
-    public void setPartEtagList(List<PartEtag> partEtagList) {
-        this.partEtagList = partEtagList;
-    }
-
-    @Override
-    public String toString() {
-        return "CompleteMultipartFileResourceRequest{" +
-                "uploadId='" + uploadId + '\'' +
-                ", partEtagList=" + partEtagList +
-                '}';
-    }
 }

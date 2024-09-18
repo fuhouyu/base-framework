@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.Date;
 
 /**
@@ -26,6 +30,9 @@ import java.util.Date;
  * @author fuhouyu
  * @since 2024/8/16 18:13
  */
+@ToString
+@Getter
+@Setter
 public class CopyResourceResult extends BaseResourceResult {
 
     private String etag;
@@ -36,27 +43,4 @@ public class CopyResourceResult extends BaseResourceResult {
         super(bucketName, objectKey);
     }
 
-    public String getEtag() {
-        return etag;
-    }
-
-    public void setEtag(String etag) {
-        this.etag = etag;
-    }
-
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
-    }
-
-    @Override
-    public String toString() {
-        return "CopyFileResourceResult{" +
-                "etag='" + etag + '\'' +
-                ", lastModified=" + lastModified +
-                '}';
-    }
 }

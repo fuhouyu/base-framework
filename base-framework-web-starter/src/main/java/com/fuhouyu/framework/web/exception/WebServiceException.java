@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.web.exception;
 
 import com.fuhouyu.framework.model.response.ResponseCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -26,6 +29,9 @@ import com.fuhouyu.framework.model.response.ResponseCode;
  * @author fuhouyu
  * @since 2024/8/15 20:20
  */
+@ToString
+@Getter
+@Setter
 public class WebServiceException extends RuntimeException {
 
     private final int status;
@@ -46,16 +52,4 @@ public class WebServiceException extends RuntimeException {
         this.responseStatus = responseStatus;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
-    public ResponseCode getResponseStatus() {
-        return responseStatus;
-    }
 }

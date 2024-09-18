@@ -18,6 +18,9 @@ package com.fuhouyu.framework.resource.properties;
 
 import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
 import com.fuhouyu.framework.resource.enums.ResourceUploadTypeEnum;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -29,6 +32,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 2024/8/16 18:19
  */
 @ConfigurationProperties(prefix = ResourceProperties.PREFIX)
+@ToString
+@Getter
+@Setter
 public class ResourceProperties {
 
     public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "resource";
@@ -43,27 +49,4 @@ public class ResourceProperties {
      */
     private AliYunOssProperties aliOssConfig;
 
-    public ResourceUploadTypeEnum getUploadType() {
-        return uploadType;
-    }
-
-    public void setUploadType(ResourceUploadTypeEnum uploadType) {
-        this.uploadType = uploadType;
-    }
-
-    public AliYunOssProperties getAliOssConfig() {
-        return aliOssConfig;
-    }
-
-    public void setAliOssConfig(AliYunOssProperties aliOssConfig) {
-        this.aliOssConfig = aliOssConfig;
-    }
-
-    @Override
-    public String toString() {
-        return "FileResourceProperties{" +
-                "uploadType=" + uploadType +
-                ", ossResourceProperties=" + aliOssConfig +
-                '}';
-    }
 }

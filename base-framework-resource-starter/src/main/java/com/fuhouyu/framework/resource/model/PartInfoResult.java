@@ -26,30 +26,6 @@ import java.util.Date;
  * @author fuhouyu
  * @since 2024/8/16 17:57
  */
-public class PartInfoResult {
+public record PartInfoResult(int partNumber, Date lastModified, String etag, long size) {
 
-    private final int partNumber;
-
-    private final Date lastModified;
-
-    private final String etag;
-
-    private final long size;
-
-    public PartInfoResult(int partNumber, Date lastModified, String etag, long size) {
-        this.partNumber = partNumber;
-        this.lastModified = lastModified;
-        this.etag = etag;
-        this.size = size;
-    }
-
-    @Override
-    public String toString() {
-        return "PartInfoResult{" +
-                "partNumber=" + partNumber +
-                ", lastModified=" + lastModified +
-                ", etag='" + etag + '\'' +
-                ", size=" + size +
-                '}';
-    }
 }

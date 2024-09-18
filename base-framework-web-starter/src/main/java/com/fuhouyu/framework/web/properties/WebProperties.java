@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.web.properties;
 
 import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -28,6 +31,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 2024/8/17 11:07
  */
 @ConfigurationProperties(prefix = WebProperties.PREFIX)
+@ToString
+@Getter
+@Setter
 public class WebProperties {
 
     public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "web";
@@ -36,19 +42,4 @@ public class WebProperties {
      * 用户类型
      */
     private String userClassName;
-
-    public String getUserClassName() {
-        return userClassName;
-    }
-
-    public void setUserClassName(String userClassName) {
-        this.userClassName = userClassName;
-    }
-
-    @Override
-    public String toString() {
-        return "WebProperties{" +
-                "userClassName='" + userClassName + '\'' +
-                '}';
-    }
 }

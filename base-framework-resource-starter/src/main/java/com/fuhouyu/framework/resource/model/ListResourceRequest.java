@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 列出文件资源的请求实体
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 18:05
  */
+@ToString
+@Getter
+@Setter
 public class ListResourceRequest extends BaseResourceRequest {
 
     private static final int MAX_LENGTH = 1000;
@@ -76,73 +83,4 @@ public class ListResourceRequest extends BaseResourceRequest {
         this.maxKeys = MAX_LENGTH;
     }
 
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public String getStartAfter() {
-        return startAfter;
-    }
-
-    public void setStartAfter(String startAfter) {
-        this.startAfter = startAfter;
-    }
-
-    public int getMaxKeys() {
-        return maxKeys;
-    }
-
-    public void setMaxKeys(int maxKeys) {
-        this.maxKeys = maxKeys;
-    }
-
-    public String getDelimiter() {
-        return delimiter;
-    }
-
-    public void setDelimiter(String delimiter) {
-        this.delimiter = delimiter;
-    }
-
-    public boolean isTruncated() {
-        return truncated;
-    }
-
-    public void setTruncated(boolean truncated) {
-        this.truncated = truncated;
-    }
-
-    public String getEncodingType() {
-        return encodingType;
-    }
-
-    public void setEncodingType(String encodingType) {
-        this.encodingType = encodingType;
-    }
-
-    public String getNextMarker() {
-        return nextMarker;
-    }
-
-    public void setNextMarker(String nextMarker) {
-        this.nextMarker = nextMarker;
-    }
-
-    @Override
-    public String toString() {
-        return "ListFileResourceRequest{" +
-                "prefix='" + prefix + '\'' +
-                ", startAfter='" + startAfter + '\'' +
-                ", maxKeys=" + maxKeys +
-                ", delimiter='" + delimiter + '\'' +
-                ", truncated=" + truncated +
-                ", encodingType='" + encodingType + '\'' +
-                ", nextMarker='" + nextMarker + '\'' +
-                '}';
-    }
 }

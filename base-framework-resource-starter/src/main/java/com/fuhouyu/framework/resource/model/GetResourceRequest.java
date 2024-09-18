@@ -16,7 +16,9 @@
 
 package com.fuhouyu.framework.resource.model;
 
-import java.util.Arrays;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -26,6 +28,9 @@ import java.util.Arrays;
  * @author fuhouyu
  * @since 2024/8/16 12:09
  */
+@ToString
+@Getter
+@Setter
 public class GetResourceRequest extends BaseResourceRequest {
 
     /**
@@ -44,34 +49,5 @@ public class GetResourceRequest extends BaseResourceRequest {
 
     public GetResourceRequest(String bucketName, String objectKey, String versionId) {
         super(bucketName, objectKey, versionId);
-    }
-
-
-    public void setRange(long start, long end) {
-        range = new long[]{start, end};
-    }
-
-    public int getTrafficLimit() {
-        return trafficLimit;
-    }
-
-    public void setTrafficLimit(int trafficLimit) {
-        this.trafficLimit = trafficLimit;
-    }
-
-    public long[] getRange() {
-        return range;
-    }
-
-    public void setRange(long[] range) {
-        this.range = range;
-    }
-
-    @Override
-    public String toString() {
-        return "GetFileResourceRequest{" +
-                "trafficLimit=" + trafficLimit +
-                ", range=" + Arrays.toString(range) +
-                '}';
     }
 }

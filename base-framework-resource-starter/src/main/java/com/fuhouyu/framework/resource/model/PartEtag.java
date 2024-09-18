@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 分片的etag对象
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 17:46
  */
+@ToString
+@Getter
+@Setter
 public class PartEtag {
 
     /**
@@ -52,24 +59,4 @@ public class PartEtag {
         this.etag = etag;
     }
 
-    public int getPartNumber() {
-        return partNumber;
-    }
-
-    public long getPartSize() {
-        return partSize;
-    }
-
-    public String getEtag() {
-        return etag;
-    }
-
-    @Override
-    public String toString() {
-        return "PartEtag{" +
-                "partNumber=" + partNumber +
-                ", partSize=" + partSize +
-                ", etag='" + etag + '\'' +
-                '}';
-    }
 }

@@ -17,6 +17,10 @@
 package com.fuhouyu.framework.log.model;
 
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 日志记录实体类
@@ -25,6 +29,9 @@ package com.fuhouyu.framework.log.model;
  * @author fuhouyu
  * @since 2024/8/14 11:57
  */
+@ToString
+@Getter
+@Setter
 public class LogRecord {
 
     /**
@@ -77,109 +84,4 @@ public class LogRecord {
      */
     private Boolean isSuccess;
 
-    public String getSystemName() {
-        return systemName;
-    }
-
-    public void setSystemName(String systemName) {
-        this.systemName = systemName;
-    }
-
-    public String getModuleName() {
-        return moduleName;
-    }
-
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
-    }
-
-    public String getOperationType() {
-        return operationType;
-    }
-
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getOperationUser() {
-        return operationUser;
-    }
-
-    public void setOperationUser(String operationUser) {
-        this.operationUser = operationUser;
-    }
-
-    public String getOperationTime() {
-        return operationTime;
-    }
-
-    public void setOperationTime(String operationTime) {
-        this.operationTime = operationTime;
-    }
-
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public Boolean getIsSuccess() {
-        return isSuccess;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public Boolean getSuccess() {
-        return isSuccess;
-    }
-
-    public void setSuccess(Boolean success) {
-        isSuccess = success;
-    }
-
-    public void setIsSuccess(Boolean success) {
-
-
-        isSuccess = success;
-    }
-
-    @Override
-    public String toString() {
-        return "LogRecordEntity{" +
-                "systemName='" + systemName + '\'' +
-                ", moduleName='" + moduleName + '\'' +
-                ", operationType='" + operationType + '\'' +
-                ", content='" + content + '\'' +
-                ", errorMessage='" + errorMessage + '\'' +
-                ", operationUser='" + operationUser + '\'' +
-                ", operationTime='" + operationTime + '\'' +
-                ", requestId='" + requestId + '\'' +
-                ", category='" + category + '\'' +
-                ", isSuccess=" + isSuccess +
-                '}';
-    }
 }

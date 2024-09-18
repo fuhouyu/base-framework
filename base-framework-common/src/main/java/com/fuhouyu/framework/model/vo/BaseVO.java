@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.model.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -31,6 +34,9 @@ import java.time.LocalDateTime;
  * @since 2024/8/13 18:25
  */
 @Schema(name = "BaseVO", description = "基础响应的vo对象")
+@ToString
+@Getter
+@Setter
 public class BaseVO implements Serializable {
 
     @Serial
@@ -47,46 +53,4 @@ public class BaseVO implements Serializable {
 
     @Schema(name = "updateTime", description = "更新时间", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime updateTime;
-
-    public String getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(String createUser) {
-        this.createUser = createUser;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateUser() {
-        return updateUser;
-    }
-
-    public void setUpdateUser(String updateUser) {
-        this.updateUser = updateUser;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseVO{" +
-                "createUser='" + createUser + '\'' +
-                ", createTime=" + createTime +
-                ", updateUser='" + updateUser + '\'' +
-                ", updateTime=" + updateTime +
-                '}';
-    }
 }

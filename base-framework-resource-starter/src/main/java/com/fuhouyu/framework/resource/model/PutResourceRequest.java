@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.File;
 import java.io.InputStream;
 
@@ -27,6 +31,9 @@ import java.io.InputStream;
  * @author fuhouyu
  * @since 2024/8/16 17:22
  */
+@ToString
+@Getter
+@Setter
 public class PutResourceRequest extends BaseResourceRequest {
 
     /**
@@ -61,30 +68,6 @@ public class PutResourceRequest extends BaseResourceRequest {
     public PutResourceRequest(String bucketName, String key, InputStream input, ResourceMetadata metadata) {
         super(bucketName, key);
         this.inputStream = input;
-        this.metadata = metadata;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public InputStream getInputStream() {
-        return inputStream;
-    }
-
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
-
-    public ResourceMetadata getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(ResourceMetadata metadata) {
         this.metadata = metadata;
     }
 

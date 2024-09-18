@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.security.model.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 应用dto传输对象
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.security.model.dto;
  * @author fuhouyu
  * @since 2024/8/15 17:16
  */
+@ToString
+@Getter
+@Setter
 public class ApplicationDTO {
 
     private String clientId;
@@ -33,46 +40,4 @@ public class ApplicationDTO {
     private Integer accessTokenExpireTime;
 
     private Integer refreshTokenExpireTime;
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
-    }
-
-    public Integer getAccessTokenExpireTime() {
-        return accessTokenExpireTime;
-    }
-
-    public void setAccessTokenExpireTime(Integer accessTokenExpireTime) {
-        this.accessTokenExpireTime = accessTokenExpireTime;
-    }
-
-    public Integer getRefreshTokenExpireTime() {
-        return refreshTokenExpireTime;
-    }
-
-    public void setRefreshTokenExpireTime(Integer refreshTokenExpireTime) {
-        this.refreshTokenExpireTime = refreshTokenExpireTime;
-    }
-
-    @Override
-    public String toString() {
-        return "ApplicationDTO{" +
-                "clientId='" + clientId + '\'' +
-                ", clientSecret='" + clientSecret + '\'' +
-                ", accessTokenExpireTime='" + accessTokenExpireTime + '\'' +
-                ", refreshTokenExpireTime='" + refreshTokenExpireTime + '\'' +
-                '}';
-    }
 }

@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.model.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -30,6 +33,9 @@ import java.io.Serializable;
  * @since 2024/8/13 16:27
  */
 @Schema(name = "RestResult", description = "基础响应，所有的响应都会被该类包装返回")
+@ToString
+@Getter
+@Setter
 public class RestResult<T> implements Serializable {
 
     @Serial
@@ -73,40 +79,6 @@ public class RestResult<T> implements Serializable {
 
     public void setSuccess(Boolean success) {
         isSuccess = success;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseResponse{" +
-                "isSuccess=" + isSuccess +
-                ", code=" + code +
-                ", message='" + message + '\'' +
-                ", data=" + data +
-                '}';
     }
 
     public static final class BaseResponseBuilder<T> {

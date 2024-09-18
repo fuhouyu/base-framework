@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 初始化分片文件上传
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 17:34
  */
+@ToString
+@Getter
+@Setter
 public class InitiateUploadMultipartRequest extends BaseResourceRequest {
 
     private ResourceMetadata resourceMetadata;
@@ -47,18 +54,4 @@ public class InitiateUploadMultipartRequest extends BaseResourceRequest {
         this.resourceMetadata = resourceMetadata;
     }
 
-    public ResourceMetadata getFileResourceMetadata() {
-        return resourceMetadata;
-    }
-
-    public void setFileResourceMetadata(ResourceMetadata resourceMetadata) {
-        this.resourceMetadata = resourceMetadata;
-    }
-
-    @Override
-    public String toString() {
-        return "InitiateMultipartUploadRequest{" +
-                "fileResourceMetadata=" + resourceMetadata +
-                '}';
-    }
 }

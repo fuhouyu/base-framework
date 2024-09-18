@@ -20,6 +20,9 @@ import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.utils.HexUtil;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,17 +66,13 @@ public class DefaultHttpBodyFilter implements HttpBodyFilter {
 /**
  * http body 加密的实体
  */
+@ToString
+@Getter
+@Setter
 class HttpBodyEncryptionModel {
     /**
      * 加密的body体
      */
     private String body;
 
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
 }

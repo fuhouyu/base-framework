@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.log.properties;
 
 import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -28,6 +31,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 2024/8/14 12:17
  */
 @ConfigurationProperties(prefix = LogRecordProperties.LOG_RECORD_PREFIX)
+@ToString
+@Getter
+@Setter
 public class LogRecordProperties {
 
     public static final String LOG_RECORD_PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "log-record";
@@ -42,27 +48,4 @@ public class LogRecordProperties {
      */
     private String systemName;
 
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getSystemName() {
-        return systemName;
-    }
-
-    public void setSystemName(String systemName) {
-        this.systemName = systemName;
-    }
-
-    @Override
-    public String toString() {
-        return "LogRecordProperties{" +
-                "enabled=" + enabled +
-                ", systemName='" + systemName + '\'' +
-                '}';
-    }
 }

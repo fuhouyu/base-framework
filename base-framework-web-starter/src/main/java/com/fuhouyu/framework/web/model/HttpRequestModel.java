@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.web.model;
 
 import com.fuhouyu.framework.context.request.Request;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Map;
 
@@ -28,6 +31,9 @@ import java.util.Map;
  * @author fuhouyu
  * @since 2024/8/18 16:44
  */
+@ToString
+@Getter
+@Setter
 public class HttpRequestModel implements Request {
 
     private String requestIp;
@@ -40,48 +46,4 @@ public class HttpRequestModel implements Request {
 
     private Map<String, Object> additionalInformation;
 
-    @Override
-    public String getRequestIp() {
-        return requestIp;
-    }
-
-    public void setRequestIp(String requestIp) {
-        this.requestIp = requestIp;
-    }
-
-    @Override
-    public String getRequestHost() {
-        return requestHost;
-    }
-
-    public void setRequestHost(String requestHost) {
-        this.requestHost = requestHost;
-    }
-
-    @Override
-    public String getRequestTarget() {
-        return requestTarget;
-    }
-
-    public void setRequestTarget(String requestTarget) {
-        this.requestTarget = requestTarget;
-    }
-
-    @Override
-    public String getUserAgent() {
-        return userAgent;
-    }
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-    }
-
-    @Override
-    public Map<String, Object> getAdditionalInformation() {
-        return additionalInformation;
-    }
-
-    public void setAdditionalInformation(Map<String, Object> additionalInformation) {
-        this.additionalInformation = additionalInformation;
-    }
 }

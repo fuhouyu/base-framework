@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +33,9 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/8/16 18:49
  */
+@ToString
+@Getter
+@Setter
 public class GetResourceResult extends BaseResourceRequest implements Closeable {
 
     private InputStream objectContent;
@@ -42,22 +49,6 @@ public class GetResourceResult extends BaseResourceRequest implements Closeable 
 
     public GetResourceResult(String bucketName, String objectKey) {
         super(bucketName, objectKey);
-    }
-
-    public InputStream getObjectContent() {
-        return objectContent;
-    }
-
-    public void setObjectContent(InputStream objectContent) {
-        this.objectContent = objectContent;
-    }
-
-    public ResourceMetadata getResourceMetadata() {
-        return resourceMetadata;
-    }
-
-    public void setResourceMetadata(ResourceMetadata resourceMetadata) {
-        this.resourceMetadata = resourceMetadata;
     }
 
     @Override

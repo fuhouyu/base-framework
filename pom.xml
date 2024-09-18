@@ -62,6 +62,7 @@
         <module>base-framework-web-starter</module>
         <module>base-framework-resource-starter</module>
         <module>base-framework-kms-starter</module>
+        <module>base-framework-database</module>
     </modules>
 
     <properties>
@@ -104,6 +105,13 @@
         <bcprov-jdk18on.version>1.78.1</bcprov-jdk18on.version>
         <hutool-crypto.version>5.8.31</hutool-crypto.version>
         <commons-lang3.version>3.16.0</commons-lang3.version>
+        <lombok.version>1.18.34</lombok.version>
+        <!--数据库相关依赖-->
+        <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
+        <pagehelper-spring-boot-starter.version>2.1.0</pagehelper-spring-boot-starter.version>
+        <druid-spring-boot-starter.version>1.2.23</druid-spring-boot-starter.version>
+        <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
+        <postgresql.version>42.7.4</postgresql.version>
     </properties>
 
     <dependencyManagement>
@@ -135,10 +143,36 @@
                 <version>${springdoc-openapi-starter-webmvc-api.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper-spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-redis</artifactId>
                 <version>${spring-boot-starter-data-redis.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid-spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
@@ -175,6 +209,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
             <!--内部依赖-->
             <dependency>
@@ -217,7 +256,13 @@
                 <artifactId>base-framework-kms-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-database</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <build>

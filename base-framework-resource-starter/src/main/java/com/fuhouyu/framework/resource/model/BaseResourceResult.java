@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 基础的文件响应类
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 15:23
  */
+@ToString
+@Getter
+@Setter
 public class BaseResourceResult {
 
     /**
@@ -45,27 +52,4 @@ public class BaseResourceResult {
         this.bucketName = bucketName;
     }
 
-    public String getObjectKey() {
-        return objectKey;
-    }
-
-    public void setObjectKey(String objectKey) {
-        this.objectKey = objectKey;
-    }
-
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseFileResourceResult{" +
-                "objectKey='" + objectKey + '\'' +
-                ", bucketName='" + bucketName + '\'' +
-                '}';
-    }
 }

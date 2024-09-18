@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 文件分片取消上传
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 18:00
  */
+@ToString
+@Getter
+@Setter
 public class UploadAbortMultipartRequest extends BaseResourceRequest {
 
     /**
@@ -40,18 +47,4 @@ public class UploadAbortMultipartRequest extends BaseResourceRequest {
         super(bucketName, objectKey, versionId);
     }
 
-    public String getUploadId() {
-        return uploadId;
-    }
-
-    public void setUploadId(String uploadId) {
-        this.uploadId = uploadId;
-    }
-
-    @Override
-    public String toString() {
-        return "AbortMultipartUploadRequest{" +
-                "uploadId='" + uploadId + '\'' +
-                '}';
-    }
 }

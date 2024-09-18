@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 上传结果实体
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 17:27
  */
+@ToString
+@Getter
+@Setter
 public class PutResourceResult extends BaseResourceResult {
 
     /**
@@ -56,27 +63,4 @@ public class PutResourceResult extends BaseResourceResult {
         this.versionId = versionId;
     }
 
-    public String getEtag() {
-        return etag;
-    }
-
-    public void setEtag(String etag) {
-        this.etag = etag;
-    }
-
-    public String getVersionId() {
-        return versionId;
-    }
-
-    public void setVersionId(String versionId) {
-        this.versionId = versionId;
-    }
-
-    @Override
-    public String toString() {
-        return "PutFileResourceResult{" +
-                "eTag='" + etag + '\'' +
-                ", versionId='" + versionId + '\'' +
-                '}';
-    }
 }

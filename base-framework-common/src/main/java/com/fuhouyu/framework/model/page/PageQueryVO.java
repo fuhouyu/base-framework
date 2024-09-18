@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.model.page;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -30,6 +33,9 @@ import java.io.Serializable;
  * @since 2024/8/13 18:06
  */
 @Schema(name = "pageQueryVO", description = "分页查询的vo对象")
+@ToString
+@Getter
+@Setter
 public class PageQueryVO implements Serializable {
 
     @Serial
@@ -50,45 +56,4 @@ public class PageQueryVO implements Serializable {
             requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private PageOrderDirectionEnum orderDirection;
 
-    @Override
-    public String toString() {
-        return "PageQueryVO{" +
-                "pageNumber=" + pageNumber +
-                ", pageSize=" + pageSize +
-                ", orderCol='" + orderCol + '\'' +
-                ", orderDirection=" + orderDirection +
-                '}';
-    }
-
-    public int getPageNumber() {
-        return pageNumber;
-    }
-
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber = pageNumber;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getOrderCol() {
-        return orderCol;
-    }
-
-    public void setOrderCol(String orderCol) {
-        this.orderCol = orderCol;
-    }
-
-    public PageOrderDirectionEnum getOrderDirection() {
-        return orderDirection;
-    }
-
-    public void setOrderDirection(PageOrderDirectionEnum orderDirection) {
-        this.orderDirection = orderDirection;
-    }
 }

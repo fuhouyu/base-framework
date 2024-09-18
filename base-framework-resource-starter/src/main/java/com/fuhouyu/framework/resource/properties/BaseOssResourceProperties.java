@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.properties;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 文件资源配置基类
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.properties;
  * @author fuhouyu
  * @since 2024/8/16 18:21
  */
+@ToString
+@Getter
+@Setter
 public class BaseOssResourceProperties {
 
     private String endpoint;
@@ -32,36 +39,4 @@ public class BaseOssResourceProperties {
 
     private String secretKey;
 
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
-
-    public String getAccessKey() {
-        return accessKey;
-    }
-
-    public void setAccessKey(String accessKey) {
-        this.accessKey = accessKey;
-    }
-
-    public String getSecretKey() {
-        return secretKey;
-    }
-
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseOssResourceProperties{" +
-                "endpoint='" + endpoint + '\'' +
-                ", accessKey='" + accessKey + '\'' +
-                ", secretKey='" + secretKey + '\'' +
-                '}';
-    }
 }

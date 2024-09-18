@@ -26,12 +26,4 @@ package com.fuhouyu.framework.resource.model;
  */
 public record ResourceOwner(String id, String displayName) {
 
-
-    @Override
-    public String toString() {
-        return "FileResourceOwner{" +
-                "id='" + id + '\'' +
-                ", displayName='" + displayName + '\'' +
-                '}';
-    }
 }

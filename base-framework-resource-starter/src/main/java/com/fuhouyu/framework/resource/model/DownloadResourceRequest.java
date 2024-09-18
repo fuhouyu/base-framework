@@ -16,7 +16,9 @@
 
 package com.fuhouyu.framework.resource.model;
 
-import java.util.Arrays;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -26,6 +28,9 @@ import java.util.Arrays;
  * @author fuhouyu
  * @since 2024/8/16 17:11
  */
+@ToString
+@Getter
+@Setter
 public class DownloadResourceRequest extends BaseResourceRequest {
 
     /**
@@ -90,73 +95,4 @@ public class DownloadResourceRequest extends BaseResourceRequest {
         this.checkpointFile = checkpointFile;
     }
 
-
-    public long getPartSize() {
-        return partSize;
-    }
-
-    public void setPartSize(long partSize) {
-        this.partSize = partSize;
-    }
-
-    public int getTaskNum() {
-        return taskNum;
-    }
-
-    public void setTaskNum(int taskNum) {
-        this.taskNum = taskNum;
-    }
-
-    public String getDownloadFile() {
-        return downloadFile;
-    }
-
-    public void setDownloadFile(String downloadFile) {
-        this.downloadFile = downloadFile;
-    }
-
-    public int getTrafficLimit() {
-        return trafficLimit;
-    }
-
-    public void setTrafficLimit(int trafficLimit) {
-        this.trafficLimit = trafficLimit;
-    }
-
-    public long[] getRange() {
-        return range;
-    }
-
-    public void setRange(long[] range) {
-        this.range = range;
-    }
-
-    public boolean isEnableCheckpoint() {
-        return enableCheckpoint;
-    }
-
-    public void setEnableCheckpoint(boolean enableCheckpoint) {
-        this.enableCheckpoint = enableCheckpoint;
-    }
-
-    public String getCheckpointFile() {
-        return checkpointFile;
-    }
-
-    public void setCheckpointFile(String checkpointFile) {
-        this.checkpointFile = checkpointFile;
-    }
-
-    @Override
-    public String toString() {
-        return "DownloadResourceRequest{" +
-                "partSize=" + partSize +
-                ", taskNum=" + taskNum +
-                ", downloadFile='" + downloadFile + '\'' +
-                ", trafficLimit=" + trafficLimit +
-                ", range=" + Arrays.toString(range) +
-                ", enableCheckpoint=" + enableCheckpoint +
-                ", checkpointFile='" + checkpointFile + '\'' +
-                '}';
-    }
 }

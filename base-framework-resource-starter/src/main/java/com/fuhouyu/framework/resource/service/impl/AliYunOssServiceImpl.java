@@ -130,9 +130,9 @@ public class AliYunOssServiceImpl implements ResourceService {
         InitiateMultipartUploadRequest initiateUploadMultipartRequest =
                 new InitiateMultipartUploadRequest(request.getBucketName(),
                         request.getObjectKey());
-        if (Objects.nonNull(request.getFileResourceMetadata())) {
+        if (Objects.nonNull(request.getResourceMetadata())) {
             initiateUploadMultipartRequest.setObjectMetadata(
-                    this.getOssMetadata(request.getFileResourceMetadata()));
+                    this.getOssMetadata(request.getResourceMetadata()));
         }
         InitiateMultipartUploadResult initiateMultipartUploadResult;
         try {

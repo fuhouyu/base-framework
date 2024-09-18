@@ -75,6 +75,11 @@
             <groupId>com.fuhouyu</groupId>
             <artifactId>base-framework-kms-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * <p>
  * 文件下载的结果
@@ -24,6 +28,9 @@ package com.fuhouyu.framework.resource.model;
  * @author fuhouyu
  * @since 2024/8/16 17:19
  */
+@ToString
+@Getter
+@Setter
 public class DownloadResourceResult {
 
     /**
@@ -38,11 +45,4 @@ public class DownloadResourceResult {
         this.resourceMetadata = resourceMetadata;
     }
 
-    public ResourceMetadata getFileResourceMetadata() {
-        return resourceMetadata;
-    }
-
-    public void setFileResourceMetadata(ResourceMetadata resourceMetadata) {
-        this.resourceMetadata = resourceMetadata;
-    }
 }

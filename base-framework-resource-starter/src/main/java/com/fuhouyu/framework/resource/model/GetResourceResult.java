@@ -52,14 +52,6 @@ public class GetResourceResult extends BaseResourceRequest implements Closeable 
     }
 
     @Override
-    public String toString() {
-        return "GetResourceResult{" +
-                "objectContent=" + objectContent +
-                ", resourceMetadata=" + resourceMetadata +
-                '}';
-    }
-
-    @Override
     public void close() throws IOException {
         if (Objects.nonNull(objectContent)) {
             objectContent.close();

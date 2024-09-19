@@ -18,6 +18,9 @@ package com.fuhouyu.framework.cache.properties;
 
 import com.fuhouyu.framework.cache.enums.CacheServiceTypeEnum;
 import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -29,25 +32,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 2024/8/13 21:51
  */
 @ConfigurationProperties(prefix = CacheServiceProperties.PREFIX)
+@ToString
+@Getter
+@Setter
 public class CacheServiceProperties {
 
     public static final String PREFIX =
             ConfigPropertiesConstant.PROPERTIES_PREFIX + "cache.service";
 
     private CacheServiceTypeEnum cacheServiceType;
-
-    public CacheServiceTypeEnum getCacheServiceType() {
-        return cacheServiceType;
-    }
-
-    public void setCacheServiceType(CacheServiceTypeEnum cacheServiceType) {
-        this.cacheServiceType = cacheServiceType;
-    }
-
-    @Override
-    public String toString() {
-        return "CacheServiceProperties{" +
-                "cacheServiceType=" + cacheServiceType +
-                '}';
-    }
 }

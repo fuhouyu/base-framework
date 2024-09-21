@@ -16,8 +16,8 @@
 
 package com.fuhouyu.framework.web.form;
 
-import com.fuhouyu.framework.model.response.ResponseHelper;
-import com.fuhouyu.framework.model.response.RestResult;
+import com.fuhouyu.framework.response.ResponseHelper;
+import com.fuhouyu.framework.response.RestResult;
 import com.fuhouyu.framework.web.annotaions.NoRepeatSubmit;
 import org.springframework.boot.test.context.TestComponent;
 

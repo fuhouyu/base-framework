@@ -17,8 +17,8 @@
 package com.fuhouyu.framework.web.controller;
 
 import com.fuhouyu.framework.cache.service.CacheService;
-import com.fuhouyu.framework.model.response.ResponseHelper;
-import com.fuhouyu.framework.model.response.RestResult;
+import com.fuhouyu.framework.response.ResponseHelper;
+import com.fuhouyu.framework.response.RestResult;
 import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
 import com.fuhouyu.framework.web.constants.ApiPrefixConstant;
 import com.fuhouyu.framework.web.constants.FormTokenConstant;

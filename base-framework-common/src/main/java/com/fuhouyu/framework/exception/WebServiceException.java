@@ -16,8 +16,8 @@
 
 package com.fuhouyu.framework.exception;
 
-import com.fuhouyu.framework.model.response.ResponseCode;
-import com.fuhouyu.framework.model.response.ResponseCodeEnum;
+import com.fuhouyu.framework.response.ResponseCode;
+import com.fuhouyu.framework.response.ResponseCodeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

@@ -18,7 +18,7 @@ package com.fuhouyu.framework.web.form;
 
 import com.fuhouyu.framework.cache.CacheAutoConfigure;
 import com.fuhouyu.framework.cache.CaffeineCacheAutoconfigure;
-import com.fuhouyu.framework.model.response.RestResult;
+import com.fuhouyu.framework.response.RestResult;
 import com.fuhouyu.framework.web.WebAutoConfigure;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

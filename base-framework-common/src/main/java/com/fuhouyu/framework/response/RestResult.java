@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.model.response;
+package com.fuhouyu.framework.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

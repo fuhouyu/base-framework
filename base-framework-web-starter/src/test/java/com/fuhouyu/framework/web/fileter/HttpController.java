@@ -16,8 +16,8 @@
 
 package com.fuhouyu.framework.web.fileter;
 
-import com.fuhouyu.framework.model.response.ResponseHelper;
-import com.fuhouyu.framework.model.response.RestResult;
+import com.fuhouyu.framework.response.ResponseHelper;
+import com.fuhouyu.framework.response.RestResult;
 import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

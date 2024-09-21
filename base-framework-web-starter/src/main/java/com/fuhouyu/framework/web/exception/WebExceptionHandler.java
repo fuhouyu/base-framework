@@ -17,9 +17,9 @@
 package com.fuhouyu.framework.web.exception;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fuhouyu.framework.model.response.ResponseCodeEnum;
-import com.fuhouyu.framework.model.response.ResponseHelper;
-import com.fuhouyu.framework.model.response.RestResult;
+import com.fuhouyu.framework.response.ResponseCodeEnum;
+import com.fuhouyu.framework.response.ResponseHelper;
+import com.fuhouyu.framework.response.RestResult;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import jakarta.validation.ConstraintViolation;

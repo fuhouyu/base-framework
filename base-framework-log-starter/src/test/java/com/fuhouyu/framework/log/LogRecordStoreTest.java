@@ -20,7 +20,7 @@ import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.user.DefaultUserDetail;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.context.user.UserContextHolder;
-import com.fuhouyu.framework.model.response.RestResult;
+import com.fuhouyu.framework.response.RestResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

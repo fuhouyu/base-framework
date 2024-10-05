@@ -27,7 +27,7 @@ import com.fuhouyu.framework.context.user.User;
  * @since 2024/8/15 19:59
  */
 @FunctionalInterface
-public interface UserExtensionHandlerInterceptor {
+public interface UserExtensionHandler {
 
     /**
      * 扩展用户的信息

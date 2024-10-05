@@ -16,11 +16,9 @@
 
 package com.fuhouyu.framework.web.handler;
 
-import com.fuhouyu.framework.constants.HttpRequestHeaderConstant;
 import com.fuhouyu.framework.context.Context;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.context.user.UserContextHolder;
-import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,8 +28,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,42 +43,44 @@ public class HttpRequestUserHandler implements AsyncHandlerInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpRequestUserHandler.class);
 
-    private final List<UserExtensionHandlerInterceptor> userExtensionInterceptors;
+    private final List<UserExtensionHandler> userExtensionInterceptors;
+
+    private final UserParseHandler userParseHandler;
 
     /**
      * 需要转换的用户类型
      */
     private final Class<? extends User> subUserType;
 
-    public HttpRequestUserHandler(Class<? extends User> subUserType) {
-        this(null, subUserType);
+    public HttpRequestUserHandler(Class<? extends User> subUserType, UserParseHandler userParseHandler) {
+        this(null, userParseHandler, subUserType);
     }
 
-    public HttpRequestUserHandler(List<UserExtensionHandlerInterceptor> userExtensionInterceptors,
+    public HttpRequestUserHandler(List<UserExtensionHandler> userExtensionInterceptors, UserParseHandler userParseHandler,
                                   Class<? extends User> subUserType) {
         this.userExtensionInterceptors = userExtensionInterceptors;
+        this.userParseHandler = userParseHandler;
         this.subUserType = subUserType;
     }
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
-        String userInfo = request.getHeader(HttpRequestHeaderConstant.USERINFO_HEADER);
-        if (Objects.isNull(userInfo)) {
+        User user = userParseHandler.parseUser(request, response, subUserType);
+        if (Objects.isNull(user)) {
             LoggerUtil.debug(LOGGER, "从请求头获取到的用户信息为空, 请求方法:{}", request.getMethod());
             return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
         }
-        userInfo = URLDecoder.decode(userInfo, Charset.defaultCharset());
-        User user = JacksonUtil.readValue(userInfo, subUserType);
         Context<User> context = UserContextHolder.createEmptyContext();
         context.setObject(user);
         if (CollectionUtils.isEmpty(userExtensionInterceptors)) {
             return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
         }
-        for (UserExtensionHandlerInterceptor userExtensionInterceptor : userExtensionInterceptors) {
-            userExtensionInterceptor.userExtensionHandlerInterceptor(user);
+        for (UserExtensionHandler userExtensionInterceptor : userExtensionInterceptors) {
+            userExtensionInterceptor.userExtensionHandlerInterceptor(context.getObject());
         }
         return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
     }
+
 
     @Override
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception ex)

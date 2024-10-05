@@ -120,7 +120,8 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(WebServiceException.class)
-    public RestResult<Void> serviceExceptionHandler(WebServiceException serviceException) {
+    public RestResult<Void> serviceExceptionHandler(ServletWebRequest request,
+                                                    WebServiceException serviceException) {
         return ResponseHelper.failed(serviceException.getResponseStatus(), serviceException.getMessage());
     }
 

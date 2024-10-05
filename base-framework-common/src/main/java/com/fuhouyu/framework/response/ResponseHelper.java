@@ -31,10 +31,14 @@ public class ResponseHelper {
     }
 
     public static <T> RestResult<T> success(T data) {
-        return RestResult.<T>builder()
-                .withResponseCodeStatus(ResponseCodeEnum.SUCCESS)
-                .withData(data).build();
+         return RestResult.<T>builder()
+                .code(ResponseCodeEnum.SUCCESS.getCode())
+                .message(ResponseCodeEnum.SUCCESS.getMessage())
+                .data(data)
+                .isSuccess(true)
+                .build();
     }
+
 
     public static <T> RestResult<T> success() {
         return success(null);
@@ -42,8 +46,9 @@ public class ResponseHelper {
 
     public static <T> RestResult<T> failed(int code, String message) {
         return RestResult.<T>builder()
-                .withCode(code)
-                .withMessage(message)
+                .code(code)
+                .message(message)
+                .isSuccess(false)
                 .build();
     }
 
@@ -54,4 +59,5 @@ public class ResponseHelper {
     public static <T> RestResult<T> failed(ResponseCode responseCode, String message) {
         return failed(responseCode.getCode(), message);
     }
+
 }

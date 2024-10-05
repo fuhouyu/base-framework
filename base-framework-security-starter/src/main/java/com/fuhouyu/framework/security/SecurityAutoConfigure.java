@@ -73,8 +73,9 @@ public class SecurityAutoConfigure {
     @ConditionalOnMissingBean(AuthenticationManager.class)
     public AuthenticationManager authenticationManager(
             List<AuthenticationProvider> authenticationProviders,
-            UserDetailsService userDetailsService) {
-        authenticationProviders.add(daoAuthenticationProvider(userDetailsService));
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
+        authenticationProviders.add(daoAuthenticationProvider(userDetailsService, passwordEncoder));
         return new ProviderManager(authenticationProviders);
     }
 
@@ -107,8 +108,9 @@ public class SecurityAutoConfigure {
      *
      * @return dao默认实现
      */
-    private AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+    private AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService,
+                                                             PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
     }

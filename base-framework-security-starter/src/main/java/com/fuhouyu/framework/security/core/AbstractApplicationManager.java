@@ -22,6 +22,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -58,6 +59,7 @@ public abstract class AbstractApplicationManager implements AuthenticationManage
         if (authentication instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
             usernamePasswordAuthenticationToken.setDetails(application);
         }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         return authentication;
     }
 

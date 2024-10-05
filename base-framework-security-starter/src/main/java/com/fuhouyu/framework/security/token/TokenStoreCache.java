@@ -110,7 +110,7 @@ public class TokenStoreCache implements TokenStore {
                                           Integer refreshTokenExpireSeconds) {
         DefaultOAuth2Token existingAccessToken = this.getAccessToken(
                 authentication);
-        Instant now = Instant.now();
+        Instant now = Instant.now().atZone(zoneId).toInstant();
         // 如果存在则验证这个token是否过期，过期则进去删除。
         if (Objects.nonNull(existingAccessToken)) {
             OAuth2RefreshToken auth2RefreshToken = existingAccessToken.getAuth2RefreshToken();

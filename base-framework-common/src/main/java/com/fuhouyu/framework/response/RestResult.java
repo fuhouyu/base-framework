@@ -17,9 +17,7 @@
 package com.fuhouyu.framework.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -36,6 +34,8 @@ import java.io.Serializable;
 @ToString
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class RestResult<T> implements Serializable {
 
     @Serial
@@ -69,9 +69,9 @@ public class RestResult<T> implements Serializable {
 
     }
 
-    public static <T> BaseResponseBuilder<T> builder() {
-        return new BaseResponseBuilder<>();
-    }
+//    public static <T> BaseResponseBuilder<T> builder() {
+//        return new BaseResponseBuilder<>();
+//    }
 
     public Boolean getSuccess() {
         return isSuccess;
@@ -81,49 +81,49 @@ public class RestResult<T> implements Serializable {
         isSuccess = success;
     }
 
-    public static final class BaseResponseBuilder<T> {
-
-        private int code;
-
-        private String message;
-
-        private T data;
-
-        private BaseResponseBuilder() {
-        }
-
-        public BaseResponseBuilder<T> withResponseCodeStatus(ResponseCode responseCode) {
-            this.code = responseCode.getCode();
-            this.message = responseCode.getMessage();
-            return this;
-        }
-
-        public BaseResponseBuilder<T> withCode(int code) {
-            this.code = code;
-            return this;
-        }
-
-        public BaseResponseBuilder<T> withMessage(String message) {
-            this.message = message;
-            return this;
-        }
-
-        public BaseResponseBuilder<T> withData(T data) {
-            this.data = data;
-            return this;
-        }
-
-        /**
-         * Build result.
-         *
-         * @return result
-         */
-        public RestResult<T> build() {
-            RestResult<T> restResult = new RestResult<>();
-            restResult.setCode(code);
-            restResult.setMessage(message);
-            restResult.setData(data);
-            return restResult;
-        }
-    }
+//    public static final class BaseResponseBuilder<T> {
+//
+//        private int code;
+//
+//        private String message;
+//
+//        private T data;
+//
+//        private BaseResponseBuilder() {
+//        }
+//
+//        public BaseResponseBuilder<T> withResponseCodeStatus(ResponseCode responseCode) {
+//            this.code = responseCode.getCode();
+//            this.message = responseCode.getMessage();
+//            return this;
+//        }
+//
+//        public BaseResponseBuilder<T> withCode(int code) {
+//            this.code = code;
+//            return this;
+//        }
+//
+//        public BaseResponseBuilder<T> withMessage(String message) {
+//            this.message = message;
+//            return this;
+//        }
+//
+//        public BaseResponseBuilder<T> withData(T data) {
+//            this.data = data;
+//            return this;
+//        }
+//
+//        /**
+//         * Build result.
+//         *
+//         * @return result
+//         */
+//        public RestResult<T> build() {
+//            RestResult<T> restResult = new RestResult<>();
+//            restResult.setCode(code);
+//            restResult.setMessage(message);
+//            restResult.setData(data);
+//            return restResult;
+//        }
+//    }
 }

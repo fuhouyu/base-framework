@@ -84,5 +84,9 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fuhouyu</groupId>
+            <artifactId>base-framework-context</artifactId>
+        </dependency>
     </dependencies>
 </project>

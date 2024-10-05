@@ -22,6 +22,9 @@ import com.fuhouyu.framework.security.service.DefaultUserAuthServiceImpl;
 import com.fuhouyu.framework.security.service.UserAuthService;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.security.token.TokenStoreCache;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -68,13 +71,13 @@ public class SecurityAutoConfigure {
      * @param authenticationProviders 认证提供者集合
      * @return 认证管理器
      */
-    @Bean
+    @Bean("authenticationManager")
     @Primary
-    @ConditionalOnMissingBean(AuthenticationManager.class)
     public AuthenticationManager authenticationManager(
             List<AuthenticationProvider> authenticationProviders,
-            UserDetailsService userDetailsService) {
-        authenticationProviders.add(daoAuthenticationProvider(userDetailsService));
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
+        authenticationProviders.add(daoAuthenticationProvider(userDetailsService, passwordEncoder));
         return new ProviderManager(authenticationProviders);
     }
 
@@ -87,7 +90,8 @@ public class SecurityAutoConfigure {
      */
     @Bean
     @Primary
-    public UserAuthService userAuthService(TokenStore tokenStore, AuthenticationManager authenticationManager) {
+    public UserAuthService userAuthService(TokenStore tokenStore,
+                                           @Qualifier("authenticationManager") AuthenticationManager authenticationManager) {
         return new DefaultUserAuthServiceImpl(tokenStore, authenticationManager);
     }
 
@@ -107,8 +111,9 @@ public class SecurityAutoConfigure {
      *
      * @return dao默认实现
      */
-    private AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+    private AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService,
+                                                             PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
     }

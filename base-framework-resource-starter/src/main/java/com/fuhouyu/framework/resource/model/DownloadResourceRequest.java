@@ -36,7 +36,7 @@ public class DownloadResourceRequest extends BaseResourceRequest {
     /**
      * 每个分片下载的大小，默认 1mb
      */
-    private long partSize = 1024 * 1024;
+    private long partSize = 1024 * 1024L;
 
     /**
      * 下载的线程数

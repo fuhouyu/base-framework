@@ -24,9 +24,12 @@ package com.fuhouyu.framework.resource.constants;
  * @author fuhouyu
  * @since 2024/8/19 15:33
  */
-public interface FileResourceMetadataConstant {
+public class FileResourceMetadataConstant {
 
-    String ETAG = "etag";
+    public static final String ETAG = "etag";
+    public static final String LAST_MODIFIED = "Last-Modified";
 
-    String LAST_MODIFIED = "Last-Modified";
+    private FileResourceMetadataConstant() {
+
+    }
 }

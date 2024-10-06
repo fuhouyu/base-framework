@@ -17,6 +17,7 @@
 package com.fuhouyu.framework.log.core;
 
 import com.fuhouyu.framework.context.user.UserContextHolder;
+import com.fuhouyu.framework.log.exception.LogException;
 import com.fuhouyu.framework.log.model.LogRecord;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
@@ -130,10 +131,10 @@ public class LogRecordAspectj {
             result = JacksonUtil.writeValueAsString(content);
         } catch (ParseException ex) {
             LoggerUtil.error(LOGGER, "log content: {} parse failed", logRecord.content(), ex);
-            throw new RuntimeException(ex);
+            throw new LogException(ex);
         } catch (Exception ex) {
             LoggerUtil.error(LOGGER, "log other error: {} ", content, ex);
-            throw new RuntimeException(ex);
+            throw new LogException(ex);
         }
         LogRecord logRecordEntity = new LogRecord();
         logRecordEntity.setSystemName(systemName);

@@ -31,7 +31,7 @@ import org.springframework.web.client.RestTemplate;
  * @since 2024/8/24 22:19
  */
 @TestComponent
-public class AuthenticationProviderTest {
+public class AuthenticationProvider {
 
 
     @Bean

@@ -45,11 +45,11 @@ import org.springframework.util.Assert;
 class WebFormNoRepeatSubmitTest {
 
     @Autowired
-    private FormTokenControllerTest formTokenControllerTest;
+    private FormTokenController formTokenController;
 
     @Test
     void testNoRepeatSubmit() {
-        RestResult<Boolean> restResult = formTokenControllerTest.success();
+        RestResult<Boolean> restResult = formTokenController.success();
         Assert.isTrue(restResult.getData(), "表单防重复提交验证失败。");
     }
 }

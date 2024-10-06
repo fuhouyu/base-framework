@@ -79,7 +79,7 @@ public class HttpRequestBodyAdvice extends RequestBodyAdviceAdapter {
                 try (InputStream inputStream = inputMessage.getBody()) {
                     bytes = inputStream.readAllBytes();
                 } catch (IOException e) {
-                    throw new RuntimeException("read body failed " + e.getMessage(), e);
+                    throw new IllegalArgumentException("read body failed " + e.getMessage(), e);
                 }
                 return new ByteArrayInputStream(httpBodyFilter.decryptionBody(bytes));
             }

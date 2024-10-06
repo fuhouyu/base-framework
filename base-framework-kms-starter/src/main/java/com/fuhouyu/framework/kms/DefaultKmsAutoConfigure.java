@@ -56,7 +56,6 @@ import java.util.Objects;
 @ConditionalOnMissingBean(KmsService.class)
 @EnableConfigurationProperties(KmsDefaultProperties.class)
 public class DefaultKmsAutoConfigure {
-    private static final String SM2_KEYPAIR_STORE_PATH = "/tmp/keypair";
 
     private final KmsDefaultProperties properties;
 
@@ -162,12 +161,11 @@ public class DefaultKmsAutoConfigure {
      */
     private SM2 generatorSm2() {
         KmsDefaultProperties.Sm2Properties sm2Properties = this.properties.getSm2();
-        if (!sm2Properties.getAutoGenerate()) {
+        if (Boolean.FALSE.equals(sm2Properties.getAutoGenerate())) {
             throw new KmsException("sm2 公私钥未设置，且未启用自动生成");
         }
 
-        String parentPath = Objects.isNull(sm2Properties.getAutoGenerateLocalPath()) ?
-                SM2_KEYPAIR_STORE_PATH : sm2Properties.getAutoGenerateLocalPath();
+        String parentPath = sm2Properties.getAutoGenerateLocalPath();
         Path publicKeyPath = Path.of(parentPath, "publicKey");
         Path privateKeyPath = Path.of(parentPath, "privateKey");
         if (Files.exists(publicKeyPath) && Files.exists(privateKeyPath)) {

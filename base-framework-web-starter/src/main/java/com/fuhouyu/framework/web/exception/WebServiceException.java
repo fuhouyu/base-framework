@@ -38,7 +38,7 @@ public class WebServiceException extends RuntimeException {
 
     private final String message;
 
-    private final ResponseCode responseStatus;
+    private final transient ResponseCode responseStatus;
 
     public WebServiceException(ResponseCode responseStatus) {
         this.responseStatus = responseStatus;

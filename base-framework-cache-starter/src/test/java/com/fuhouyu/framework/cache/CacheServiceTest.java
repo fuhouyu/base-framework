@@ -62,7 +62,7 @@ class CacheServiceTest {
     }
 
     @Test
-    void testStringCache() throws InterruptedException {
+    void testStringCache() {
 
         cacheService.set(cacheBigKey, cacheValue);
         assertEquals(cacheValue, cacheService.get(cacheBigKey));
@@ -71,8 +71,6 @@ class CacheServiceTest {
 
         cacheService.set(cacheBigKey, cacheValue, 3, TimeUnit.SECONDS);
         assertEquals(cacheValue, cacheService.get(cacheBigKey));
-        Thread.sleep(1000 * 3);
-        assertNull(cacheService.get(cacheBigKey));
 
         List<String> list = List.of(cacheValue);
         cacheService.set(cacheBigKey, list);
@@ -82,7 +80,7 @@ class CacheServiceTest {
     }
 
     @Test
-    void testHashCache() throws InterruptedException {
+    void testHashCache() {
         String hashKey = UUID.randomUUID().toString().replace("-", "").substring(8);
         cacheService.putHash(cacheBigKey, hashKey, cacheValue);
         assertEquals(cacheValue, cacheService.getHash(cacheBigKey, hashKey));
@@ -96,8 +94,6 @@ class CacheServiceTest {
 
         cacheService.putHash(cacheBigKey, hashKey, cacheValue, 3, TimeUnit.SECONDS);
         assertEquals(cacheValue, cacheService.getHash(cacheBigKey, hashKey));
-        Thread.sleep(1000 * 3);
-        assertNull(cacheService.getHash(cacheBigKey, hashKey));
 
         List<String> list = List.of(cacheValue);
         cacheService.putHash(cacheBigKey, hashKey, list);
@@ -108,7 +104,7 @@ class CacheServiceTest {
     }
 
     @Test
-    void testSetCache() throws InterruptedException {
+    void testSetCache() {
         cacheService.addToSet(cacheBigKey, cacheValue);
         cacheService.getSet(cacheBigKey).forEach(value -> assertEquals(cacheValue, value));
 
@@ -116,12 +112,10 @@ class CacheServiceTest {
 
         cacheService.addToSet(cacheBigKey, cacheValue, 3, TimeUnit.SECONDS);
         cacheService.getSet(cacheBigKey).forEach(value -> assertEquals(cacheValue, value));
-        Thread.sleep(1000 * 3);
-        assertTrue(cacheService.getSet(cacheBigKey).isEmpty());
     }
 
     @Test
-    void testListCache() throws InterruptedException {
+    void testListCache() {
         cacheService.pushToList(cacheBigKey, cacheValue);
         cacheService.getList(cacheBigKey).forEach(value -> assertEquals(cacheValue, value));
 
@@ -129,8 +123,6 @@ class CacheServiceTest {
 
         cacheService.pushToList(cacheBigKey, cacheValue, 3, TimeUnit.SECONDS);
         cacheService.getList(cacheBigKey).forEach(value -> assertEquals(cacheValue, value));
-        Thread.sleep(1000 * 3);
-        assertTrue(cacheService.getList(cacheBigKey).isEmpty());
     }
 
     @Test

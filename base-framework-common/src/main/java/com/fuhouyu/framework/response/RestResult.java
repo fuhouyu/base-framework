@@ -63,7 +63,7 @@ public class RestResult<T> implements Serializable {
      * 响应数据
      */
     @Schema(name = "data", description = "响应数据，该值可能为空", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private T data;
+    private transient T data;
 
     private RestResult() {
 

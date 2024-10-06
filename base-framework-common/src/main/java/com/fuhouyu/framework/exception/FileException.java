@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.fuhouyu.framework.web.constants;
+package com.fuhouyu.framework.exception;
 
 /**
  * <p>
- * 表单token常量
+ * 文件异常
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/17 22:42
+ * @since 2024/10/6 11:32
  */
-public class FormTokenConstant {
+public class FileException extends RuntimeException {
 
-    /**
-     * 缓存key
-     */
-    public static final String TOKEN_PREFIX = "base:form:token:";
-    /**
-     * 默认为十分钟过期
-     */
-    public static final long EXPIRE_TIME = 60 * 10L;
+    public FileException() {
+        this(null);
+    }
 
-    private FormTokenConstant() {
+    public FileException(Throwable cause) {
+        super("Cannot parse JSON", cause);
     }
 }

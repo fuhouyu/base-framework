@@ -24,49 +24,48 @@ package com.fuhouyu.framework.constants;
  * @author fuhouyu
  * @since 2024/8/15 19:54
  */
-public interface HttpRequestHeaderConstant {
+public class HttpRequestHeaderConstant {
 
-    // 自定义请求头
     /**
      * 自定义的用户详情请求头
      */
-    String USERINFO_HEADER = "X-Custom-Userinfo";
+    public static final String USERINFO_HEADER = "X-Custom-Userinfo";
 
-    // 标准请求头
-
+    // 自定义请求头
     /**
      * 客户端版本
      */
-    String CLIENT_VERSION_HEADER = "Client-Version";
+    public static final String CLIENT_VERSION_HEADER = "Client-Version";
 
+    // 标准请求头
     /**
      * 用户代理
      */
-    String USER_AGENT_HEADER = "User-Agent";
-
+    public static final String USER_AGENT_HEADER = "User-Agent";
     /**
      * 消息内容类型
      */
-    String CONTENT_TYPE = "Content-Type";
-
+    public static final String CONTENT_TYPE = "Content-Type";
     /**
      * 消息内容长度
      */
-    String CONTENT_LENGTH = "Content-Length";
-
+    public static final String CONTENT_LENGTH = "Content-Length";
     /**
      * 消息内容编码
      */
-    String CONTENT_ENCODING = "Content-Encoding";
-
-    // nginx转发的请求头
+    public static final String CONTENT_ENCODING = "Content-Encoding";
     /**
      * 真实ip地址
      */
-    String X_REAL_IP = "X-Real-IP";
+    public static final String X_REAL_IP = "X-Real-IP";
 
+    // nginx转发的请求头
     /**
      * 来自
      */
-    String X_FORWARDED_FOR = "X-Forwarded-For";
+    public static final String X_FORWARDED_FOR = "X-Forwarded-For";
+
+    private HttpRequestHeaderConstant() {
+
+    }
 }

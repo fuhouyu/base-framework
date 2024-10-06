@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.fuhouyu.framework.web.form;
-
-import com.fuhouyu.framework.response.ResponseHelper;
-import com.fuhouyu.framework.response.RestResult;
-import com.fuhouyu.framework.web.annotaions.NoRepeatSubmit;
-import org.springframework.boot.test.context.TestComponent;
+package com.fuhouyu.framework.log.exception;
 
 /**
  * <p>
- * form表单测试
+ * 日志异常
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/17 23:22
+ * @since 2024/10/6 11:51
  */
-@TestComponent
-public class FormTokenControllerTest {
+public class LogException extends RuntimeException {
 
-    @NoRepeatSubmit
-    public RestResult<Boolean> success() {
-        return ResponseHelper.success(true);
+    public LogException() {
+        this(null);
     }
 
+    public LogException(Throwable cause) {
+        super("Cannot parse JSON", cause);
+    }
 }

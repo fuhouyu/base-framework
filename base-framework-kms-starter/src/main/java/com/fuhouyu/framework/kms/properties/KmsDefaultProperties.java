@@ -72,7 +72,7 @@ public class KmsDefaultProperties {
         /**
          * 自动生成后存储的路径
          */
-        private String autoGenerateLocalPath;
+        private String autoGenerateLocalPath = "/tmp/keypair";
 
         /**
          * 公钥key

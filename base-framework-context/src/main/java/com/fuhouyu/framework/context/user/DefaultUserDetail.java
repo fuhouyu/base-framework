@@ -53,6 +53,6 @@ public class DefaultUserDetail implements Serializable, User {
 
     private String refAccountId;
 
-    private Map<String, Object> additionalInformation;
+    private transient Map<String, Object> additionalInformation;
 
 }

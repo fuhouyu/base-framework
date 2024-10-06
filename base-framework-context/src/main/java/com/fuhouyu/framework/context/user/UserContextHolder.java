@@ -31,6 +31,10 @@ import java.util.Objects;
  */
 public class UserContextHolder {
 
+    private UserContextHolder() {
+
+    }
+
     private static final ContextHolderStrategy<Context<User>> CONTEXT_HOLDER_STRATEGY;
 
     static {

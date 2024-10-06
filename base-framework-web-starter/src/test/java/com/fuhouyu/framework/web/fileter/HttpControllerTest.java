@@ -66,10 +66,6 @@ class HttpControllerTest {
 
         Map<String, String> map = new HashMap<>();
         map.put("body", HexUtil.encodeToHexString(bodyBytes));
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.get("/base/v1/form/token")
-//
-//        ).andExpect(status().isOk());
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/v1/test/enc")
                         .contentType(MediaType.APPLICATION_JSON)

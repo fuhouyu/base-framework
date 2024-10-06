@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.constants;
+package com.fuhouyu.framework.web.form;
+
+import com.fuhouyu.framework.response.ResponseHelper;
+import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.web.annotaions.NoRepeatSubmit;
+import org.springframework.boot.test.context.TestComponent;
 
 /**
  * <p>
- * 表单token常量
+ * form表单测试
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/17 22:42
+ * @since 2024/8/17 23:22
  */
-public class FormTokenConstant {
+@TestComponent
+public class FormTokenController {
 
-    /**
-     * 缓存key
-     */
-    public static final String TOKEN_PREFIX = "base:form:token:";
-    /**
-     * 默认为十分钟过期
-     */
-    public static final long EXPIRE_TIME = 60 * 10L;
-
-    private FormTokenConstant() {
+    @NoRepeatSubmit
+    public RestResult<Boolean> success() {
+        return ResponseHelper.success(true);
     }
+
 }

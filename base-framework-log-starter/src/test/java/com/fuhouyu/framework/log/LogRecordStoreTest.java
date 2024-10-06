@@ -45,7 +45,7 @@ import org.springframework.util.Assert;
 class LogRecordStoreTest {
 
     @Autowired
-    private LogRecordStoreServiceImplTest logRecordStoreServiceImplTest;
+    private LogRecordStoreServiceImpl logRecordStoreServiceImpl;
 
     @BeforeEach
     void setUp() {
@@ -58,7 +58,7 @@ class LogRecordStoreTest {
 
     @Test
     void testLogStoreService() {
-        RestResult<Boolean> result = logRecordStoreServiceImplTest.success();
+        RestResult<Boolean> result = logRecordStoreServiceImpl.success();
         Assert.isTrue(result.getData(), "日志返回结果不正确");
 
     }

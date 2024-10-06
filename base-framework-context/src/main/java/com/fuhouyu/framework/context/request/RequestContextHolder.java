@@ -31,6 +31,10 @@ import java.util.Objects;
  */
 public class RequestContextHolder {
 
+    private RequestContextHolder() {
+
+    }
+
     private static final ContextHolderStrategy<Context<Request>> CONTEXT_HOLDER_STRATEGY;
 
     static {

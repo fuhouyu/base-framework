@@ -43,6 +43,10 @@ import java.util.concurrent.Callable;
  */
 public class JacksonUtil {
 
+    private JacksonUtil() {
+
+    }
+
     private static final ObjectMapper OBJECT_MAPPER;
 
     static {

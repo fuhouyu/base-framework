@@ -17,6 +17,9 @@
 package com.fuhouyu.framework.utils;
 
 
+import com.fuhouyu.framework.exception.FileException;
+import lombok.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -59,7 +62,7 @@ public class FileUtil {
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileException(e);
         }
     }
 
@@ -72,7 +75,7 @@ public class FileUtil {
         try {
             Files.deleteIfExists(path);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileException(e);
         }
     }
 
@@ -186,13 +189,15 @@ public class FileUtil {
         }
         Files.walkFileTree(directPath, new SimpleFileVisitor<>() {
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            @NonNull
+            public FileVisitResult visitFile(@NonNull Path file, @NonNull BasicFileAttributes attrs) throws IOException {
                 Files.delete(file);
                 return FileVisitResult.CONTINUE;
             }
 
 
             @Override
+            @NonNull
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 if (exc == null) {
                     Files.delete(dir);
@@ -265,7 +270,7 @@ public class FileUtil {
             }
             return HexUtil.encodeToHexString(digest.digest());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileException(e);
         }
     }
 

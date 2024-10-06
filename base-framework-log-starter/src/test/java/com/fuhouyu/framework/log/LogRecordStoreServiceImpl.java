@@ -37,9 +37,9 @@ import org.springframework.util.Assert;
  * @since 2024/8/17 23:26
  */
 @TestComponent
-public class LogRecordStoreServiceImplTest {
+public class LogRecordStoreServiceImpl {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogRecordStoreServiceImplTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogRecordStoreServiceImpl.class);
 
     public String getUsername() {
         return "test-user";

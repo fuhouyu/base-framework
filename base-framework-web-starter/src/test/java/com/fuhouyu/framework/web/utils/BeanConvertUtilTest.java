@@ -17,15 +17,9 @@
 package com.fuhouyu.framework.web.utils;
 
 import com.fuhouyu.framework.context.user.DefaultUserDetail;
-import com.fuhouyu.framework.context.user.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Assert;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>
@@ -51,19 +45,7 @@ class BeanConvertUtilTest {
     @Test
     void testBeanConvert() {
         DefaultUserDetail copyUserDetail = BeanConvertUtil.convertTo(userDetail, DefaultUserDetail::new);
-        Assert.isTrue(Objects.equals(copyUserDetail.getId(), userDetail.getId()),
-                "对象复制失败");
-
-        List<User> sourceList = new ArrayList<>();
-        sourceList.add(userDetail);
-
-        List<User> sourceLinkedList = new LinkedList<>();
-        sourceLinkedList.add(userDetail);
-
-        List<DefaultUserDetail> targetList = BeanConvertUtil.convertListTo(sourceList, DefaultUserDetail::new);
-        List<DefaultUserDetail> targetLinkedList = BeanConvertUtil.convertListTo(sourceLinkedList, DefaultUserDetail::new);
-        System.out.println();
-
+        Assertions.assertEquals(copyUserDetail.getId(), userDetail.getId(), "对象复制失败");
 
     }
 }

@@ -41,7 +41,7 @@ public class ClassUtils {
         try {
             return (Class<T>) Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(String.format("%s class not found", className), e);
+            throw new IllegalArgumentException(String.format("%s class not found", className), e);
         }
     }
 }

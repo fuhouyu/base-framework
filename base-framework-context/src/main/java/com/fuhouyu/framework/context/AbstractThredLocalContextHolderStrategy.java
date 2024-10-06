@@ -26,30 +26,30 @@ package com.fuhouyu.framework.context;
  */
 public abstract class AbstractThredLocalContextHolderStrategy<T> implements ContextHolderStrategy<Context<T>> {
 
-    private final ThreadLocal<Context<T>> THREAD_LOCAL;
+    private final ThreadLocal<Context<T>> threadLocal;
 
     protected AbstractThredLocalContextHolderStrategy(ThreadLocal<Context<T>> threadLocal) {
-        THREAD_LOCAL = threadLocal;
+        this.threadLocal = threadLocal;
     }
 
     @Override
     public void clearContext() {
-        THREAD_LOCAL.remove();
+        threadLocal.remove();
     }
 
     @Override
     public Context<T> getContext() {
-        return THREAD_LOCAL.get();
+        return threadLocal.get();
     }
 
     @Override
     public void setContext(Context<T> context) {
-        THREAD_LOCAL.set(context);
+        threadLocal.set(context);
     }
 
 
     @Override
     public Boolean isEmptyContext() {
-        return THREAD_LOCAL.get() == null;
+        return threadLocal.get() == null;
     }
 }

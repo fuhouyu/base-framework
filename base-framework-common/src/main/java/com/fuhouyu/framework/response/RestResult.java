@@ -69,12 +69,4 @@ public class RestResult<T> implements Serializable {
 
     }
 
-    public Boolean getSuccess() {
-        return isSuccess;
-    }
-
-    public void setSuccess(Boolean success) {
-        isSuccess = success;
-    }
-
 }

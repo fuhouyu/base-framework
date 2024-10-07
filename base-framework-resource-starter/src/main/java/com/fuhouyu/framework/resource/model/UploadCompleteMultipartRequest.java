@@ -47,4 +47,12 @@ public class UploadCompleteMultipartRequest extends BaseResourceRequest {
      */
     private List<PartEtag> partEtagList = new ArrayList<>();
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     */
+    public UploadCompleteMultipartRequest(String bucketName) {
+        super(bucketName, null);
+    }
 }

@@ -54,6 +54,12 @@ public class ListResourceResult extends BaseResourceResult {
     private String location;
 
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName          桶名
+     * @param resourceSummaryList 资源描述列表
+     */
     public ListResourceResult(String bucketName,
                               List<ResourceSummary> resourceSummaryList) {
         super();

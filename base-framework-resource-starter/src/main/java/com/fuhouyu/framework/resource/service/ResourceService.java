@@ -33,9 +33,11 @@ public interface ResourceService {
 
     /**
      * 文件下载.
-     * <p>如果设置了range参数，将会进行范围下载{@link GetResourceRequest#setRange(long start, long end)}</p>
+     * 如果设置了range参数，将会进行范围下载
      *
      * @param genericDownloadFileRequest 通用的文件下载请求.
+     * @throws ResourceException 资源异常
+     * @return 文件资源下载结果
      */
     GetResourceResult getFile(GetResourceRequest genericDownloadFileRequest) throws ResourceException;
 
@@ -45,7 +47,8 @@ public interface ResourceService {
      *
      * @param genericDownloadFileRequest 通用的下载请求.
      * @param file                       文件保存的路径.
-     * @return 获取文件的响应.
+     * @throws ResourceException 资源异常
+     * @return 资源元数据
      */
     ResourceMetadata getFile(GetResourceRequest genericDownloadFileRequest, File file) throws ResourceException;
 
@@ -54,6 +57,7 @@ public interface ResourceService {
      *
      * @param ossDownloadFileRequest 文件下载请求.
      * @return oss文件下载的响应.
+     * @throws ResourceException 资源异常
      */
     DownloadResourceResult downloadFile(DownloadResourceRequest ossDownloadFileRequest) throws ResourceException;
 
@@ -62,6 +66,7 @@ public interface ResourceService {
      *
      * @param putResourceRequest 文件上传请求对象.
      * @return 文件上传响应.
+     * @throws ResourceException 资源异常
      */
     PutResourceResult uploadFile(PutResourceRequest putResourceRequest) throws ResourceException;
 
@@ -70,6 +75,7 @@ public interface ResourceService {
      *
      * @param request 分片上传的请求.
      * @return 分片上传的响应结果.
+     * @throws ResourceException 资源异常
      */
     InitiateUploadMultipartResult initiateMultipartUpload(
             InitiateUploadMultipartRequest request) throws ResourceException;
@@ -79,6 +85,7 @@ public interface ResourceService {
      *
      * @param fileResourceRequest 文件分片上传.
      * @return 分片响应.
+     * @throws ResourceException 资源异常
      */
     UploadMultipartResult multipartFileUpload(UploadMultipartRequest fileResourceRequest) throws ResourceException;
 
@@ -87,6 +94,7 @@ public interface ResourceService {
      *
      * @param request 请求.
      * @return 分片上传后的响应.
+     * @throws ResourceException 资源异常
      */
     UploadCompleteMultipartResult completeMultipartUpload(
             UploadCompleteMultipartRequest request) throws ResourceException;
@@ -96,6 +104,7 @@ public interface ResourceService {
      *
      * @param listMultipartRequest 列举分片上传的请求.
      * @return 分片上传的响应.
+     * @throws ResourceException 资源异常
      */
     ListMultipartResult listParts(ListMultipartRequest listMultipartRequest) throws ResourceException;
 
@@ -103,6 +112,7 @@ public interface ResourceService {
      * 取消分片上传.
      *
      * @param uploadAbortMultipartRequest 取消分片上传的请求类.
+     * @throws ResourceException 资源异常
      */
     void abortMultipartFileUpload(UploadAbortMultipartRequest uploadAbortMultipartRequest) throws ResourceException;
 
@@ -124,6 +134,7 @@ public interface ResourceService {
      *
      * @param listFileRequest 文件请求.
      * @return 文件列表.
+     * @throws ResourceException 资源异常
      */
     ListResourceResult listFiles(ListResourceRequest listFileRequest) throws ResourceException;
 
@@ -136,6 +147,7 @@ public interface ResourceService {
      * @param destBucketName   目标桶名.
      * @param destObjectKey    目标对象名.
      * @return 复制对象的响应.
+     * @throws ResourceException 资源异常
      */
     CopyResourceResult copyFile(String sourceBucketName,
                                 String sourceObjectKey,
@@ -148,6 +160,7 @@ public interface ResourceService {
      *
      * @param bucketName 桶名.
      * @param objectKey  对象名.
+     * @throws ResourceException 资源异常
      */
     void deleteFile(String bucketName,
                     String objectKey) throws ResourceException;

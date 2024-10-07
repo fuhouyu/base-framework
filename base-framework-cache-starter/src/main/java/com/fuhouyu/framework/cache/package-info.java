@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.constants;
-
 /**
- * <p>
- * api前缀常量
- * </p>
- *
- * @author fuhouyu
- * @since 2024/8/17 18:46
+ * 缓存组件，封装缓存相关的实现
+ * 详情缓存类型:{@link org.springframework.boot.autoconfigure.cache.CacheType}
  */
-public class ApiPrefixConstant {
-
-    private static final String VERSION = "/v1";
-    private static final String BASE_PREFIX = "/base";
-    public static final String FORM_CONTROLLER_PREFIX =
-            BASE_PREFIX + VERSION + "/form";
-
-    private ApiPrefixConstant() {
-    }
-}
+package com.fuhouyu.framework.cache;

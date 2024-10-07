@@ -49,18 +49,23 @@ public class BaseResourceRequest {
      */
     private final String versionId;
 
-    public BaseResourceRequest() {
-        this(null, null);
-    }
 
-    public BaseResourceRequest(String bucketName) {
-        this(bucketName, null, null);
-    }
-
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     */
     public BaseResourceRequest(String bucketName, String objectKey) {
         this(bucketName, objectKey, null);
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param versionId 版本id
+     */
     public BaseResourceRequest(String bucketName, String objectKey, String versionId) {
         this.bucketName = bucketName;
         this.objectKey = objectKey;

@@ -22,6 +22,7 @@ import com.fuhouyu.framework.web.annotaions.NoRepeatSubmit;
 import com.fuhouyu.framework.web.constants.FormTokenConstant;
 import com.fuhouyu.framework.web.exception.WebServiceException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -42,19 +43,18 @@ import java.util.Objects;
  * @since 2024/8/17 22:52
  */
 @Aspect
+@RequiredArgsConstructor
 public class NoRepeatSubmitAspectj {
 
     private final CacheService<String, Object> cacheService;
-
-    public NoRepeatSubmitAspectj(CacheService<String, Object> cacheService) {
-        this.cacheService = cacheService;
-    }
 
     /**
      * 切面，当在使用{@link com.fuhouyu.framework.web.annotaions.NoRepeatSubmit}
      * 注解后，会在这里进行拦截，判断当前表单是否已经提交
      *
      * @param joinPoint 连接点
+     * @param noRepeatSubmit 防重复提交注解
+     * @throws Throwable 异常信息
      * @return obj
      */
     @Around(value = "@annotation(noRepeatSubmit)")

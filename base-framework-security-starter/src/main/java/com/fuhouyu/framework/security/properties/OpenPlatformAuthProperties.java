@@ -38,16 +38,15 @@ import java.util.Map;
 @Setter
 public class OpenPlatformAuthProperties {
 
+    /**
+     * 配置文件前缀
+     */
     public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "open-platform";
 
     /**
      * 客户端相关配置
      */
     private Map<OpenPlatformAuthTypeEnum, AuthDetail> auth;
-
-    public Map<OpenPlatformAuthTypeEnum, AuthDetail> getAuth() {
-        return auth;
-    }
 
     /**
      * 平台类型

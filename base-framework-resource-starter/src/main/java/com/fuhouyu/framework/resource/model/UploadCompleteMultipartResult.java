@@ -43,15 +43,31 @@ public class UploadCompleteMultipartResult extends BaseResourceResult {
      */
     private String versionId;
 
+    /**
+     * 构造函数
+     */
     public UploadCompleteMultipartResult() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param etag      etag
+     * @param versionId 版本号
+     */
     public UploadCompleteMultipartResult(String etag, String versionId) {
         this.etag = etag;
         this.versionId = versionId;
     }
 
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param etag eag
+     * @param versionId 版本id
+     */
     public UploadCompleteMultipartResult(String bucketName, String objectKey, String etag, String versionId) {
         super(bucketName, objectKey);
         this.etag = etag;

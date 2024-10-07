@@ -45,7 +45,12 @@ public abstract class AbstractAuthenticationProvider<T> implements Authenticatio
 
     private final Function<T, UserDetails> registerFunction;
 
-    public AbstractAuthenticationProvider(Function<T, UserDetails> registerFunction) {
+    /**
+     * 构造函数
+     *
+     * @param registerFunction 第三方用户不存在的时的注册方法
+     */
+    protected AbstractAuthenticationProvider(Function<T, UserDetails> registerFunction) {
         this.registerFunction = registerFunction;
     }
 
@@ -83,7 +88,7 @@ public abstract class AbstractAuthenticationProvider<T> implements Authenticatio
     /**
      * 加载用户详情
      *
-     * @param authentication 认证器
+     * @param t 第三方的用户信息
      * @return 用户详情
      * @throws UsernameNotFoundException 未找到用户异常
      */

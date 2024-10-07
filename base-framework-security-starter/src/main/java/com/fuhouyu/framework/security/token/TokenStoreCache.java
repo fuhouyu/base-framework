@@ -75,18 +75,39 @@ public class TokenStoreCache implements TokenStore {
 
     private final CacheService<String, Object> cacheService;
 
+    /**
+     * 构造函数
+     *
+     * @param prefix       token前缀
+     * @param cacheService 缓存接口
+     */
     public TokenStoreCache(String prefix, CacheService<String, Object> cacheService) {
         this(prefix, ZoneId.of("Asia/Shanghai"), cacheService);
     }
 
+    /**
+     * 构造函数
+     * @param zoneId 时区
+     * @param cacheService 缓存接口
+     */
     public TokenStoreCache(ZoneId zoneId, CacheService<String, Object> cacheService) {
         this("", zoneId, cacheService);
     }
 
+    /**
+     * 构造函数
+     * @param cacheService 缓存接口
+     */
     public TokenStoreCache(CacheService<String, Object> cacheService) {
         this("", ZoneId.of("Asia/Shanghai"), cacheService);
     }
 
+    /**
+     * 构造函数
+     * @param prefix token前缀
+     * @param zoneId 时区
+     * @param cacheService 缓存接口
+     */
     public TokenStoreCache(String prefix, ZoneId zoneId, CacheService<String, Object> cacheService) {
         this.cacheService = cacheService;
         this.prefix = prefix;

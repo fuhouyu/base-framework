@@ -49,10 +49,22 @@ public class PartEtag {
      */
     private final String etag;
 
+    /**
+     * 构造函数
+     *
+     * @param partNumber 页号
+     * @param etag       etag
+     */
     public PartEtag(int partNumber, String etag) {
         this(partNumber, -1, etag);
     }
 
+    /**
+     * 构造函数
+     * @param partNumber 页号
+     * @param partSize  大小
+     * @param etag etag
+     */
     public PartEtag(int partNumber, long partSize, String etag) {
         this.partNumber = partNumber;
         this.partSize = partSize;

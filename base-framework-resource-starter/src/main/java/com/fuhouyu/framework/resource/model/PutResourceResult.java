@@ -43,20 +43,44 @@ public class PutResourceResult extends BaseResourceResult {
      */
     private String versionId;
 
+    /**
+     * 构造函数
+     */
     public PutResourceResult() {
     }
 
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     * @param etag       etag
+     */
     public PutResourceResult(String bucketName, String objectKey, String etag) {
         super(bucketName, objectKey);
         this.etag = etag;
     }
 
+    /**
+     * 构造函数
+     *
+     * @param etag      eag
+     * @param versionId 版本id
+     */
     public PutResourceResult(String etag, String versionId) {
         this.etag = etag;
         this.versionId = versionId;
     }
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     * @param etag       etag
+     * @param versionId  版本id
+     */
     public PutResourceResult(String bucketName, String objectKey, String etag, String versionId) {
         super(bucketName, objectKey);
         this.etag = etag;

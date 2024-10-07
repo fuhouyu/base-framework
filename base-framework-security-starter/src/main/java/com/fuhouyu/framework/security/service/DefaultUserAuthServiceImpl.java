@@ -41,6 +41,12 @@ public class DefaultUserAuthServiceImpl implements UserAuthService {
 
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * 构造函数
+     *
+     * @param tokenStore            token存储器
+     * @param authenticationManager 认证管理器
+     */
     public DefaultUserAuthServiceImpl(TokenStore tokenStore, AuthenticationManager authenticationManager) {
         this.tokenStore = tokenStore;
         this.authenticationManager = authenticationManager;

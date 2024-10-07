@@ -44,9 +44,18 @@ public class BaseResourceResult {
     private String bucketName;
 
 
+    /**
+     * 构造函数
+     */
     public BaseResourceResult() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     */
     public BaseResourceResult(String bucketName, String objectKey) {
         this.objectKey = objectKey;
         this.bucketName = bucketName;

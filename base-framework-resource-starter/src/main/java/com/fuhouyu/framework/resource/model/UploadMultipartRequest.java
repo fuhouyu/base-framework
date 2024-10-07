@@ -61,15 +61,37 @@ public class UploadMultipartRequest extends BaseResourceRequest {
     private InputStream inputStream;
 
 
-    public UploadMultipartRequest() {
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     */
+    public UploadMultipartRequest(String bucketName) {
+        super(bucketName, null);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param key        对象key
+     */
     public UploadMultipartRequest(String bucketName, String key) {
         super(bucketName, key);
     }
 
-    public UploadMultipartRequest(String bucketName, String key, String uploadId, int partNumber, InputStream inputStream,
-                                  long partSize) {
+    /**
+     * 构造函数
+     *
+     * @param bucketName  桶名
+     * @param key         对象key
+     * @param uploadId    上传id
+     * @param partNumber  分页号
+     * @param inputStream 输入流
+     * @param partSize    每页大小
+     */
+    public UploadMultipartRequest(String bucketName, String key, String uploadId, int partNumber,
+                                  long partSize, InputStream inputStream) {
         super(bucketName, key);
         this.uploadId = uploadId;
         this.partNumber = partNumber;

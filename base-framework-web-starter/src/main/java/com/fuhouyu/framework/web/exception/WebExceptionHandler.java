@@ -120,8 +120,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(WebServiceException.class)
-    public RestResult<Void> serviceExceptionHandler(ServletWebRequest request,
-                                                    WebServiceException serviceException) {
+    public RestResult<Void> serviceExceptionHandler(WebServiceException serviceException) {
         return ResponseHelper.failed(serviceException.getResponseStatus(), serviceException.getMessage());
     }
 
@@ -179,7 +178,7 @@ public class WebExceptionHandler {
 
 
     /**
-     * 入参的body体中的参数异常拦截器 如 @RequestBody @Size(min = 1, message= "xxx") List<Integer> list
+     * 入参的body体中的参数异常拦截器
      *
      * @param request 请求
      * @param e       请求入参转换异常

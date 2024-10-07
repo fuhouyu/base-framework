@@ -36,6 +36,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 public class WebProperties {
 
+    /**
+     * web 配置文件前缀
+     */
     public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "web";
 
     /**

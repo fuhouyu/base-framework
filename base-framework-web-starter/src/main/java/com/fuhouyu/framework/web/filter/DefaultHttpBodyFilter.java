@@ -42,6 +42,11 @@ public class DefaultHttpBodyFilter implements HttpBodyFilter {
 
     private final KmsService kmsService;
 
+    /**
+     * 构造函数
+     *
+     * @param kmsService kms密钥管理器
+     */
     public DefaultHttpBodyFilter(KmsService kmsService) {
         this.kmsService = kmsService;
     }

@@ -40,6 +40,7 @@ public class ApplicationBasicErrorFilter extends BasicAuthenticationFilter {
      * 初始化基本认证过滤器
      * Basic Base64(clientId:clientSecret).
      * 主要为了处理异常错误的友好返回
+     * @param authenticationManager 认证管理器
      */
     public ApplicationBasicErrorFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager, (request, response, authException) -> {

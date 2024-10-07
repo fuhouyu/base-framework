@@ -39,10 +39,22 @@ public class UploadAbortMultipartRequest extends BaseResourceRequest {
     private String uploadId;
 
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     */
     public UploadAbortMultipartRequest(String bucketName, String objectKey) {
         super(bucketName, objectKey);
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param versionId 版本id
+     */
     public UploadAbortMultipartRequest(String bucketName, String objectKey, String versionId) {
         super(bucketName, objectKey, versionId);
     }

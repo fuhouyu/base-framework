@@ -37,6 +37,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 public class ResourceProperties {
 
+    /**
+     * 资源配置的前缀
+     */
     public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "resource";
 
     /**

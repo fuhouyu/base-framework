@@ -39,6 +39,12 @@ public class CopyResourceResult extends BaseResourceResult {
 
     private Date lastModified;
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     */
     public CopyResourceResult(String bucketName, String objectKey) {
         super(bucketName, objectKey);
     }

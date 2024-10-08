@@ -29,6 +29,13 @@ import java.util.Map;
 public interface Request {
 
     /**
+     * 从请求头中获取认证信息
+     *
+     * @return 请求中头的认证信息，例如token
+     */
+    String getAuthorization();
+
+    /**
      * 当前请求的ip
      *
      * @return 来源ip

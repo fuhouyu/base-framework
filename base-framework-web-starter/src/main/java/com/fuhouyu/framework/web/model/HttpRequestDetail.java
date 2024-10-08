@@ -34,7 +34,9 @@ import java.util.Map;
 @ToString
 @Getter
 @Setter
-public class HttpRequestModel implements Request {
+public class HttpRequestDetail implements Request {
+
+    private String authorization;
 
     private String requestIp;
 

@@ -71,6 +71,14 @@ public class WechatAppletsPlatformProvider extends AbstractAuthenticationProvide
         this.authDetail = authDetail;
     }
 
+    /**
+     * 构造函数
+     *
+     * @param restTemplate       restTemplate
+     * @param userDetailsService 用户接口详情
+     * @param authDetail         认证详情
+     * @param registerFunction   注册函数
+     */
     public WechatAppletsPlatformProvider(RestTemplate restTemplate,
                                          UserDetailsService userDetailsService,
                                          OpenPlatformAuthProperties.AuthDetail authDetail,

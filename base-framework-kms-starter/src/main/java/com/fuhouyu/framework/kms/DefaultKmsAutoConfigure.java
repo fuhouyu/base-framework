@@ -26,6 +26,7 @@ import com.fuhouyu.framework.kms.exception.KmsException;
 import com.fuhouyu.framework.kms.properties.KmsDefaultProperties;
 import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.kms.service.impl.DefaultKmsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.engines.SM4Engine;
 import org.bouncycastle.crypto.macs.CMac;
@@ -55,13 +56,10 @@ import java.util.Objects;
  */
 @ConditionalOnMissingBean(KmsService.class)
 @EnableConfigurationProperties(KmsDefaultProperties.class)
+@RequiredArgsConstructor
 public class DefaultKmsAutoConfigure {
 
     private final KmsDefaultProperties properties;
-
-    public DefaultKmsAutoConfigure(KmsDefaultProperties properties) {
-        this.properties = properties;
-    }
 
     /**
      * 返回默认的bean

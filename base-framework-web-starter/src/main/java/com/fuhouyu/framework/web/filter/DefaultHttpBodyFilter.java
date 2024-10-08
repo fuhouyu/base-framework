@@ -21,10 +21,10 @@ import com.fuhouyu.framework.utils.HexUtil;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
@@ -36,26 +36,17 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/8/22 12:16
  */
+@RequiredArgsConstructor
+@Slf4j
 public class DefaultHttpBodyFilter implements HttpBodyFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultHttpBodyFilter.class);
-
     private final KmsService kmsService;
-
-    /**
-     * 构造函数
-     *
-     * @param kmsService kms密钥管理器
-     */
-    public DefaultHttpBodyFilter(KmsService kmsService) {
-        this.kmsService = kmsService;
-    }
 
     @Override
     public byte[] decryptionBody(byte[] encryptBodyBytes) {
         HttpBodyEncryptionModel httpBodyEncryptionModel = JacksonUtil.readValue(encryptBodyBytes, HttpBodyEncryptionModel.class);
         if (Objects.isNull(httpBodyEncryptionModel)) {
-            LoggerUtil.error(LOGGER,
+            LoggerUtil.warn(log,
                     "需要解密转换后的body对象为空，直接返回");
             return encryptBodyBytes;
         }

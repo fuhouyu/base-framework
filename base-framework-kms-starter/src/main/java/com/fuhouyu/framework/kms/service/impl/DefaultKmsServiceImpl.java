@@ -25,8 +25,6 @@ import com.fuhouyu.framework.kms.exception.KmsException;
 import com.fuhouyu.framework.kms.service.KmsService;
 import org.bouncycastle.crypto.macs.CMac;
 import org.bouncycastle.util.encoders.Hex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -43,8 +41,6 @@ import java.util.Objects;
  * @since 2024/8/17 16:14
  */
 public class DefaultKmsServiceImpl implements KmsService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultKmsServiceImpl.class);
 
     /**
      * 非对称加密

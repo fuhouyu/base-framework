@@ -20,6 +20,7 @@ import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.web.config.WebMvcAutoConfigure;
 import com.fuhouyu.framework.web.filter.DefaultHttpBodyFilter;
 import com.fuhouyu.framework.web.filter.HttpBodyFilter;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -38,7 +39,7 @@ import org.springframework.context.annotation.Import;
 @Import({WebMvcAutoConfigure.class, FormAutoConfigure.class})
 @ComponentScan(basePackageClasses = WebAutoConfigure.class)
 @ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.web.properties")
-public class WebAutoConfigure {
+public class WebAutoConfigure implements InitializingBean {
 
 
     /**
@@ -53,4 +54,8 @@ public class WebAutoConfigure {
         return new DefaultHttpBodyFilter(kmsService);
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println();
+    }
 }

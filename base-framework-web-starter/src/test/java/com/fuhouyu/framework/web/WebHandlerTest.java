@@ -16,7 +16,9 @@
 
 package com.fuhouyu.framework.web;
 
+import com.fuhouyu.framework.kms.KmsAutoConfigure;
 import com.fuhouyu.framework.web.config.WebMvcAutoConfigure;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +34,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
  * @since 2024/8/17 11:47
  */
 @SpringBootTest(classes = {
-        WebAutoConfigure.class
+        KmsAutoConfigure.class,
+        WebAutoConfigure.class,
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class WebHandlerTest {
@@ -46,5 +49,6 @@ class WebHandlerTest {
     void testAutoConfigure() {
         InterceptorRegistry interceptorRegistry = new InterceptorRegistry();
         webMvcAutoConfigure.addInterceptors(interceptorRegistry);
+        Assertions.assertNotNull(webMvcAutoConfigure);
     }
 }

@@ -18,14 +18,15 @@ package com.fuhouyu.framework.web.form;
 
 import com.fuhouyu.framework.cache.CacheAutoConfigure;
 import com.fuhouyu.framework.cache.CaffeineCacheAutoconfigure;
+import com.fuhouyu.framework.kms.KmsAutoConfigure;
 import com.fuhouyu.framework.response.RestResult;
 import com.fuhouyu.framework.web.WebAutoConfigure;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.Assert;
 
 /**
  * <p>
@@ -36,6 +37,7 @@ import org.springframework.util.Assert;
  * @since 2024/8/17 23:10
  */
 @SpringBootTest(classes = {
+        KmsAutoConfigure.class,
         WebAutoConfigure.class,
         CacheAutoConfigure.class,
         CaffeineCacheAutoconfigure.class,
@@ -50,7 +52,7 @@ class WebFormNoRepeatSubmitTest {
     @Test
     void testNoRepeatSubmit() {
         RestResult<Boolean> restResult = formTokenController.success();
-        Assert.isTrue(restResult.getData(), "表单防重复提交验证失败。");
+        Assertions.assertTrue(restResult.getData(), "表单防重复提交验证失败。");
     }
 }
 

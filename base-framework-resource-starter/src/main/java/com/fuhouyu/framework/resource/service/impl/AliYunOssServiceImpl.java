@@ -25,6 +25,7 @@ import com.fuhouyu.framework.resource.model.*;
 import com.fuhouyu.framework.resource.service.ResourceService;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,15 +41,12 @@ import java.util.*;
  * @author fuhouyu
  * @since 2024/8/16 18:35
  */
+@RequiredArgsConstructor
 public class AliYunOssServiceImpl implements ResourceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AliYunOssServiceImpl.class.getName());
 
     private final OSS ossClient;
-
-    public AliYunOssServiceImpl(OSS ossClient) {
-        this.ossClient = ossClient;
-    }
 
     @Override
     public GetResourceResult getFile(GetResourceRequest getResourceRequest) throws ResourceException {

@@ -18,13 +18,8 @@ package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.security.core.passwordencoder.PasswordEncoderFactory;
-import com.fuhouyu.framework.security.service.DefaultUserAuthServiceImpl;
-import com.fuhouyu.framework.security.service.UserAuthService;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.security.token.TokenStoreCache;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -65,10 +60,11 @@ public class SecurityAutoConfigure {
 
 
     /**
-     * 认证管理器配置 <p style:"color=red"> 这里可以进行除其他登录模式的扩展，需要实现{@link AuthenticationProvider}
-     * </p>
+     * 认证管理器配置这里可以进行除其他登录模式的扩展，需要实现{@link AuthenticationProvider}
      *
      * @param authenticationProviders 认证提供者集合
+     * @param userDetailsService 用户接口详情
+     * @param passwordEncoder 密码认证管理器
      * @return 认证管理器
      */
     @Bean("authenticationManager")
@@ -79,20 +75,6 @@ public class SecurityAutoConfigure {
             PasswordEncoder passwordEncoder) {
         authenticationProviders.add(daoAuthenticationProvider(userDetailsService, passwordEncoder));
         return new ProviderManager(authenticationProviders);
-    }
-
-    /**
-     * 创建userAuth bean
-     *
-     * @param tokenStore            token 存储对象
-     * @param authenticationManager 认证管理器
-     * @return userAuth Bean
-     */
-    @Bean
-    @Primary
-    public UserAuthService userAuthService(TokenStore tokenStore,
-                                           @Qualifier("authenticationManager") AuthenticationManager authenticationManager) {
-        return new DefaultUserAuthServiceImpl(tokenStore, authenticationManager);
     }
 
     /**
@@ -109,6 +91,8 @@ public class SecurityAutoConfigure {
     /**
      * dao层实现
      *
+     * @param passwordEncoder 密码管理器
+     * @param userDetailsService 用户详情接口
      * @return dao默认实现
      */
     private AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService,

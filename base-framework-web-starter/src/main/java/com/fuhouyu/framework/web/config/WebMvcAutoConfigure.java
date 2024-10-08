@@ -29,6 +29,7 @@ import com.fuhouyu.framework.web.properties.WebProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.OrderComparator;
@@ -52,16 +53,13 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/8/15 19:49
  */
+@RequiredArgsConstructor
 public class WebMvcAutoConfigure implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
 
     private final WebProperties webProperties;
 
-    public WebMvcAutoConfigure(ApplicationContext applicationContext, WebProperties webProperties) {
-        this.applicationContext = applicationContext;
-        this.webProperties = webProperties;
-    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

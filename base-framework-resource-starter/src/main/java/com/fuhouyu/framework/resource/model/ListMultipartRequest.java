@@ -47,4 +47,13 @@ public class ListMultipartRequest extends BaseResourceRequest {
      * 上传的id.
      */
     private String uploadId;
+
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     */
+    public ListMultipartRequest(String bucketName) {
+        super(bucketName, null);
+    }
 }

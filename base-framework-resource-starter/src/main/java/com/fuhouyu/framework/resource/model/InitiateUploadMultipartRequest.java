@@ -36,19 +36,44 @@ public class InitiateUploadMultipartRequest extends BaseResourceRequest {
     private ResourceMetadata resourceMetadata;
 
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     */
     public InitiateUploadMultipartRequest(String bucketName, String objectKey) {
         super(bucketName, objectKey);
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param versionId 上传id
+     */
     public InitiateUploadMultipartRequest(String bucketName, String objectKey, String versionId) {
         super(bucketName, objectKey, versionId);
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param resourceMetadata 资源元数据
+     */
     public InitiateUploadMultipartRequest(String bucketName, String objectKey, ResourceMetadata resourceMetadata) {
         super(bucketName, objectKey);
         this.resourceMetadata = resourceMetadata;
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param versionId 版本id
+     * @param resourceMetadata 资源元数据
+     */
     public InitiateUploadMultipartRequest(String bucketName, String objectKey, String versionId, ResourceMetadata resourceMetadata) {
         super(bucketName, objectKey, versionId);
         this.resourceMetadata = resourceMetadata;

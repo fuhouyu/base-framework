@@ -20,6 +20,7 @@ import com.fuhouyu.framework.security.core.AbstractAuthenticationProvider;
 import com.fuhouyu.framework.security.properties.OpenPlatformAuthProperties;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import lombok.EqualsAndHashCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,13 @@ public class WechatAppletsPlatformProvider extends AbstractAuthenticationProvide
     private final OpenPlatformAuthProperties.AuthDetail authDetail;
 
 
+    /**
+     * 构造函数
+     *
+     * @param restTemplate       restTemplate
+     * @param userDetailsService 用户详情接口
+     * @param authDetail         第三方平台认证相关的信息
+     */
     public WechatAppletsPlatformProvider(RestTemplate restTemplate,
                                          UserDetailsService userDetailsService,
                                          OpenPlatformAuthProperties.AuthDetail authDetail) {
@@ -63,6 +71,14 @@ public class WechatAppletsPlatformProvider extends AbstractAuthenticationProvide
         this.authDetail = authDetail;
     }
 
+    /**
+     * 构造函数
+     *
+     * @param restTemplate       restTemplate
+     * @param userDetailsService 用户接口详情
+     * @param authDetail         认证详情
+     * @param registerFunction   注册函数
+     */
     public WechatAppletsPlatformProvider(RestTemplate restTemplate,
                                          UserDetailsService userDetailsService,
                                          OpenPlatformAuthProperties.AuthDetail authDetail,
@@ -119,8 +135,12 @@ public class WechatAppletsPlatformProvider extends AbstractAuthenticationProvide
     /**
      * 使用它才支持微信小程序认证
      */
+    @EqualsAndHashCode(callSuper = true)
     public static class WechatAppletsAuthenticationToken extends AbstractAuthenticationToken {
 
+        /**
+         * 微信一次性认证码
+         */
         private final String jsCode;
 
         /**

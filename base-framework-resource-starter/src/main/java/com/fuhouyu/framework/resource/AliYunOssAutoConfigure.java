@@ -27,6 +27,7 @@ import com.fuhouyu.framework.resource.properties.ResourceProperties;
 import com.fuhouyu.framework.resource.service.ResourceService;
 import com.fuhouyu.framework.resource.service.impl.AliYunOssServiceImpl;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,16 +45,19 @@ import java.util.Objects;
  * @since 2024/8/16 18:35
  */
 @ConditionalOnClass(OSS.class)
+@RequiredArgsConstructor
 public class AliYunOssAutoConfigure implements InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AliYunOssAutoConfigure.class);
 
     private final ResourceProperties resourceProperties;
 
-    public AliYunOssAutoConfigure(ResourceProperties resourceProperties) {
-        this.resourceProperties = resourceProperties;
-    }
 
+    /**
+     * 初始化阿里云 oss bean
+     *
+     * @return 阿里云 oss bean
+     */
     @Bean
     public OSS ossClient() {
         AliYunOssProperties ossConfig = resourceProperties.getAliOssConfig();

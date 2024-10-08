@@ -43,10 +43,22 @@ public class GetResourceRequest extends BaseResourceRequest {
      */
     private long[] range;
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     */
     public GetResourceRequest(String bucketName, String objectKey) {
         super(bucketName, objectKey);
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param versionId 版本id
+     */
     public GetResourceRequest(String bucketName, String objectKey, String versionId) {
         super(bucketName, objectKey, versionId);
     }

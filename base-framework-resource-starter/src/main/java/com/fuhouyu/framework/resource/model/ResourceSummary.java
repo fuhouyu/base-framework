@@ -16,6 +16,10 @@
 
 package com.fuhouyu.framework.resource.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.Date;
 
 /**
@@ -26,6 +30,9 @@ import java.util.Date;
  * @author fuhouyu
  * @since 2024/8/16 18:10
  */
+@Getter
+@Setter
+@ToString
 public class ResourceSummary {
 
     private String bucketName;
@@ -44,81 +51,4 @@ public class ResourceSummary {
 
     private String type;
 
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    public String getObjectKey() {
-        return objectKey;
-    }
-
-    public void setObjectKey(String objectKey) {
-        this.objectKey = objectKey;
-    }
-
-    public String getEtag() {
-        return etag;
-    }
-
-    public void setEtag(String etag) {
-        this.etag = etag;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
-    }
-
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
-    }
-
-    public String getStorageClass() {
-        return storageClass;
-    }
-
-    public void setStorageClass(String storageClass) {
-        this.storageClass = storageClass;
-    }
-
-    public ResourceOwner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(ResourceOwner owner) {
-        this.owner = owner;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "FileResourceSummary{" +
-                "bucketName='" + bucketName + '\'' +
-                ", objectKey='" + objectKey + '\'' +
-                ", etag='" + etag + '\'' +
-                ", size=" + size +
-                ", lastModified=" + lastModified +
-                ", storageClass='" + storageClass + '\'' +
-                ", owner=" + owner +
-                ", type='" + type + '\'' +
-                '}';
-    }
 }

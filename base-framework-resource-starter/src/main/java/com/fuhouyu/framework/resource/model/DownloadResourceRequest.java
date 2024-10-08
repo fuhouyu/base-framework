@@ -70,24 +70,57 @@ public class DownloadResourceRequest extends BaseResourceRequest {
     private String checkpointFile;
 
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     */
     public DownloadResourceRequest(String bucketName, String objectKey) {
         super(bucketName, objectKey);
     }
 
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param downloadFile 下载到文件本地存储地址
+     * @param partSize 下载大小
+     */
     public DownloadResourceRequest(String bucketName, String objectKey, String downloadFile, long partSize) {
         this(bucketName, objectKey, downloadFile, partSize, 1, false);
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param downloadFile 下载到文件的本地存储地址
+     * @param partSize 大小
+     * @param taskNum 下载任务数，local类型不支持
+     * @param enableCheckpoint 开启检查点，local类型不支持
+     */
     public DownloadResourceRequest(String bucketName, String objectKey, String downloadFile, long partSize,
                                    int taskNum,
                                    boolean enableCheckpoint) {
         this(bucketName, objectKey, downloadFile, partSize, taskNum, enableCheckpoint, null);
     }
 
-    public DownloadResourceRequest(String bucketName, String key, String downloadFile, long partSize, int taskNum, boolean enableCheckpoint,
+    /**
+     * 构造函数
+     *
+     * @param bucketName       桶名
+     * @param objectKey        对象key
+     * @param downloadFile     下载到文件的本地存储地址
+     * @param partSize         大小
+     * @param taskNum          下载任务数，local类型不支持
+     * @param checkpointFile   检查点文件，local类型不支持
+     * @param enableCheckpoint 开启检查点，local类型不支持
+     */
+    public DownloadResourceRequest(String bucketName, String objectKey, String downloadFile, long partSize, int taskNum, boolean enableCheckpoint,
                                    String checkpointFile) {
-        super(bucketName, key);
+        super(bucketName, objectKey);
         this.partSize = partSize;
         this.taskNum = taskNum;
         this.downloadFile = downloadFile;

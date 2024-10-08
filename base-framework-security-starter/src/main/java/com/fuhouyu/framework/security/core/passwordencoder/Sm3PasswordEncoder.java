@@ -48,20 +48,35 @@ public class Sm3PasswordEncoder implements PasswordEncoder {
 
     private final SecureRandom random;
 
+    /**
+     * 构造函数
+     */
     public Sm3PasswordEncoder() {
         this(DEFAULT_SM3_PREFIX, null);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param prefix 前缀
+     */
     public Sm3PasswordEncoder(String prefix) {
         this(prefix, null);
     }
 
-
+    /**
+     * 构造函数
+     * @param random 安全随机数
+     */
     public Sm3PasswordEncoder(SecureRandom random) {
         this(DEFAULT_SM3_PREFIX, random);
     }
 
-
+    /**
+     * 构造函数
+     * @param prefix 密码前缀
+     * @param random 安全随机数
+     */
     public Sm3PasswordEncoder(String prefix, SecureRandom random) {
         this.prefix = prefix;
         this.random = random;

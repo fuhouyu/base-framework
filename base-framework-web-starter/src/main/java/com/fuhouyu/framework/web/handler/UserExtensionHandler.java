@@ -34,6 +34,7 @@ public interface UserExtensionHandler {
      * 只有在请求中解析出了用户，才会执行该类
      *
      * @param user 用户信息
+     * @param <T> 用户子类
      */
     <T extends User> void userExtensionHandlerInterceptor(T user);
 

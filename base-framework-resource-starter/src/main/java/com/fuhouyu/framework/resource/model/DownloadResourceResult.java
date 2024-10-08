@@ -38,9 +38,17 @@ public class DownloadResourceResult {
      */
     private ResourceMetadata resourceMetadata;
 
+    /**
+     * 构造函数
+     */
     public DownloadResourceResult() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param resourceMetadata 资源元数据
+     */
     public DownloadResourceResult(ResourceMetadata resourceMetadata) {
         this.resourceMetadata = resourceMetadata;
     }

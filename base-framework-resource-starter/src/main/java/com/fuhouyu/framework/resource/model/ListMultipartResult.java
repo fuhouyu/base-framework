@@ -44,11 +44,22 @@ public class ListMultipartResult extends BaseResourceResult {
     private List<PartInfoResult> partInfoResult;
 
 
+    /**
+     * 构造函数
+     *
+     * @param uploadId 上传id
+     */
     public ListMultipartResult(String uploadId) {
         this.uploadId = uploadId;
     }
 
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param uploadId 上传id
+     */
     public ListMultipartResult(String bucketName, String objectKey,
                                String uploadId) {
         super(bucketName, objectKey);

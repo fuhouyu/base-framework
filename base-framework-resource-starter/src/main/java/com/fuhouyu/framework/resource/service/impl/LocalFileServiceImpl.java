@@ -369,6 +369,7 @@ public class LocalFileServiceImpl implements ResourceService {
      * @param tmpUploadFilePath 分片文件路径
      * @param targetPath        目标路径
      * @param uploadId          上传的文件id
+     * @throws ResourceException 资源异常
      * @return etag
      */
     public String mergeFile(Path tmpUploadFilePath, Path targetPath, String uploadId) throws ResourceException {

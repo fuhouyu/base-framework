@@ -26,7 +26,14 @@ package com.fuhouyu.framework.resource.constants;
  */
 public class FileResourceMetadataConstant {
 
+    /**
+     * etag
+     */
     public static final String ETAG = "etag";
+
+    /**
+     * 最后修改时间
+     */
     public static final String LAST_MODIFIED = "Last-Modified";
 
     private FileResourceMetadataConstant() {

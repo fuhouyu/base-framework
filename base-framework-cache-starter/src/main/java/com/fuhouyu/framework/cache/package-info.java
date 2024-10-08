@@ -14,29 +14,8 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.security.service;
-
-import com.fuhouyu.framework.security.token.DefaultOAuth2Token;
-import org.springframework.security.core.Authentication;
-
 /**
- * <p>
- * 用户认证接口
- * </p>
- *
- * @author fuhouyu
- * @since 2024/8/15 16:56
+ * 缓存组件，封装缓存相关的实现
+ * 详情缓存类型:{@link org.springframework.boot.autoconfigure.cache.CacheType}
  */
-public interface UserAuthService {
-
-
-    /**
-     * 生成oauth2 Token
-     *
-     * @param authentication 认证对象
-     * @return token对象
-     * @throws Exception 登录情况下可能会出现的各种异常问题
-     */
-    DefaultOAuth2Token generatorToken(Authentication authentication) throws Exception;
-
-}
+package com.fuhouyu.framework.cache;

@@ -22,6 +22,7 @@ import com.fuhouyu.framework.context.user.UserContextHolder;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -39,6 +40,7 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/8/15 19:52
  */
+@RequiredArgsConstructor
 public class HttpRequestUserHandler implements AsyncHandlerInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpRequestUserHandler.class);
@@ -52,16 +54,6 @@ public class HttpRequestUserHandler implements AsyncHandlerInterceptor {
      */
     private final Class<? extends User> subUserType;
 
-    public HttpRequestUserHandler(Class<? extends User> subUserType, UserParseHandler userParseHandler) {
-        this(null, userParseHandler, subUserType);
-    }
-
-    public HttpRequestUserHandler(List<UserExtensionHandler> userExtensionInterceptors, UserParseHandler userParseHandler,
-                                  Class<? extends User> subUserType) {
-        this.userExtensionInterceptors = userExtensionInterceptors;
-        this.userParseHandler = userParseHandler;
-        this.subUserType = subUserType;
-    }
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {

@@ -40,12 +40,22 @@ public class WebServiceException extends RuntimeException {
 
     private final transient ResponseCode responseStatus;
 
+    /**
+     * 构造函数
+     *
+     * @param responseStatus 响应状态
+     */
     public WebServiceException(ResponseCode responseStatus) {
         this.responseStatus = responseStatus;
         this.status = responseStatus.getCode();
         this.message = responseStatus.getMessage();
     }
 
+    /**
+     * 构造函数
+     * @param responseStatus 响应状态
+     * @param errorMessage 错误信息
+     */
     public WebServiceException(ResponseCode responseStatus, String errorMessage) {
         this.status = responseStatus.getCode();
         this.message = errorMessage;

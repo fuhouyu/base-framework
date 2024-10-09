@@ -21,6 +21,7 @@ import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.security.token.DefaultOAuth2Token;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.security.token.TokenStoreCache;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.Assert;
 
 import java.util.Collections;
 
@@ -68,22 +68,22 @@ class TokenStoreTest {
     void testTokenStore() {
 
         DefaultOAuth2Token accessToken = tokenStore.createToken(authentication, 60, 60);
-        Assert.notNull(accessToken, "生成的token不能为空");
+        Assertions.assertNotNull(accessToken, "生成的token不能为空");
 
         Authentication tokenAuthentication = tokenStore.readAuthentication(accessToken);
-        Assert.notNull(tokenAuthentication, "未获取到token认证的对象");
+        Assertions.assertNotNull(tokenAuthentication, "未获取到token认证的对象");
 
         OAuth2RefreshToken oAuth2RefreshToken = tokenStore.readRefreshToken(accessToken.getAuth2RefreshToken().getTokenValue());
-        Assert.notNull(oAuth2RefreshToken, "未获取到刷新令牌对象");
+        Assertions.assertNotNull(oAuth2RefreshToken, "未获取到刷新令牌对象");
 
         Authentication authenticationByRefreshToken = tokenStore.readAuthenticationForRefreshToken(oAuth2RefreshToken);
-        Assert.notNull(authenticationByRefreshToken, "未通过刷新令牌获取到认证对象");
+        Assertions.assertNotNull(authenticationByRefreshToken, "未通过刷新令牌获取到认证对象");
 
         tokenStore.removeAllToken(accessToken);
         OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(accessToken.getTokenValue());
-        Assert.isNull(oAuth2AccessToken, "access token 未被清除");
+        Assertions.assertNull(oAuth2AccessToken, "access token 未被清除");
 
-        Assert.isNull(tokenStore.readRefreshToken(accessToken.getAuth2RefreshToken().getTokenValue()), "refresh token 未被清除");
+        Assertions.assertNull(tokenStore.readRefreshToken(accessToken.getAuth2RefreshToken().getTokenValue()), "refresh token 未被清除");
     }
 
 }

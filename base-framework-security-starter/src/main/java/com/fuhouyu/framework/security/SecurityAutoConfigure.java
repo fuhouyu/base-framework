@@ -16,10 +16,12 @@
 
 package com.fuhouyu.framework.security;
 
+import com.fuhouyu.framework.cache.CacheAutoConfigure;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.security.core.passwordencoder.PasswordEncoderFactory;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.security.token.TokenStoreCache;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -44,6 +46,7 @@ import java.util.List;
  */
 @ComponentScan(basePackageClasses = SecurityAutoConfigure.class)
 @Import({OpenPlatformAutoConfigure.class})
+@AutoConfigureAfter(CacheAutoConfigure.class)
 public class SecurityAutoConfigure {
 
     /**

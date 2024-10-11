@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.web;
 
 import com.fuhouyu.framework.kms.service.KmsService;
-import com.fuhouyu.framework.web.config.WebMvcAutoConfigure;
+import com.fuhouyu.framework.web.configure.WebMvcAutoConfigure;
 import com.fuhouyu.framework.web.filter.DefaultHttpBodyFilter;
 import com.fuhouyu.framework.web.filter.HttpBodyFilter;
 import org.springframework.beans.factory.InitializingBean;

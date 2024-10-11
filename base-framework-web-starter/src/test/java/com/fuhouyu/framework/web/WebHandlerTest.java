@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.web;
 
 import com.fuhouyu.framework.kms.KmsAutoConfigure;
-import com.fuhouyu.framework.web.config.WebMvcAutoConfigure;
+import com.fuhouyu.framework.web.configure.WebMvcAutoConfigure;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.config;
+package com.fuhouyu.framework.web.configure;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fuhouyu.framework.constants.HttpRequestHeaderConstant;
 import com.fuhouyu.framework.context.user.DefaultUserDetail;
 import com.fuhouyu.framework.context.user.User;
@@ -34,12 +41,17 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -60,6 +72,38 @@ public class WebMvcAutoConfigure implements WebMvcConfigurer {
 
     private final WebProperties webProperties;
 
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
+            "yyyy-MM-dd");
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
+            "yyyy-MM-dd HH:mm:ss");
+
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper objectMapper = jackson2HttpMessageConverter.getObjectMapper();
+        // 不显示为null的字段, 将Long类型，转换为String类型，否则前端会精度丢失
+
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+
+        // 日期时间序列化与反序列化
+        simpleModule.addSerializer(LocalDate.class, new LocalDateSerializer(DATE_FORMATTER));
+        simpleModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DATE_FORMATTER));
+
+        // 日期时间序列化与反序列化
+        LocalDateTimeDeserializer localDateTimeDeserializer = new LocalDateTimeDeserializer(
+                DATE_TIME_FORMATTER);
+        simpleModule.addSerializer(LocalDateTime.class,
+                new LocalDateTimeSerializer(DATE_TIME_FORMATTER));
+        simpleModule.addDeserializer(LocalDateTime.class, localDateTimeDeserializer);
+        objectMapper.registerModule(simpleModule);
+
+        jackson2HttpMessageConverter.setObjectMapper(objectMapper);
+        //放到第一个
+        converters.add(0, jackson2HttpMessageConverter);
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

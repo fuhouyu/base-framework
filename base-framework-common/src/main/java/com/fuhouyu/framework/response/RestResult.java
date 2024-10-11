@@ -30,7 +30,6 @@ import java.io.Serializable;
  * @author fuhouyu
  * @since 2024/8/13 16:27
  */
-@Schema(name = "RestResult", description = "基础响应，所有的响应都会被该类包装返回")
 @ToString
 @Getter
 @Setter
@@ -39,7 +38,7 @@ import java.io.Serializable;
 public class RestResult<T> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4123165123156121331L;
 
     /**
      * 是否成功： true/false
@@ -62,7 +61,7 @@ public class RestResult<T> implements Serializable {
     /**
      * 响应数据
      */
-    @Schema(name = "data", description = "响应数据，该值可能为空", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(name = "data", description = "响应内容")
     private transient T data;
 
     private RestResult() {

@@ -23,8 +23,7 @@ import com.fuhouyu.framework.resource.service.ResourceService;
 import com.fuhouyu.framework.service.Callback;
 import com.fuhouyu.framework.utils.FileUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -47,9 +46,8 @@ import java.util.stream.Stream;
  * @author fuhouyu
  * @since 2024/8/18 16:55
  */
+@Slf4j
 public class LocalFileServiceImpl implements ResourceService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LocalFileServiceImpl.class);
 
     private static final int DEFAULT_BYTES_LENGTH = 8192;
 
@@ -355,7 +353,7 @@ public class LocalFileServiceImpl implements ResourceService {
             fileAttributes = FileUtil.readFileAttributes(path);
             resourceMetadata.setHeader(FileResourceMetadataConstant.LAST_MODIFIED, FileUtil.getFileLastModifiedTime(path));
         } catch (IOException e) {
-            LoggerUtil.error(LOGGER, "获取资源文件:{} 中的用户自定义元数据错误:{}",
+            LoggerUtil.error(log, "获取资源文件:{} 中的用户自定义元数据错误:{}",
                     path.getFileName(), e.getMessage(), e);
             throw new ResourceException(e.getMessage(), e);
         }

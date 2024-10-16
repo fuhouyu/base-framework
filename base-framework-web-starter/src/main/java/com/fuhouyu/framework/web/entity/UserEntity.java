@@ -13,33 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.framework.web.entity;
 
-package com.fuhouyu.framework.context.user;
-
-
+import com.fuhouyu.framework.context.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serial;
-import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * <p>
- * 默认用户详情
+ * 用户实体
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 09:49
+ * @since 2024/10/16 21:18
  */
-@ToString
 @Getter
 @Setter
-public class DefaultUserDetail implements Serializable, User {
+@ToString
+public class UserEntity implements User {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2389708129078213719L;
 
     private Long id;
 
@@ -53,6 +52,9 @@ public class DefaultUserDetail implements Serializable, User {
 
     private String refAccountId;
 
-    private transient Map<String, Object> additionalInformation;
+    private Map<String, Object> additionalInformation;
 
+    public UserEntity() {
+        this.additionalInformation = new HashMap<>();
+    }
 }

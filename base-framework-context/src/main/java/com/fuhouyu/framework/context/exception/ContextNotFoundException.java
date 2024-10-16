@@ -13,39 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.fuhouyu.framework.web.model;
-
-import com.fuhouyu.framework.context.request.Request;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.util.Map;
+package com.fuhouyu.framework.context.exception;
 
 /**
  * <p>
- * http请求详情类
+ * 上下文不存在异常
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/18 16:44
+ * @since 2024/10/16 20:17
  */
-@ToString
-@Getter
-@Setter
-public class HttpRequestDetail implements Request {
+public class ContextNotFoundException extends Exception {
 
-    private String authorization;
+    public ContextNotFoundException(String message) {
+        super(message);
+    }
 
-    private String requestIp;
+    public ContextNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    private String requestHost;
-
-    private String requestTarget;
-
-    private String userAgent;
-
-    private Map<String, Object> additionalInformation;
-
+    public ContextNotFoundException(Throwable cause) {
+        super(cause);
+    }
 }

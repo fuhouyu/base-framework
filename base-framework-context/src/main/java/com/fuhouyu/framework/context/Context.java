@@ -16,6 +16,8 @@
 
 package com.fuhouyu.framework.context;
 
+import com.fuhouyu.framework.context.exception.ContextNotFoundException;
+
 /**
  * <p>
  * 上下文接口
@@ -24,19 +26,26 @@ package com.fuhouyu.framework.context;
  * @author fuhouyu
  * @since 2024/8/14 10:33
  */
-public interface Context<T> {
+public interface Context {
 
     /**
-     * 获取上下文中的对象
+     * 获取用户上下文
      *
+     * @return 用户上下文
+     */
+    User getUser();
+
+    /**
+     * 获取请求上下文
+     *
+     * @return 请求上下文
+     */
+    Request getRequest();
+
+    /**
+     * 通过名称获取上下文
+     * @param contextName 上下文名称
      * @return 上下文对象
      */
-    T getObject();
-
-    /**
-     * 设置上下文对象
-     *
-     * @param t 上下文对象
-     */
-    void setObject(T t);
+    Object getContextByName(String contextName) throws ContextNotFoundException;
 }

@@ -16,17 +16,17 @@
 
 package com.fuhouyu.framework.security.token;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fuhouyu.framework.context.request.Request;
-import com.fuhouyu.framework.context.request.RequestContextHolder;
-import com.fuhouyu.framework.utils.JacksonUtil;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.Request;
 import org.springframework.security.core.Authentication;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>
@@ -44,8 +44,10 @@ public class DefaultAuthenticationKeyGenerator implements AuthenticationKeyGener
         Object principal = authentication.getPrincipal();
         Map<String, Object> map = new HashMap<>();
         map.put("principal", principal);
-        if (Objects.nonNull(RequestContextHolder.getContext())) {
-            Request request = RequestContextHolder.getContext().getObject();
+
+        if (Objects.nonNull(ContextHolderStrategy.getContext())
+                && Objects.nonNull(ContextHolderStrategy.getContext().getRequest())) {
+            Request request = ContextHolderStrategy.getContext().getRequest();
             map.put("ip", request.getRequestIp());
         }
         return this.generateKey(map);

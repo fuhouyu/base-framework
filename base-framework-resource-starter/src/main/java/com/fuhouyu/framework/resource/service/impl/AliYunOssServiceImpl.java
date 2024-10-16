@@ -26,8 +26,7 @@ import com.fuhouyu.framework.resource.service.ResourceService;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.InputStream;
@@ -42,9 +41,8 @@ import java.util.*;
  * @since 2024/8/16 18:35
  */
 @RequiredArgsConstructor
+@Slf4j
 public class AliYunOssServiceImpl implements ResourceService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AliYunOssServiceImpl.class.getName());
 
     private final OSS ossClient;
 
@@ -66,7 +64,7 @@ public class AliYunOssServiceImpl implements ResourceService {
             fileResult.setResourceMetadata(this.getFileResourceMetadata(object.getObjectMetadata()));
             return fileResult;
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "阿里云oss下载失败，桶名:{}, 下载的对象:{}, 错误信息:{}",
+            LoggerUtil.error(log, "阿里云oss下载失败，桶名:{}, 下载的对象:{}, 错误信息:{}",
                     getResourceRequest.getBucketName(), getResourceRequest.getObjectKey(),
                     e.getMessage());
             throw new ResourceException(e.getMessage(), e);
@@ -82,7 +80,7 @@ public class AliYunOssServiceImpl implements ResourceService {
             ObjectMetadata objectMetadata = ossClient.getObject(getObjectRequest, file);
             return this.getFileResourceMetadata(objectMetadata);
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "阿里云oss下载到文件:{} 失败，桶名:{}, 下载的对象:{}, 错误信息:{} ",
+            LoggerUtil.error(log, "阿里云oss下载到文件:{} 失败，桶名:{}, 下载的对象:{}, 错误信息:{} ",
                     file.getAbsolutePath(),
                     request.getBucketName(), request.getObjectKey(), e.getMessage());
             throw new ResourceException(e.getMessage(), e);
@@ -101,7 +99,7 @@ public class AliYunOssServiceImpl implements ResourceService {
                     this.getFileResourceMetadata(
                             downloadFileResult.getObjectMetadata()));
         } catch (Throwable e) {
-            LoggerUtil.error(LOGGER, "阿里云oss资源下载失败，桶名:{}, 下载的对象:{}, 下载请求:{}, 错误信息:{}",
+            LoggerUtil.error(log, "阿里云oss资源下载失败，桶名:{}, 下载的对象:{}, 下载请求:{}, 错误信息:{}",
                     request.getBucketName(), request.getObjectKey(),
                     request, e.getMessage());
             throw new ResourceException(e.getMessage(), e);
@@ -115,7 +113,7 @@ public class AliYunOssServiceImpl implements ResourceService {
             putResourceResult = ossClient.putObject(
                     this.getPutObjectRequest(putResourceRequest));
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "oss：{} 文件上传失败:", putResourceRequest, e);
+            LoggerUtil.error(log, "oss：{} 文件上传失败:", putResourceRequest, e);
             throw new ResourceException(e.getMessage(), e);
         }
         return new PutResourceResult(putResourceRequest.getBucketName(),
@@ -138,7 +136,7 @@ public class AliYunOssServiceImpl implements ResourceService {
                     = ossClient.initiateMultipartUpload(
                     initiateUploadMultipartRequest);
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "oss：{} 初始化分片id失败:", request, e);
+            LoggerUtil.error(log, "oss：{} 初始化分片id失败:", request, e);
             throw new ResourceException(e.getMessage(), e);
         }
         return new InitiateUploadMultipartResult(
@@ -161,7 +159,7 @@ public class AliYunOssServiceImpl implements ResourceService {
         try {
             uploadPartResult = ossClient.uploadPart(uploadPartRequest);
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "oss：{} 分片上传失败:", uploadFileRequest, e);
+            LoggerUtil.error(log, "oss：{} 分片上传失败:", uploadFileRequest, e);
             throw new ResourceException(e.getMessage(), e);
         }
         return new UploadMultipartResult(uploadFileRequest.getBucketName(),
@@ -187,7 +185,7 @@ public class AliYunOssServiceImpl implements ResourceService {
                     ossClient.completeMultipartUpload(
                             completeMultipartUploadRequest);
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "oss：{} 分片合并失败:", request, e);
+            LoggerUtil.error(log, "oss：{} 分片合并失败:", request, e);
             throw new ResourceException(e.getMessage(), e);
         }
         return new UploadCompleteMultipartResult(
@@ -206,7 +204,7 @@ public class AliYunOssServiceImpl implements ResourceService {
         try {
             partListing = ossClient.listParts(listPartsRequest);
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "oss：{} 列出分片失败:", listPartsRequest, e);
+            LoggerUtil.error(log, "oss：{} 列出分片失败:", listPartsRequest, e);
             throw new ResourceException(e.getMessage(), e);
         }
         return getListMultiPartFileResult(partListing);
@@ -221,7 +219,7 @@ public class AliYunOssServiceImpl implements ResourceService {
                             uploadAbortMultipartRequest.getObjectKey(),
                             uploadAbortMultipartRequest.getUploadId());
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "oss：{} 取消分片失败:", uploadAbortMultipartRequest, e);
+            LoggerUtil.error(log, "oss：{} 取消分片失败:", uploadAbortMultipartRequest, e);
             throw new ResourceException(e.getMessage(), e);
         }
         ossClient.abortMultipartUpload(abortMultipartUploadRequest);
@@ -261,7 +259,7 @@ public class AliYunOssServiceImpl implements ResourceService {
             copyObjectResult = this.ossClient.copyObject(sourceBucketName, sourceObjectKey,
                     destBucketName, destObjectKey);
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "oss 复制资源失败, 源桶:{}, 源文件:{}, 目标桶:{}, 目标文件:{}",
+            LoggerUtil.error(log, "oss 复制资源失败, 源桶:{}, 源文件:{}, 目标桶:{}, 目标文件:{}",
                     sourceBucketName, sourceObjectKey, destBucketName, destObjectKey, e);
             throw new ResourceException(e.getMessage(), e);
         }
@@ -276,7 +274,7 @@ public class AliYunOssServiceImpl implements ResourceService {
         try {
             this.ossClient.deleteObject(bucketName, objectKey);
         } catch (OSSException e) {
-            LoggerUtil.error(LOGGER, "阿里云删除桶 {} 文件 {} 失败",
+            LoggerUtil.error(log, "阿里云删除桶 {} 文件 {} 失败",
                     bucketName, objectKey, e);
             throw new ResourceException(e.getMessage(), e);
         }

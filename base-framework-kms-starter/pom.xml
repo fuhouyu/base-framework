@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>base-framework-kms-starter</artifactId>
-    <name>Base Framework Kms Provider</name>
+    <name>Base Framework Kms Starter</name>
     <description>Kms 密钥提供者</description>
 
     <dependencies>

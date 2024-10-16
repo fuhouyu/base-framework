@@ -13,30 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.framework.response;
 
-package com.fuhouyu.framework.context.user;
-
-import com.fuhouyu.framework.context.Context;
+import java.io.Serializable;
 
 /**
  * <p>
- * 用户上下文默认实现
+ * 基类响应
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 10:56
+ * @since 2024/10/16 20:11
  */
-public class UserContextImpl implements Context<User> {
+public interface BaseResponse<T> extends Serializable {
 
-    private User user;
+    /**
+     * 获取响应
+     *
+     * @return 响应编码
+     */
+    Integer getCode();
 
-    @Override
-    public User getObject() {
-        return this.user;
-    }
+    /**
+     * 获取响应信息
+     *
+     * @return 响应信息
+     */
+    String getMessage();
 
-    @Override
-    public void setObject(User user) {
-        this.user = user;
-    }
+    /**
+     * 获取成功/错误响应
+     *
+     * @return 成功/错误
+     */
+    Boolean getIsSuccess();
+
+    /**
+     * 获取响应data信息
+     *
+     * @return data信息
+     */
+    T getData();
 }

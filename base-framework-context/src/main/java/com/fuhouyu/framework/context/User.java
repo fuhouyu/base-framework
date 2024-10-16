@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.context.user;
+package com.fuhouyu.framework.context;
 
-import java.util.Map;
+import com.fuhouyu.framework.service.AdditionalInformationFunction;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -26,7 +28,7 @@ import java.util.Map;
  * @author fuhouyu
  * @since 2024/8/14 09:38
  */
-public interface User {
+public interface User extends Serializable, AdditionalInformationFunction {
 
     /**
      * 用户的主键id
@@ -69,12 +71,5 @@ public interface User {
      * @return 第三方账号id
      */
     String getRefAccountId();
-
-
-    /**
-     * 获取用户扩展信息
-     */
-    Map<String, Object> getAdditionalInformation();
-
 
 }

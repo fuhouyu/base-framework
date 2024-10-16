@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.web.exception;
 
-import com.fuhouyu.framework.response.ResponseCode;
+import com.fuhouyu.framework.response.BaseResponseCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -38,14 +38,14 @@ public class WebServiceException extends RuntimeException {
 
     private final String message;
 
-    private final transient ResponseCode responseStatus;
+    private final transient BaseResponseCode responseStatus;
 
     /**
      * 构造函数
      *
      * @param responseStatus 响应状态
      */
-    public WebServiceException(ResponseCode responseStatus) {
+    public WebServiceException(BaseResponseCode responseStatus) {
         this.responseStatus = responseStatus;
         this.status = responseStatus.getCode();
         this.message = responseStatus.getMessage();
@@ -56,7 +56,7 @@ public class WebServiceException extends RuntimeException {
      * @param responseStatus 响应状态
      * @param errorMessage 错误信息
      */
-    public WebServiceException(ResponseCode responseStatus, String errorMessage) {
+    public WebServiceException(BaseResponseCode responseStatus, String errorMessage) {
         this.status = responseStatus.getCode();
         this.message = errorMessage;
         this.responseStatus = responseStatus;

@@ -14,31 +14,47 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.properties;
+package com.fuhouyu.framework.web.entity;
 
-import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
+import com.fuhouyu.framework.context.Request;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.io.Serial;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
- * web配置
+ * http请求详情类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/17 11:07
+ * @since 2024/8/18 16:44
  */
-@ConfigurationProperties(prefix = WebProperties.PREFIX)
 @ToString
 @Getter
 @Setter
-public class WebProperties {
+public class RequestEntity implements Request {
 
-    /**
-     * web 配置文件前缀
-     */
-    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "web";
+    @Serial
+    private static final long serialVersionUID = 1926319862948712381L;
+
+    private final Map<String, Object> additionalInformation;
+
+    public RequestEntity() {
+        this.additionalInformation = new HashMap<>(2);
+    }
+
+    private String authorization;
+
+    private String requestIp;
+
+    private String requestHost;
+
+    private String requestTarget;
+
+    private String userAgent;
 
 }

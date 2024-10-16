@@ -13,24 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.fuhouyu.framework.web.fileter;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package com.fuhouyu.framework.web.enums;
 
 /**
  * <p>
- *
+ * 错误级别
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/22 10:43
+ * @since 2024/10/16 20:34
  */
-@SpringBootApplication
-public class MainController {
+public enum ErrorLevelEnum {
 
-    public static void main(String[] args) {
-        SpringApplication.run(MainController.class, args);
-    }
+    /**
+     * info
+     */
+    INFO,
+
+    /**
+     * warn
+     */
+    WARN,
+
+    /**
+     * error
+     */
+    ERROR,
+    ;
 }

@@ -18,9 +18,8 @@ package com.fuhouyu.framework.security.token;
 
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.utils.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
@@ -41,9 +40,8 @@ import java.util.concurrent.TimeUnit;
  * @author fuhouyu
  * @since 2024/8/14 21:05
  */
+@Slf4j
 public class TokenStoreCache implements TokenStore {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenStoreCache.class);
 
     private static final String SEPARATE = ":";
 
@@ -300,7 +298,7 @@ public class TokenStoreCache implements TokenStore {
     @Override
     public Authentication readAuthenticationForRefreshToken(OAuth2RefreshToken token) {
         if (Objects.isNull(token)) {
-            LoggerUtil.warn(LOGGER, "刷新令牌为空，无法读取authentication");
+            LoggerUtil.warn(log, "刷新令牌为空，无法读取authentication");
             return null;
         }
         return this.readAuthenticationForRefreshToken(token.getTokenValue());

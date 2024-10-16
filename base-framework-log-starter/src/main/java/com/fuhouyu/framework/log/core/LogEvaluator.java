@@ -71,7 +71,4 @@ public class LogEvaluator {
         return parser.parseExpression(expression, template);
     }
 
-    public ParameterNameDiscoverer getDiscoverer() {
-        return discoverer;
-    }
 }

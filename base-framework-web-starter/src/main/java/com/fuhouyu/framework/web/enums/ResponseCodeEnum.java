@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.response;
+package com.fuhouyu.framework.web.enums;
+
+import com.fuhouyu.framework.response.BaseResponseCode;
 
 /**
  * <p>
@@ -24,7 +26,7 @@ package com.fuhouyu.framework.response;
  * @author fuhouyu
  * @since 2024/8/13 17:40
  */
-public enum ResponseCodeEnum implements ResponseCode {
+public enum ResponseCodeEnum implements BaseResponseCode {
 
     // 200
 

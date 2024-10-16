@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.context.request;
+package com.fuhouyu.framework.context;
 
-import java.util.Map;
+import com.fuhouyu.framework.service.AdditionalInformationFunction;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -26,7 +28,7 @@ import java.util.Map;
  * @author fuhouyu
  * @since 2024/8/18 14:51
  */
-public interface Request {
+public interface Request extends AdditionalInformationFunction, Serializable {
 
     /**
      * 从请求头中获取认证信息
@@ -64,10 +66,4 @@ public interface Request {
      */
     String getUserAgent();
 
-    /**
-     * 获取请求扩展信息
-     *
-     * @return 请求扩展信息
-     */
-    Map<String, Object> getAdditionalInformation();
 }

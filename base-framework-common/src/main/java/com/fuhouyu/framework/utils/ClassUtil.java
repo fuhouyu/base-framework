@@ -14,33 +14,34 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.fileter;
-
-import com.fuhouyu.framework.response.ResponseHelper;
-import com.fuhouyu.framework.response.RestResult;
-import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
+package com.fuhouyu.framework.utils;
 
 /**
  * <p>
- *
+ * class工具类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/21 23:16
+ * @since 2024/8/17 11:58
  */
-@RestController
-public class HttpController {
+@SuppressWarnings("unchecked")
+public class ClassUtil {
 
-
-    @PostMapping("/v1/test/enc")
-    @PrepareHttpBody
-    public RestResult<Object> post(@RequestBody Map<String, String> o) {
-        return ResponseHelper.success(o);
+    private ClassUtil() {
     }
 
+    /**
+     * 加载class
+     *
+     * @param className className
+     * @param <T>       转换后的泛型
+     * @return class对象
+     */
+    public static <T> Class<T> loadClass(String className) {
+        try {
+            return (Class<T>) Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(String.format("%s class not found", className), e);
+        }
+    }
 }

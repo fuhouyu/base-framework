@@ -26,12 +26,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestComponent;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 
@@ -84,6 +89,22 @@ class TokenStoreTest {
         Assertions.assertNull(oAuth2AccessToken, "access token 未被清除");
 
         Assertions.assertNull(tokenStore.readRefreshToken(accessToken.getAuth2RefreshToken().getTokenValue()), "refresh token 未被清除");
+    }
+
+    @TestComponent
+    public static class AuthenticationProvider {
+
+
+        @Bean
+        public RestTemplate restTemplate() {
+            return new RestTemplate();
+        }
+
+        @Bean
+        public UserDetailsService userDetailsService() {
+            return new InMemoryUserDetailsManager();
+        }
+
     }
 
 }

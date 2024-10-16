@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.handler;
-
-import com.fuhouyu.framework.context.user.User;
+package com.fuhouyu.framework.response;
 
 /**
  * <p>
- * 用户扩展的抽象类，如果需要有用户的扩展信息，可以扩展该类
+ * 响应状态码
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/15 19:59
+ * @since 2024/8/13 17:39
  */
-@FunctionalInterface
-public interface UserExtensionHandler {
+public interface BaseResponseCode {
 
     /**
-     * 扩展用户的信息
-     * 只有在请求中解析出了用户，才会执行该类
+     * 获取响应码
      *
-     * @param user 用户信息
-     * @param <T> 用户子类
+     * @return 响应码
      */
-    <T extends User> void userExtensionHandlerInterceptor(T user);
+    int getCode();
 
+    /**
+     * 获取具体的响应信息
+     *
+     * @return 响应信息
+     */
+    String getMessage();
 }

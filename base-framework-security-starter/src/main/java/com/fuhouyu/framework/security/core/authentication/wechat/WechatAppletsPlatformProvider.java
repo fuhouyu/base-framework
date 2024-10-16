@@ -21,8 +21,7 @@ import com.fuhouyu.framework.security.properties.OpenPlatformAuthProperties;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
 import lombok.EqualsAndHashCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,9 +42,8 @@ import java.util.function.Function;
  * @author fuhouyu
  * @since 2024/8/15 12:32
  */
+@Slf4j
 public class WechatAppletsPlatformProvider extends AbstractAuthenticationProvider<WechatAppletsUserInfo> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(WechatAppletsPlatformProvider.class);
 
     // TODO 这里的restTemplate 后续待抽离
     private final RestTemplate restTemplate;
@@ -95,7 +93,7 @@ public class WechatAppletsPlatformProvider extends AbstractAuthenticationProvide
         String requestUrl = this.getRequestUrl((String) authentication.getPrincipal());
         ResponseEntity<String> wechatAppletsUserInfoEntity = restTemplate.getForEntity(requestUrl, String.class);
         if (!Objects.equals(wechatAppletsUserInfoEntity.getStatusCode().value(), 200)) {
-            LoggerUtil.error(LOGGER, "微信小程序请求url失败，jsCode:{}, 请求参数:{}, 返回的状态码:{}",
+            LoggerUtil.error(log, "微信小程序请求url失败，jsCode:{}, 请求参数:{}, 返回的状态码:{}",
                     authentication.getPrincipal(), requestUrl.replaceAll(authDetail.getClientSecret(), "*"),
                     wechatAppletsUserInfoEntity.getStatusCode().value());
             throw new IllegalArgumentException("微信小程序登录不正常，请检索配置参数是否正确");

@@ -16,17 +16,23 @@
 
 package com.fuhouyu.framework.web;
 
+import com.fuhouyu.framework.constants.HttpRequestHeaderConstant;
 import com.fuhouyu.framework.kms.service.KmsService;
-import com.fuhouyu.framework.web.configure.WebMvcAutoConfigure;
+import com.fuhouyu.framework.utils.JacksonUtil;
+import com.fuhouyu.framework.web.entity.UserEntity;
 import com.fuhouyu.framework.web.filter.DefaultHttpBodyFilter;
 import com.fuhouyu.framework.web.filter.HttpBodyFilter;
-import org.springframework.beans.factory.InitializingBean;
+import com.fuhouyu.framework.web.handler.ParseHttpRequest;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * <p>
@@ -39,11 +45,12 @@ import org.springframework.context.annotation.Import;
 @Import({WebMvcAutoConfigure.class, FormAutoConfigure.class})
 @ComponentScan(basePackageClasses = WebAutoConfigure.class)
 @ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.web.properties")
-public class WebAutoConfigure implements InitializingBean {
+public class WebAutoConfigure {
 
 
     /**
      * 返回一个默认加解密body的过滤器
+     *
      * @param kmsService kms
      * @return body 过滤器
      */
@@ -54,8 +61,18 @@ public class WebAutoConfigure implements InitializingBean {
         return new DefaultHttpBodyFilter(kmsService);
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        System.out.println();
+
+    @Bean
+    @ConditionalOnMissingBean(ParseHttpRequest.class)
+    public ParseHttpRequest parseHttpRequest() {
+        return request -> {
+            String userinfoHeader = request.getHeader(HttpRequestHeaderConstant.USERINFO_HEADER);
+            if (Objects.isNull(userinfoHeader)) {
+                return null;
+            }
+            String userinfoJsonStr = URLDecoder.decode(userinfoHeader, StandardCharsets.UTF_8);
+            return JacksonUtil.readValue(userinfoJsonStr, UserEntity.class);
+        };
     }
+
 }

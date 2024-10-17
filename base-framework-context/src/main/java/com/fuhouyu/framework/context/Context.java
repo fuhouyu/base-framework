@@ -17,6 +17,7 @@
 package com.fuhouyu.framework.context;
 
 import com.fuhouyu.framework.context.exception.ContextNotFoundException;
+import lombok.NonNull;
 
 /**
  * <p>
@@ -29,11 +30,25 @@ import com.fuhouyu.framework.context.exception.ContextNotFoundException;
 public interface Context {
 
     /**
+     * 设置用户到上下文中
+     *
+     * @param user 用户上下文
+     */
+    void setUser(User user);
+
+    /**
      * 获取用户上下文
      *
      * @return 用户上下文
      */
     User getUser();
+
+    /**
+     * 设置请求上下文
+     *
+     * @param request 请求上下文
+     */
+    void setRequest(Request request);
 
     /**
      * 获取请求上下文
@@ -48,4 +63,19 @@ public interface Context {
      * @return 上下文对象
      */
     Object getContextByName(String contextName) throws ContextNotFoundException;
+
+    /**
+     * 根据名称设置上下文
+     *
+     * @param contextName 上下文名称
+     * @param context     上下文
+     */
+    void putContextByName(@NonNull String contextName, @NonNull Object context);
+
+    /**
+     * 通过上下文名称设置上下文
+     *
+     * @param contextName 上下文名称
+     */
+    void removeContextByName(@NonNull String contextName);
 }

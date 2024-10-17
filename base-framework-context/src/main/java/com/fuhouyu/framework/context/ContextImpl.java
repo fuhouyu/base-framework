@@ -16,6 +16,7 @@
 package com.fuhouyu.framework.context;
 
 import com.fuhouyu.framework.context.exception.ContextNotFoundException;
+import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class ContextImpl implements Context {
 
     private Request request;
 
-    private Map<String, Object> contextMap;
+    private final Map<String, Object> contextMap;
 
     public ContextImpl() {
         this.contextMap = new HashMap<>(4);
@@ -46,6 +47,7 @@ public class ContextImpl implements Context {
         return this.user;
     }
 
+    @Override
     public void setUser(User user) {
         this.user = user;
         contextMap.put("user", user);
@@ -56,6 +58,7 @@ public class ContextImpl implements Context {
         return this.request;
     }
 
+    @Override
     public void setRequest(Request request) {
         this.request = request;
         contextMap.put("request", request);
@@ -68,5 +71,15 @@ public class ContextImpl implements Context {
             throw new ContextNotFoundException(String.format("Context [%s] not found.", contextName));
         }
         return contextName;
+    }
+
+    @Override
+    public void putContextByName(@NonNull String contextName, @NonNull Object context) {
+        this.contextMap.put(contextName, context);
+    }
+
+    @Override
+    public void removeContextByName(@NonNull String contextName) {
+        this.contextMap.remove(contextName);
     }
 }

@@ -17,7 +17,6 @@
 package com.fuhouyu.framework.context;
 
 import com.fuhouyu.framework.context.exception.ContextNotFoundException;
-import lombok.NonNull;
 
 /**
  * <p>
@@ -27,14 +26,7 @@ import lombok.NonNull;
  * @author fuhouyu
  * @since 2024/8/14 10:33
  */
-public interface Context {
-
-    /**
-     * 设置用户到上下文中
-     *
-     * @param user 用户上下文
-     */
-    void setUser(User user);
+public interface ContextFactory {
 
     /**
      * 获取用户上下文
@@ -42,13 +34,6 @@ public interface Context {
      * @return 用户上下文
      */
     User getUser();
-
-    /**
-     * 设置请求上下文
-     *
-     * @param request 请求上下文
-     */
-    void setRequest(Request request);
 
     /**
      * 获取请求上下文
@@ -61,21 +46,17 @@ public interface Context {
      * 通过名称获取上下文
      * @param contextName 上下文名称
      * @return 上下文对象
+     * @throws ContextNotFoundException 上下文不存在时抛出该异常
      */
-    Object getContextByName(String contextName) throws ContextNotFoundException;
+    Object getContext(String contextName) throws ContextNotFoundException;
+
 
     /**
-     * 根据名称设置上下文
-     *
-     * @param contextName 上下文名称
-     * @param context     上下文
+     * 通过类型，获取上下文
+     * @param type 上下文类型
+     * @return 上下文
+     * @param <T> 上下文类型
+     * @throws ContextNotFoundException 上下文不存在时抛出该异常
      */
-    void putContextByName(@NonNull String contextName, @NonNull Object context);
-
-    /**
-     * 通过上下文名称设置上下文
-     *
-     * @param contextName 上下文名称
-     */
-    void removeContextByName(@NonNull String contextName);
+    <T> T getContext(Class<T> type) throws ContextNotFoundException;
 }

@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.context.exception;
+package com.fuhouyu.framework.context;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * <p>
- * 上下文不存在异常
+ * 上下文测试类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/16 20:17
+ * @since 2024/10/18 22:53
  */
-public class ContextNotFoundException extends RuntimeException {
+class ContextTest {
 
-    public ContextNotFoundException(String message) {
-        super(message);
-    }
 
-    public ContextNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ContextNotFoundException(Throwable cause) {
-        super(cause);
+    @Test
+    void testContext() {
+        DefaultListableFactory defaultListableFactory = new DefaultListableFactory();
+        defaultListableFactory.setContext(new Object());
+        Assertions.assertNotNull(defaultListableFactory.getContext(Object.class));
     }
 }

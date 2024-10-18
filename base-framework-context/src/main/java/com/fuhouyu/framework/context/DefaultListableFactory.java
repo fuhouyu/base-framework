@@ -16,7 +16,9 @@
 package com.fuhouyu.framework.context;
 
 import com.fuhouyu.framework.context.exception.ContextNotFoundException;
-import lombok.NonNull;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,42 +32,27 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/10/16 20:17
  */
-public class ContextImpl implements Context {
+@ToString
+public class DefaultListableFactory implements ContextFactory {
 
+    private final Map<Class<?>, Object> contextTypeMap;
+    @Getter
+    @Setter
     private User user;
 
+    private final Map<String, Object> contextMap;
+    @Getter
+    @Setter
     private Request request;
 
-    private final Map<String, Object> contextMap;
-
-    public ContextImpl() {
+    public DefaultListableFactory() {
         this.contextMap = new HashMap<>(4);
+        this.contextTypeMap = new HashMap<>(4);
     }
 
-    @Override
-    public User getUser() {
-        return this.user;
-    }
 
     @Override
-    public void setUser(User user) {
-        this.user = user;
-        contextMap.put("user", user);
-    }
-
-    @Override
-    public Request getRequest() {
-        return this.request;
-    }
-
-    @Override
-    public void setRequest(Request request) {
-        this.request = request;
-        contextMap.put("request", request);
-    }
-
-    @Override
-    public Object getContextByName(String contextName) throws ContextNotFoundException {
+    public Object getContext(String contextName) throws ContextNotFoundException {
         Object contextObject = this.contextMap.get(contextName);
         if (Objects.isNull(contextObject)) {
             throw new ContextNotFoundException(String.format("Context [%s] not found.", contextName));
@@ -74,12 +61,31 @@ public class ContextImpl implements Context {
     }
 
     @Override
-    public void putContextByName(@NonNull String contextName, @NonNull Object context) {
+    @SuppressWarnings("unchecked")
+    public <T> T getContext(Class<T> type) throws ContextNotFoundException {
+        Object context = this.contextTypeMap.get(type);
+        if (Objects.isNull(context)) {
+            throw new ContextNotFoundException(String.format("Context type [%s] not found.", type));
+        }
+        return (T) context;
+    }
+
+    /**
+     * 根据名称设置上下文
+     *
+     * @param contextName 上下文名称
+     * @param context     上下文
+     */
+    public void setContext(String contextName, Object context) {
         this.contextMap.put(contextName, context);
     }
 
-    @Override
-    public void removeContextByName(@NonNull String contextName) {
-        this.contextMap.remove(contextName);
+    /**
+     * 根据类型设置上下文
+     *
+     * @param context 上下文
+     */
+    public void setContext(Object context) {
+        contextTypeMap.put(context.getClass(), context);
     }
 }

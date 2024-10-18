@@ -26,7 +26,7 @@ package com.fuhouyu.framework.context;
  */
 public class ContextHolderStrategy {
 
-    private static final ThreadLocal<Context> THREAD_LOCAL;
+    private static final ThreadLocal<ContextFactory> THREAD_LOCAL;
 
     static {
         THREAD_LOCAL = new ThreadLocal<>();
@@ -44,17 +44,17 @@ public class ContextHolderStrategy {
      *
      * @return 上下文
      */
-    public static Context getContext() {
+    public static ContextFactory getContext() {
         return THREAD_LOCAL.get();
     }
 
     /**
      * 设置上下文
      *
-     * @param context 上下文
+     * @param contextFactory 上下文
      */
-    public static void setContext(Context context) {
-        THREAD_LOCAL.set(context);
+    public static void setContext(ContextFactory contextFactory) {
+        THREAD_LOCAL.set(contextFactory);
     }
 
     /**

@@ -33,7 +33,7 @@ import java.util.Objects;
  * @since 2024/10/16 20:17
  */
 @ToString
-public class DefaultListableFactory implements ContextFactory {
+public class DefaultListableContextFactory implements ContextFactory {
 
     private final Map<Class<?>, Object> contextTypeMap;
     @Getter
@@ -45,7 +45,7 @@ public class DefaultListableFactory implements ContextFactory {
     @Setter
     private Request request;
 
-    public DefaultListableFactory() {
+    public DefaultListableContextFactory() {
         this.contextMap = new HashMap<>(4);
         this.contextTypeMap = new HashMap<>(4);
     }

@@ -31,8 +31,8 @@ class ContextTest {
 
     @Test
     void testContext() {
-        DefaultListableFactory defaultListableFactory = new DefaultListableFactory();
-        defaultListableFactory.setContext(new Object());
-        Assertions.assertNotNull(defaultListableFactory.getContext(Object.class));
+        DefaultListableContextFactory defaultListableContextFactory = new DefaultListableContextFactory();
+        defaultListableContextFactory.setContext(new Object());
+        Assertions.assertNotNull(defaultListableContextFactory.getContext(Object.class));
     }
 }

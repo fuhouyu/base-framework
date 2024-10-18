@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.log;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.DefaultListableFactory;
+import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.User;
 import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.core.LogRecordStoreService;
@@ -56,7 +56,7 @@ class LogRecordStoreTest {
 
     @BeforeEach
     void setUp() {
-        DefaultListableFactory contextFactory = new DefaultListableFactory();
+        DefaultListableContextFactory contextFactory = new DefaultListableContextFactory();
         contextFactory.setUser(new User() {
             @Override
             public Long getId() {

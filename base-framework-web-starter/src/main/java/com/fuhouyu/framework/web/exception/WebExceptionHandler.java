@@ -17,15 +17,14 @@
 package com.fuhouyu.framework.web.exception;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fuhouyu.framework.response.ResponseCodeEnum;
-import com.fuhouyu.framework.response.ResponseHelper;
-import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.response.BaseResponse;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
+import com.fuhouyu.framework.web.reponse.ResponseHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -54,9 +53,8 @@ import java.util.TreeMap;
  * @since 2024/8/15 20:22
  */
 @RestControllerAdvice
+@Slf4j
 public class WebExceptionHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebExceptionHandler.class);
 
     /**
      * <p style="color:red">
@@ -68,7 +66,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(Exception.class)
-    public RestResult<Void> exceptionHandle(ServletWebRequest request, Exception e) {
+    public BaseResponse<Void> exceptionHandle(ServletWebRequest request, Exception e) {
         this.printExceptionLog(e, Exception.class.getSimpleName(), request);
         return ResponseHelper.failed(ResponseCodeEnum.SERVER_ERROR);
     }
@@ -81,7 +79,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(NoResourceFoundException.class)
-    public RestResult<Void> noResourceFoundException(ServletWebRequest request, NoResourceFoundException e) {
+    public BaseResponse<Void> noResourceFoundException(ServletWebRequest request, NoResourceFoundException e) {
         this.printExceptionLog(e, Exception.class.getSimpleName(), request);
         return ResponseHelper.failed(ResponseCodeEnum.NOT_FOUND,
                 String.format("当前访问地址：%s 不存在", e.getMessage().replace("No static resource ", "").trim()));
@@ -95,7 +93,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public RestResult<Void> methodNotSupportException(ServletWebRequest request, HttpRequestMethodNotSupportedException e) {
+    public BaseResponse<Void> methodNotSupportException(ServletWebRequest request, HttpRequestMethodNotSupportedException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
         return ResponseHelper.failed(ResponseCodeEnum.METHOD_NOT_ALLOWED);
     }
@@ -108,7 +106,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ResponseStatusException.class)
-    public RestResult<Void> notFoundException(ServletWebRequest request, ResponseStatusException e) {
+    public BaseResponse<Void> notFoundException(ServletWebRequest request, ResponseStatusException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
         return ResponseHelper.failed(ResponseCodeEnum.SERVER_ERROR, e.getMessage());
     }
@@ -120,7 +118,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(WebServiceException.class)
-    public RestResult<Void> serviceExceptionHandler(WebServiceException serviceException) {
+    public BaseResponse<Void> serviceExceptionHandler(WebServiceException serviceException) {
         return ResponseHelper.failed(serviceException.getResponseStatus(), serviceException.getMessage());
     }
 
@@ -132,7 +130,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public RestResult<Void> methodArgumentNotValidExceptionHandler(ServletWebRequest request, MethodArgumentNotValidException e) {
+    public BaseResponse<Void> methodArgumentNotValidExceptionHandler(ServletWebRequest request, MethodArgumentNotValidException e) {
         Map<String, String> errorMessageMap = new TreeMap<>(String::compareToIgnoreCase);
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             errorMessageMap.put(fieldError.getField(), fieldError.getDefaultMessage());
@@ -157,7 +155,7 @@ public class WebExceptionHandler {
             NumberFormatException.class,
             HttpMessageConversionException.class
     })
-    public RestResult<String> handleHttpMediaTypeException(ServletWebRequest request,
+    public BaseResponse<Void> handleHttpMediaTypeException(ServletWebRequest request,
                                                            Exception e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         return ResponseHelper.failed(ResponseCodeEnum.INVALID_PARAM, e.getMessage());
@@ -171,21 +169,21 @@ public class WebExceptionHandler {
      * @return 包装后的响应
      */
     @ExceptionHandler(HttpMediaTypeException.class)
-    public RestResult<String> handleHttpMediaTypeException(ServletWebRequest request, HttpMediaTypeException e) {
+    public BaseResponse<Void> handleHttpMediaTypeException(ServletWebRequest request, HttpMediaTypeException e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         return ResponseHelper.failed(ResponseCodeEnum.NOT_SUPPORT_MEDIA_TYPE, e.getMessage());
     }
 
 
     /**
-     * 入参的body体中的参数异常拦截器 如 @RequestBody @Size(min = 1, message= "xxx") List<Integer> list
+     * 入参的body体中的参数异常拦截器
      *
      * @param request 请求
      * @param e       请求入参转换异常
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public RestResult<Void> constraintViolationException(ServletWebRequest request, ConstraintViolationException e) {
+    public BaseResponse<Void> constraintViolationException(ServletWebRequest request, ConstraintViolationException e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         StringBuilder sb = new StringBuilder();
@@ -208,7 +206,7 @@ public class WebExceptionHandler {
         String name = request.getHttpMethod().name();
         String queryParams = request.getRequest().getQueryString();
         String requestUrl = request.getRequest().getRequestURI();
-        LoggerUtil.error(LOGGER,
+        LoggerUtil.error(log,
                 """
                         异常名称: {}
                         请求方式: {}

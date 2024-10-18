@@ -23,8 +23,7 @@ import com.fuhouyu.framework.resource.service.ResourceService;
 import com.fuhouyu.framework.service.Callback;
 import com.fuhouyu.framework.utils.FileUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -47,9 +46,8 @@ import java.util.stream.Stream;
  * @author fuhouyu
  * @since 2024/8/18 16:55
  */
+@Slf4j
 public class LocalFileServiceImpl implements ResourceService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LocalFileServiceImpl.class);
 
     private static final int DEFAULT_BYTES_LENGTH = 8192;
 
@@ -111,7 +109,7 @@ public class LocalFileServiceImpl implements ResourceService {
 
             return new PutResourceResult(bucketName, objectKey, etag);
         } catch (FileNotFoundException e) {
-            throw new ResourceException(String.format("%s 文件不存在", file.getAbsolutePath()), e);
+            throw new ResourceException("上传文件不存在", e);
         } catch (IOException e) {
             throw new ResourceException(e.getMessage(), e);
         }
@@ -172,7 +170,7 @@ public class LocalFileServiceImpl implements ResourceService {
             Path bucketNameAndObjectPath = Paths.get(TMP_DIRECT, uploadId, uploadId);
             bucketNameAndObjectKey = new String(Files.readAllBytes(bucketNameAndObjectPath)).split(SPACER);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
         String bucketName = bucketNameAndObjectKey[0];
         String objectKey = bucketNameAndObjectKey[1];
@@ -204,7 +202,7 @@ public class LocalFileServiceImpl implements ResourceService {
         listMultipartResult.setNextPartNumberMaker(partNumberMaker + maxParts);
 
 
-        this.listFilePathCallback(tmpPath, uploadId, (paths) ->
+        this.listFilePathCallback(tmpPath, paths ->
                 paths.filter(f -> !f.getFileName().endsWith(uploadId))
                         .sorted(Comparator.comparingInt(o -> Integer.parseInt(o.getFileName().toString())))
                         .skip(partNumberMaker)
@@ -236,12 +234,12 @@ public class LocalFileServiceImpl implements ResourceService {
     }
 
     @Override
-    public ListResourceResult listFiles(ListResourceRequest listFileRequest) throws ResourceException {
+    public ListResourceResult listFiles(ListResourceRequest listFileRequest) {
         throw new UnsupportedOperationException("这里暂时不做实现");
     }
 
     @Override
-    public CopyResourceResult copyFile(String sourceBucketName, String sourceObjectKey, String destBucketName, String destObjectKey) throws ResourceException {
+    public CopyResourceResult copyFile(String sourceBucketName, String sourceObjectKey, String destBucketName, String destObjectKey) {
         try {
             Path targetPath = Paths.get(destBucketName, destBucketName);
             FileUtil.copyFile(Paths.get(sourceBucketName, sourceObjectKey),
@@ -256,12 +254,12 @@ public class LocalFileServiceImpl implements ResourceService {
             copyResourceResult.setLastModified(lastModifiedTime);
             return copyResourceResult;
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
     }
 
     @Override
-    public void deleteFile(String bucketName, String objectKey) throws ResourceException {
+    public void deleteFile(String bucketName, String objectKey) {
         FileUtil.deleteFileIfExists(Paths.get(bucketName, objectKey));
     }
 
@@ -342,20 +340,6 @@ public class LocalFileServiceImpl implements ResourceService {
 
 
     /**
-     * 设置文件属性
-     *
-     * @param path             路径
-     * @param resourceMetadata 文件资源元数据
-     * @throws IOException io异常
-     */
-    private void setFileMetadata(Path path, ResourceMetadata resourceMetadata) throws IOException {
-        if (Objects.isNull(resourceMetadata)) {
-            return;
-        }
-        FileUtil.setFileAttributeAll(path, resourceMetadata.getUserMetadata());
-    }
-
-    /**
      * 从文件中获取元数据返回
      *
      * @param path path
@@ -369,7 +353,7 @@ public class LocalFileServiceImpl implements ResourceService {
             fileAttributes = FileUtil.readFileAttributes(path);
             resourceMetadata.setHeader(FileResourceMetadataConstant.LAST_MODIFIED, FileUtil.getFileLastModifiedTime(path));
         } catch (IOException e) {
-            LoggerUtil.error(LOGGER, "获取资源文件:{} 中的用户自定义元数据错误:{}",
+            LoggerUtil.error(log, "获取资源文件:{} 中的用户自定义元数据错误:{}",
                     path.getFileName(), e.getMessage(), e);
             throw new ResourceException(e.getMessage(), e);
         }
@@ -383,23 +367,22 @@ public class LocalFileServiceImpl implements ResourceService {
      * @param tmpUploadFilePath 分片文件路径
      * @param targetPath        目标路径
      * @param uploadId          上传的文件id
+     * @throws ResourceException 资源异常
      * @return etag
      */
     public String mergeFile(Path tmpUploadFilePath, Path targetPath, String uploadId) throws ResourceException {
         try {
-            this.listFilePathCallback(tmpUploadFilePath, uploadId, (paths) -> {
-                paths.filter(f -> !f.getFileName().endsWith(uploadId))
-                        .sorted(Comparator.comparingInt(o -> Integer.parseInt(o.getFileName().toString())))
-                        .forEach(filePath -> {
-                            try (FileChannel sourceFileChannel = FileChannel.open(filePath, StandardOpenOption.READ);
-                                 FileChannel targetFileChannel = FileChannel.open(targetPath,
-                                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.APPEND)) {
-                                sourceFileChannel.transferTo(0, sourceFileChannel.size(), targetFileChannel);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
-            });
+            this.listFilePathCallback(tmpUploadFilePath, paths -> paths.filter(f -> !f.getFileName().endsWith(uploadId))
+                    .sorted(Comparator.comparingInt(o -> Integer.parseInt(o.getFileName().toString())))
+                    .forEach(filePath -> {
+                        try (FileChannel sourceFileChannel = FileChannel.open(filePath, StandardOpenOption.READ);
+                             FileChannel targetFileChannel = FileChannel.open(targetPath,
+                                     StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.APPEND)) {
+                            sourceFileChannel.transferTo(0, sourceFileChannel.size(), targetFileChannel);
+                        } catch (IOException e) {
+                            throw new IllegalArgumentException(e);
+                        }
+                    }));
             FileUtil.deleteDirect(tmpUploadFilePath);
             return FileUtil.calculateFileDigest(targetPath, this.getMd5MessageDigest());
         } catch (IOException e) {
@@ -411,10 +394,9 @@ public class LocalFileServiceImpl implements ResourceService {
      * 列出父级路径下的所有分片的文件
      *
      * @param parentPath 父级路径
-     * @param uploadId   上传的文件id
      * @throws ResourceException 资源服务异常
      */
-    private void listFilePathCallback(Path parentPath, String uploadId,
+    private void listFilePathCallback(Path parentPath,
                                       Callback<Stream<Path>> filesCallback) throws ResourceException {
         if (!Files.exists(parentPath)) {
             throw new ResourceException("分片文件不存在");
@@ -460,7 +442,7 @@ public class LocalFileServiceImpl implements ResourceService {
         try {
             return MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("No Such Algorithm" + e.getMessage(), e);
+            throw new IllegalArgumentException("No Such Algorithm" + e.getMessage(), e);
         }
     }
 }

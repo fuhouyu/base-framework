@@ -42,11 +42,12 @@ public class GetResourceResult extends BaseResourceRequest implements Closeable 
 
     private ResourceMetadata resourceMetadata;
 
-
-    public GetResourceResult(String bucketName) {
-        super(bucketName);
-    }
-
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     */
     public GetResourceResult(String bucketName, String objectKey) {
         super(bucketName, objectKey);
     }

@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>base-framework-resource-starter</artifactId>
-    <name>Base Framework Resource</name>
+    <name>Base Framework Resource Starter</name>
     <description>资源服务组件</description>
 
     <dependencies>

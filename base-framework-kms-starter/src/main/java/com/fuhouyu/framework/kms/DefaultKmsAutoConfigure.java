@@ -26,6 +26,7 @@ import com.fuhouyu.framework.kms.exception.KmsException;
 import com.fuhouyu.framework.kms.properties.KmsDefaultProperties;
 import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.kms.service.impl.DefaultKmsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.engines.SM4Engine;
 import org.bouncycastle.crypto.macs.CMac;
@@ -55,14 +56,10 @@ import java.util.Objects;
  */
 @ConditionalOnMissingBean(KmsService.class)
 @EnableConfigurationProperties(KmsDefaultProperties.class)
+@RequiredArgsConstructor
 public class DefaultKmsAutoConfigure {
-    private static final String SM2_KEYPAIR_STORE_PATH = "/tmp/keypair";
 
     private final KmsDefaultProperties properties;
-
-    public DefaultKmsAutoConfigure(KmsDefaultProperties properties) {
-        this.properties = properties;
-    }
 
     /**
      * 返回默认的bean
@@ -162,12 +159,11 @@ public class DefaultKmsAutoConfigure {
      */
     private SM2 generatorSm2() {
         KmsDefaultProperties.Sm2Properties sm2Properties = this.properties.getSm2();
-        if (!sm2Properties.getAutoGenerate()) {
+        if (Boolean.FALSE.equals(sm2Properties.getAutoGenerate())) {
             throw new KmsException("sm2 公私钥未设置，且未启用自动生成");
         }
 
-        String parentPath = Objects.isNull(sm2Properties.getAutoGenerateLocalPath()) ?
-                SM2_KEYPAIR_STORE_PATH : sm2Properties.getAutoGenerateLocalPath();
+        String parentPath = sm2Properties.getAutoGenerateLocalPath();
         Path publicKeyPath = Path.of(parentPath, "publicKey");
         Path privateKeyPath = Path.of(parentPath, "privateKey");
         if (Files.exists(publicKeyPath) && Files.exists(privateKeyPath)) {

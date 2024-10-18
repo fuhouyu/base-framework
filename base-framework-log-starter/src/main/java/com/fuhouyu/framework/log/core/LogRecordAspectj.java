@@ -16,18 +16,18 @@
 
 package com.fuhouyu.framework.log.core;
 
-import com.fuhouyu.framework.context.user.UserContextHolder;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.log.exception.LogException;
 import com.fuhouyu.framework.log.model.LogRecord;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
@@ -51,13 +51,12 @@ import java.util.Optional;
  */
 
 @Aspect
+@Slf4j
 public class LogRecordAspectj {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final ParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogRecordAspectj.class);
 
     /**
      * 日志SpEL解析器
@@ -129,11 +128,11 @@ public class LogRecordAspectj {
             content = evaluator.parse(logRecord.content(), context);
             result = JacksonUtil.writeValueAsString(content);
         } catch (ParseException ex) {
-            LoggerUtil.error(LOGGER, "log content: {} parse failed", logRecord.content(), ex);
-            throw new RuntimeException(ex);
+            LoggerUtil.error(log, "log content: {} parse failed", logRecord.content(), ex);
+            throw new LogException(ex);
         } catch (Exception ex) {
-            LoggerUtil.error(LOGGER, "log other error: {} ", content, ex);
-            throw new RuntimeException(ex);
+            LoggerUtil.error(log, "log other error: {} ", content, ex);
+            throw new LogException(ex);
         }
         LogRecord logRecordEntity = new LogRecord();
         logRecordEntity.setSystemName(systemName);
@@ -147,7 +146,7 @@ public class LogRecordAspectj {
             isSuccess = false;
         }
         logRecordEntity.setIsSuccess(isSuccess);
-        logRecordEntity.setOperationUser(UserContextHolder.getContext().getObject().getUsername());
+        logRecordEntity.setOperationUser(ContextHolderStrategy.getContext().getUser().getUsername());
         logRecordEntity.setOperationTime(LocalDateTime.now().format(DATE_TIME_FORMATTER));
         logRecordEntity.setCategory(logRecordEntity.getCategory());
 

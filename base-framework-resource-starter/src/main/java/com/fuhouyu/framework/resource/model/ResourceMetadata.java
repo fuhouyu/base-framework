@@ -40,12 +40,12 @@ public class ResourceMetadata implements Serializable {
     /**
      * http规范请求头元数据
      */
-    protected Map<String, Object> metadata = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    protected transient Map<String, Object> metadata = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     /**
      * 用户自定义的元数据信息
      */
-    private Map<String, String> userMetadata = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private transient Map<String, String> userMetadata = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     /**
      * 添加自定义元数据

@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>base-framework-web-starter</artifactId>
-    <name>Base Framework Web</name>
+    <name>Base Framework Web Starter</name>
     <description>web 相关组件</description>
 
     <dependencies>

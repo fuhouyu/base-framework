@@ -33,7 +33,7 @@ public class FormTokenConstant {
     /**
      * 默认为十分钟过期
      */
-    public static final long EXPIRE_TIME = 60 * 10;
+    public static final long EXPIRE_TIME = 60 * 10L;
 
     private FormTokenConstant() {
     }

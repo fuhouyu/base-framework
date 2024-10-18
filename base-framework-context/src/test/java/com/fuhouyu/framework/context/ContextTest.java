@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.fuhouyu.framework.context;
 
-
-import com.fuhouyu.framework.context.user.DefaultUserDetail;
-import com.fuhouyu.framework.context.user.User;
-import com.fuhouyu.framework.context.user.UserContextHolder;
-import com.fuhouyu.framework.context.user.UserContextImpl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * <p>
@@ -33,26 +24,15 @@ import static org.junit.jupiter.api.Assertions.*;
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/8 12:15
+ * @since 2024/10/18 22:53
  */
 class ContextTest {
 
 
     @Test
-    void testUserContext() {
-        Context<User> context = new UserContextImpl();
-
-        String username = UUID.randomUUID().toString().replace("-", "").substring(0, 16);
-        DefaultUserDetail defaultUserDetail = new DefaultUserDetail();
-        defaultUserDetail.setUsername(username);
-        context.setObject(defaultUserDetail);
-        UserContextHolder.setContext(context);
-
-        assertNotNull(UserContextHolder.getContext(), "用户上下文为空");
-        assertNotNull(UserContextHolder.getContext().getObject(), "用户上下文中存储的用户为空");
-        assertEquals(username, UserContextHolder.getContext().getObject().getUsername());
-
-        UserContextHolder.clearContext();
-        assertNull(UserContextHolder.getContext(), "用户上下文未清除");
+    void testContext() {
+        DefaultListableFactory defaultListableFactory = new DefaultListableFactory();
+        defaultListableFactory.setContext(new Object());
+        Assertions.assertNotNull(defaultListableFactory.getContext(Object.class));
     }
 }

@@ -27,8 +27,8 @@ import com.fuhouyu.framework.resource.properties.ResourceProperties;
 import com.fuhouyu.framework.resource.service.ResourceService;
 import com.fuhouyu.framework.resource.service.impl.AliYunOssServiceImpl;
 import com.fuhouyu.framework.utils.LoggerUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
@@ -44,16 +44,18 @@ import java.util.Objects;
  * @since 2024/8/16 18:35
  */
 @ConditionalOnClass(OSS.class)
+@RequiredArgsConstructor
+@Slf4j
 public class AliYunOssAutoConfigure implements InitializingBean {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AliYunOssAutoConfigure.class);
 
     private final ResourceProperties resourceProperties;
 
-    public AliYunOssAutoConfigure(ResourceProperties resourceProperties) {
-        this.resourceProperties = resourceProperties;
-    }
 
+    /**
+     * 初始化阿里云 oss bean
+     *
+     * @return 阿里云 oss bean
+     */
     @Bean
     public OSS ossClient() {
         AliYunOssProperties ossConfig = resourceProperties.getAliOssConfig();
@@ -69,7 +71,7 @@ public class AliYunOssAutoConfigure implements InitializingBean {
                                 ossConfig.getSts().getRoleArn()
                         );
             } catch (ClientException e) {
-                LoggerUtil.error(LOGGER, "阿里云oss客户端初始化失败, ossConfig:{}, 错误信息:{}", ossConfig, e.getMessage(), e);
+                LoggerUtil.error(log, "阿里云oss客户端初始化失败, ossConfig:{}, 错误信息:{}", ossConfig, e.getMessage(), e);
                 throw new IllegalArgumentException(String.format("阿里云oss客户端初始化失败:%s", e.getMessage()));
             }
             return new OSSClientBuilder().build(

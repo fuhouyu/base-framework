@@ -17,8 +17,7 @@
 package com.fuhouyu.framework.security.core;
 
 import com.fuhouyu.framework.utils.LoggerUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,13 +38,24 @@ import java.util.function.Function;
  * @author fuhouyu
  * @since 2024/8/14 17:29
  */
+@Slf4j
 public abstract class AbstractAuthenticationProvider<T> implements AuthenticationProvider {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAuthenticationProvider.class);
 
     private final Function<T, UserDetails> registerFunction;
 
-    public AbstractAuthenticationProvider(Function<T, UserDetails> registerFunction) {
+    /**
+     * 构造函数
+     */
+    protected AbstractAuthenticationProvider() {
+        this(null);
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param registerFunction 第三方用户不存在的时的注册方法
+     */
+    protected AbstractAuthenticationProvider(Function<T, UserDetails> registerFunction) {
         this.registerFunction = registerFunction;
     }
 
@@ -62,7 +72,7 @@ public abstract class AbstractAuthenticationProvider<T> implements Authenticatio
             }
             userDetails = this.registerIfUserNotFound(t);
         } catch (Exception e) {
-            LoggerUtil.error(LOGGER, "第三方平台认证请求失败:{}", e.getMessage());
+            LoggerUtil.error(log, "第三方平台认证请求失败:{}", e.getMessage());
             throw new AuthenticationServiceException(e.getMessage(), e);
         }
         // 这里返回公共的认证请求
@@ -76,14 +86,13 @@ public abstract class AbstractAuthenticationProvider<T> implements Authenticatio
      *
      * @param authentication 认证管理器
      * @return 第三方平台的用户详情
-     * @throws Exception 请求第三方时，可能会抛出异常错误
      */
-    public abstract T loadPlatformUser(Authentication authentication) throws Exception;
+    public abstract T loadPlatformUser(Authentication authentication);
 
     /**
      * 加载用户详情
      *
-     * @param authentication 认证器
+     * @param t 第三方的用户信息
      * @return 用户详情
      * @throws UsernameNotFoundException 未找到用户异常
      */

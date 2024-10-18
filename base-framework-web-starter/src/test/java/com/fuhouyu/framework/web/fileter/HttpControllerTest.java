@@ -17,9 +17,15 @@
 package com.fuhouyu.framework.web.fileter;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fuhouyu.framework.cache.CacheAutoConfigure;
+import com.fuhouyu.framework.kms.KmsAutoConfigure;
 import com.fuhouyu.framework.kms.service.KmsService;
+import com.fuhouyu.framework.response.BaseResponse;
 import com.fuhouyu.framework.utils.HexUtil;
 import com.fuhouyu.framework.utils.JacksonUtil;
+import com.fuhouyu.framework.web.WebAutoConfigure;
+import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
+import com.fuhouyu.framework.web.reponse.ResponseHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +36,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,15 +54,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author fuhouyu
  * @since 2024/8/21 23:15
  */
-@SpringBootTest
+@SpringBootTest(classes = {
+        KmsAutoConfigure.class,
+        WebAutoConfigure.class,
+        CacheAutoConfigure.class
+})
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @AutoConfigureMockMvc
+@EnableWebMvc
 class HttpControllerTest {
 
 
     @Autowired
     private KmsService kmsService;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -66,15 +82,23 @@ class HttpControllerTest {
 
         Map<String, String> map = new HashMap<>();
         map.put("body", HexUtil.encodeToHexString(bodyBytes));
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.get("/base/v1/form/token")
-//
-//        ).andExpect(status().isOk());
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/v1/test/enc")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JacksonUtil.writeValueAsBytes(map))
         ).andExpect(status().isOk());
+
+    }
+
+    @RestController
+    public static class HttpController {
+
+
+        @PostMapping("/v1/test/enc")
+        @PrepareHttpBody
+        public BaseResponse<Object> post(@RequestBody ObjectNode body) throws Exception {
+            return ResponseHelper.success(body);
+        }
 
     }
 

@@ -40,6 +40,10 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fuhouyu</groupId>
+            <artifactId>base-framework-common</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

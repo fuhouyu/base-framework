@@ -18,9 +18,8 @@ package com.fuhouyu.framework.security.core.passwordencoder;
 
 import cn.hutool.crypto.SmUtil;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.utils.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.nio.charset.StandardCharsets;
@@ -36,9 +35,8 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/9/7 22:25
  */
+@Slf4j
 public class Sm3PasswordEncoder implements PasswordEncoder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Sm3PasswordEncoder.class);
 
     private static final char[] RANDOM_CHAR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./".toCharArray();
 
@@ -48,20 +46,35 @@ public class Sm3PasswordEncoder implements PasswordEncoder {
 
     private final SecureRandom random;
 
+    /**
+     * 构造函数
+     */
     public Sm3PasswordEncoder() {
         this(DEFAULT_SM3_PREFIX, null);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param prefix 前缀
+     */
     public Sm3PasswordEncoder(String prefix) {
         this(prefix, null);
     }
 
-
+    /**
+     * 构造函数
+     * @param random 安全随机数
+     */
     public Sm3PasswordEncoder(SecureRandom random) {
         this(DEFAULT_SM3_PREFIX, random);
     }
 
-
+    /**
+     * 构造函数
+     * @param prefix 密码前缀
+     * @param random 安全随机数
+     */
     public Sm3PasswordEncoder(String prefix, SecureRandom random) {
         this.prefix = prefix;
         this.random = random;
@@ -79,7 +92,7 @@ public class Sm3PasswordEncoder implements PasswordEncoder {
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         if (!encodedPassword.startsWith(this.prefix)) {
-            LoggerUtil.error(LOGGER, "encodedPassword is {}, 非sm3国密编码", rawPassword, encodedPassword);
+            LoggerUtil.error(log, "encodedPassword is {}, 非sm3国密编码", rawPassword, encodedPassword);
             return false;
         }
         String salt = encodedPassword.substring(0, 25);

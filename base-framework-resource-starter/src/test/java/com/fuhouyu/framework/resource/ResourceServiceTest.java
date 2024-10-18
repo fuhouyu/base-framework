@@ -121,13 +121,13 @@ class ResourceServiceTest {
 
         uploadPartFile(localFilePath, initiateUploadMultipartResult.getUploadId());
 
-        ListMultipartRequest listMultipartRequest = new ListMultipartRequest();
+        ListMultipartRequest listMultipartRequest = new ListMultipartRequest(BUCKET_NAME);
         listMultipartRequest.setUploadId(initiateUploadMultipartResult.getUploadId());
         ListMultipartResult listMultipartResult = resourceService.listParts(listMultipartRequest);
         Assert.notNull(listMultipartResult, "列出分片 返回的文件不正确");
 
 
-        UploadCompleteMultipartRequest uploadCompleteMultipartRequest = new UploadCompleteMultipartRequest();
+        UploadCompleteMultipartRequest uploadCompleteMultipartRequest = new UploadCompleteMultipartRequest(BUCKET_NAME);
         uploadCompleteMultipartRequest.setUploadId(initiateUploadMultipartResult.getUploadId());
 
         resourceService.completeMultipartUpload(uploadCompleteMultipartRequest);
@@ -147,7 +147,7 @@ class ResourceServiceTest {
                 fileAccess.seek(seek);
                 fileAccess.read(bytes);
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-                UploadMultipartRequest uploadMultipartRequest = new UploadMultipartRequest();
+                UploadMultipartRequest uploadMultipartRequest = new UploadMultipartRequest(BUCKET_NAME);
                 uploadMultipartRequest.setUploadId(uploadId);
                 uploadMultipartRequest.setInputStream(byteArrayInputStream);
                 uploadMultipartRequest.setPartNumber(i);

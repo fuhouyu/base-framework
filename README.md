@@ -1,6 +1,6 @@
 # Base Framework
 
-[![codecov](https://codecov.io/github/fuhouyu/base-framework/graph/badge.svg?token=VUT9BFMLK9)](https://codecov.io/github/fuhouyu/base-framework) [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fuhouyu_base-framework&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fuhouyu_base-framework) [![codecov](https://codecov.io/github/fuhouyu/base-framework/graph/badge.svg?token=VUT9BFMLK9)](https://codecov.io/github/fuhouyu/base-framework) [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 -------
 
 ### 简介

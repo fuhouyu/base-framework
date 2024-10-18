@@ -16,9 +16,7 @@
 
 package com.fuhouyu.framework.security.core.filter;
 
-import com.fuhouyu.framework.response.ResponseCodeEnum;
-import com.fuhouyu.framework.response.ResponseHelper;
-import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.response.BaseResponse;
 import com.fuhouyu.framework.utils.JacksonUtil;
 import jakarta.servlet.ServletOutputStream;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,11 +38,32 @@ public class ApplicationBasicErrorFilter extends BasicAuthenticationFilter {
      * 初始化基本认证过滤器
      * Basic Base64(clientId:clientSecret).
      * 主要为了处理异常错误的友好返回
+     * @param authenticationManager 认证管理器
      */
     public ApplicationBasicErrorFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager, (request, response, authException) -> {
-            RestResult<String> restResult = ResponseHelper.failed(ResponseCodeEnum.NOT_AUTH, authException.getMessage());
-            String body = JacksonUtil.writeValueAsString(restResult);
+            BaseResponse<Void> baseResponse = new BaseResponse<>() {
+                @Override
+                public Integer getCode() {
+                    return 401;
+                }
+
+                @Override
+                public String getMessage() {
+                    return authException.getMessage();
+                }
+
+                @Override
+                public Boolean getIsSuccess() {
+                    return false;
+                }
+
+                @Override
+                public Void getData() {
+                    return null;
+                }
+            };
+            String body = JacksonUtil.writeValueAsString(baseResponse);
             try (ServletOutputStream outputStream = response.getOutputStream()) {
                 outputStream.write(body.getBytes(StandardCharsets.UTF_8));
                 outputStream.flush();

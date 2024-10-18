@@ -26,10 +26,20 @@ package com.fuhouyu.framework.resource.exception;
  */
 public class ResourceException extends Exception {
 
+    /**
+     * 资源异常
+     *
+     * @param errorMessage 错误信息
+     */
     public ResourceException(String errorMessage) {
         super(errorMessage);
     }
 
+    /**
+     * 资源异常
+     * @param errorMessage 错误信息
+     * @param cause 异常原因
+     */
     public ResourceException(String errorMessage, Throwable cause) {
         super(errorMessage, cause);
     }

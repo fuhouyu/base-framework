@@ -51,20 +51,47 @@ public class PutResourceRequest extends BaseResourceRequest {
      */
     private ResourceMetadata metadata;
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param key        对象key
+     * @param file       需要上传的文件
+     */
     public PutResourceRequest(String bucketName, String key, File file) {
         this(bucketName, key, file, null);
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param key 对象key
+     * @param file 需要上传的文件
+     * @param metadata 元数据
+     */
     public PutResourceRequest(String bucketName, String key, File file, ResourceMetadata metadata) {
         super(bucketName, key);
         this.file = file;
         this.metadata = metadata;
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param key 对象key
+     * @param input 需要上传的流文件
+     */
     public PutResourceRequest(String bucketName, String key, InputStream input) {
         this(bucketName, key, input, null);
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param key 对象key
+     * @param input 输入流
+     * @param metadata 文件元数据
+     */
     public PutResourceRequest(String bucketName, String key, InputStream input, ResourceMetadata metadata) {
         super(bucketName, key);
         this.inputStream = input;

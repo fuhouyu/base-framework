@@ -35,11 +35,22 @@ public class InitiateUploadMultipartResult extends BaseResourceResult {
 
     private String uploadId;
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param objectKey  对象key
+     * @param uploadId   上传id
+     */
     public InitiateUploadMultipartResult(String bucketName, String objectKey, String uploadId) {
         super(bucketName, objectKey);
         this.uploadId = uploadId;
     }
 
+    /**
+     * 构造函数
+     * @param uploadId 上传id
+     */
     public InitiateUploadMultipartResult(String uploadId) {
         this.uploadId = uploadId;
     }

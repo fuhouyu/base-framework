@@ -17,12 +17,12 @@
 package com.fuhouyu.framework.web.filter;
 
 import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter;
@@ -42,14 +42,10 @@ import java.util.Objects;
  * @since 2024/8/21 22:53
  */
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class HttpRequestBodyAdvice extends RequestBodyAdviceAdapter {
 
     private final HttpBodyFilter httpBodyFilter;
-
-
-    public HttpRequestBodyAdvice(@Nullable HttpBodyFilter httpBodyFilter) {
-        this.httpBodyFilter = httpBodyFilter;
-    }
 
 
     @Override
@@ -79,7 +75,7 @@ public class HttpRequestBodyAdvice extends RequestBodyAdviceAdapter {
                 try (InputStream inputStream = inputMessage.getBody()) {
                     bytes = inputStream.readAllBytes();
                 } catch (IOException e) {
-                    throw new RuntimeException("read body failed " + e.getMessage(), e);
+                    throw new IllegalArgumentException("read body failed " + e.getMessage(), e);
                 }
                 return new ByteArrayInputStream(httpBodyFilter.decryptionBody(bytes));
             }

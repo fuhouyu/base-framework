@@ -39,10 +39,16 @@ import java.util.*;
  */
 public class KryoTokenSerializer implements TokenStoreSerializationStrategy {
 
+    /**
+     * 空白数组，如果序列化对象为空时，则返回该值
+     */
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     private final Pool<Kryo> kryoPool;
 
+    /**
+     * 初始化kryo
+     */
     public KryoTokenSerializer() {
         this.kryoPool = new Pool<>(true, false, 8) {
             @Override

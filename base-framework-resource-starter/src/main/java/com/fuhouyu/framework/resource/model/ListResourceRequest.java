@@ -72,14 +72,24 @@ public class ListResourceRequest extends BaseResourceRequest {
      */
     private String nextMarker;
 
+    /**
+     * 构造函数
+     *
+     * @param bucketName 桶名
+     * @param prefix     前缀
+     */
     public ListResourceRequest(String bucketName, String prefix) {
-        super(bucketName);
+        super(bucketName, null);
         this.maxKeys = MAX_LENGTH;
         this.prefix = prefix;
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     */
     public ListResourceRequest(String bucketName) {
-        super(bucketName);
+        super(bucketName, null);
         this.maxKeys = MAX_LENGTH;
     }
 

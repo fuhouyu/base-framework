@@ -18,9 +18,8 @@ package com.fuhouyu.framework.security.token;
 
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.utils.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
@@ -41,9 +40,8 @@ import java.util.concurrent.TimeUnit;
  * @author fuhouyu
  * @since 2024/8/14 21:05
  */
+@Slf4j
 public class TokenStoreCache implements TokenStore {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenStoreCache.class);
 
     private static final String SEPARATE = ":";
 
@@ -75,18 +73,39 @@ public class TokenStoreCache implements TokenStore {
 
     private final CacheService<String, Object> cacheService;
 
+    /**
+     * 构造函数
+     *
+     * @param prefix       token前缀
+     * @param cacheService 缓存接口
+     */
     public TokenStoreCache(String prefix, CacheService<String, Object> cacheService) {
         this(prefix, ZoneId.of("Asia/Shanghai"), cacheService);
     }
 
+    /**
+     * 构造函数
+     * @param zoneId 时区
+     * @param cacheService 缓存接口
+     */
     public TokenStoreCache(ZoneId zoneId, CacheService<String, Object> cacheService) {
         this("", zoneId, cacheService);
     }
 
+    /**
+     * 构造函数
+     * @param cacheService 缓存接口
+     */
     public TokenStoreCache(CacheService<String, Object> cacheService) {
         this("", ZoneId.of("Asia/Shanghai"), cacheService);
     }
 
+    /**
+     * 构造函数
+     * @param prefix token前缀
+     * @param zoneId 时区
+     * @param cacheService 缓存接口
+     */
     public TokenStoreCache(String prefix, ZoneId zoneId, CacheService<String, Object> cacheService) {
         this.cacheService = cacheService;
         this.prefix = prefix;
@@ -110,7 +129,7 @@ public class TokenStoreCache implements TokenStore {
                                           Integer refreshTokenExpireSeconds) {
         DefaultOAuth2Token existingAccessToken = this.getAccessToken(
                 authentication);
-        Instant now = Instant.now();
+        Instant now = Instant.now().atZone(zoneId).toInstant();
         // 如果存在则验证这个token是否过期，过期则进去删除。
         if (Objects.nonNull(existingAccessToken)) {
             OAuth2RefreshToken auth2RefreshToken = existingAccessToken.getAuth2RefreshToken();
@@ -279,7 +298,7 @@ public class TokenStoreCache implements TokenStore {
     @Override
     public Authentication readAuthenticationForRefreshToken(OAuth2RefreshToken token) {
         if (Objects.isNull(token)) {
-            LoggerUtil.warn(LOGGER, "刷新令牌为空，无法读取authentication");
+            LoggerUtil.warn(log, "刷新令牌为空，无法读取authentication");
             return null;
         }
         return this.readAuthenticationForRefreshToken(token.getTokenValue());

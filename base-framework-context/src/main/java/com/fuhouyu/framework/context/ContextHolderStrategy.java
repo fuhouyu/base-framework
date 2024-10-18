@@ -24,38 +24,45 @@ package com.fuhouyu.framework.context;
  * @author fuhouyu
  * @since 2024/8/14 10:08
  */
-public interface ContextHolderStrategy<T> {
+public class ContextHolderStrategy {
+
+    private static final ThreadLocal<ContextFactory> THREAD_LOCAL;
+
+    static {
+        THREAD_LOCAL = new ThreadLocal<>();
+    }
 
     /**
      * 清除上下文
      */
-    void clearContext();
+    public static void clearContext() {
+        THREAD_LOCAL.remove();
+    }
 
     /**
      * 获取上下文
      *
      * @return 上下文
      */
-    T getContext();
+    public static ContextFactory getContext() {
+        return THREAD_LOCAL.get();
+    }
 
     /**
      * 设置上下文
      *
-     * @param context 上下文
+     * @param contextFactory 上下文
      */
-    void setContext(T context);
-
-    /**
-     * 创建空的上下文
-     *
-     * @return 上下文
-     */
-    T createEmptyContext();
+    public static void setContext(ContextFactory contextFactory) {
+        THREAD_LOCAL.set(contextFactory);
+    }
 
     /**
      * 是否为空的上下文
      *
      * @return true/false
      */
-    Boolean isEmptyContext();
+    public static Boolean isEmptyContext() {
+        return THREAD_LOCAL.get() == null;
+    }
 }

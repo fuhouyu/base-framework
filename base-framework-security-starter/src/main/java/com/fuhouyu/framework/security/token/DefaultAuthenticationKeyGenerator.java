@@ -16,8 +16,8 @@
 
 package com.fuhouyu.framework.security.token;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fuhouyu.framework.utils.JacksonUtil;
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.Request;
 import org.springframework.security.core.Authentication;
 
 import java.math.BigInteger;
@@ -25,9 +25,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
 /**
  * <p>
@@ -40,31 +39,18 @@ import java.util.Set;
 public class DefaultAuthenticationKeyGenerator implements AuthenticationKeyGenerator {
 
 
-    private static final String[] FILTER_ATTR = new String[]{
-            "password", "secret", "authorities", "principal"
-    };
-
     @Override
     public String extractKey(Authentication authentication) {
         Object principal = authentication.getPrincipal();
-        Map<String, Object> valuesMap =
-                JacksonUtil.tryParse(() -> JacksonUtil.getObjectMapper().convertValue(principal, new TypeReference<HashMap<String, Object>>() {
-                }));
-        this.filterMapSecret(valuesMap);
-        return this.generateKey(valuesMap);
-    }
+        Map<String, Object> map = new HashMap<>();
+        map.put("principal", principal);
 
-    private void filterMapSecret(Map<String, Object> map) {
-        Set<Map.Entry<String, Object>> entries = map.entrySet();
-        entries.removeIf(entry -> {
-            for (String filter : FILTER_ATTR) {
-                if (entry.getKey().toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
-                    return true;
-                }
-            }
-            return false;
-        });
-
+        if (Objects.nonNull(ContextHolderStrategy.getContext())
+                && Objects.nonNull(ContextHolderStrategy.getContext().getRequest())) {
+            Request request = ContextHolderStrategy.getContext().getRequest();
+            map.put("ip", request.getRequestIp());
+        }
+        return this.generateKey(map);
     }
 
     private String generateKey(Map<String, Object> values) {

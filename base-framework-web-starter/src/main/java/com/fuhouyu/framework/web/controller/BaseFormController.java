@@ -17,13 +17,13 @@
 package com.fuhouyu.framework.web.controller;
 
 import com.fuhouyu.framework.cache.service.CacheService;
-import com.fuhouyu.framework.response.ResponseHelper;
-import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.response.BaseResponse;
 import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
-import com.fuhouyu.framework.web.constants.ApiPrefixConstant;
 import com.fuhouyu.framework.web.constants.FormTokenConstant;
+import com.fuhouyu.framework.web.reponse.ResponseHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,19 +41,16 @@ import java.util.concurrent.TimeUnit;
  * @since 2024/8/17 18:45
  */
 @RestController
-@RequestMapping(ApiPrefixConstant.FORM_CONTROLLER_PREFIX)
+@RequestMapping("/v1/base/form")
 @Tag(name = "base form表单 前端控制器")
+@RequiredArgsConstructor
 public class BaseFormController {
 
-    private final String applicationName;
+    @Value("${spring.application.name}")
+    private String applicationName;
 
     private final CacheService<String, Object> cacheService;
 
-    public BaseFormController(@Value("${spring.application.name}") String applicationName,
-                              CacheService<String, Object> cacheService) {
-        this.applicationName = applicationName;
-        this.cacheService = cacheService;
-    }
 
     /**
      * 生成表单唯一token并缓存
@@ -65,7 +62,7 @@ public class BaseFormController {
     @GetMapping("/token")
     @Operation(summary = "生成表单唯一的token，默认十分钟")
     @PrepareHttpBody
-    public RestResult<String> formToken() {
+    public BaseResponse<String> formToken() {
         String token = String.format("%s_%s", applicationName, UUID.randomUUID().toString().replace("-", ""));
         cacheService.set(FormTokenConstant.TOKEN_PREFIX + token,
                 true, FormTokenConstant.EXPIRE_TIME, TimeUnit.SECONDS);

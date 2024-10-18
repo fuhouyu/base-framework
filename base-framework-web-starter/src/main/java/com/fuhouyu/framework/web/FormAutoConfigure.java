@@ -18,6 +18,7 @@ package com.fuhouyu.framework.web;
 
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.web.aspectj.NoRepeatSubmitAspectj;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -28,13 +29,11 @@ import org.springframework.context.annotation.Bean;
  * @author fuhouyu
  * @since 2024/8/17 23:07
  */
+@RequiredArgsConstructor
 public class FormAutoConfigure {
 
     private final CacheService<String, Object> cacheService;
 
-    public FormAutoConfigure(CacheService<String, Object> cacheService) {
-        this.cacheService = cacheService;
-    }
 
     @Bean
     public NoRepeatSubmitAspectj noDuplicateSubmitAspect() {

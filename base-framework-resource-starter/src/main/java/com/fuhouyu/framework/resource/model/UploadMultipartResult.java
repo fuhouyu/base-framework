@@ -48,16 +48,36 @@ public class UploadMultipartResult extends BaseResourceResult {
      */
     private String etag;
 
+    /**
+     * 构造函数
+     *
+     * @param partNumber 分页号
+     * @param partSize   大小
+     * @param etag       etag
+     */
     public UploadMultipartResult(int partNumber, long partSize, String etag) {
         this.partNumber = partNumber;
         this.partSize = partSize;
         this.etag = etag;
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey objectKey
+     */
     public UploadMultipartResult(String bucketName, String objectKey) {
         super(bucketName, objectKey);
     }
 
+    /**
+     * 构造函数
+     * @param bucketName 桶名
+     * @param objectKey 对象key
+     * @param partNumber 页号
+     * @param partSize 大小
+     * @param etag etag
+     */
     public UploadMultipartResult(String bucketName, String objectKey, int partNumber, long partSize, String etag) {
         super(bucketName, objectKey);
         this.partNumber = partNumber;

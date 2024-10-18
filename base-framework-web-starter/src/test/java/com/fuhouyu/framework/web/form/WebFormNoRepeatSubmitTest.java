@@ -16,16 +16,35 @@
 
 package com.fuhouyu.framework.web.form;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fuhouyu.framework.cache.CacheAutoConfigure;
-import com.fuhouyu.framework.cache.CaffeineCacheAutoconfigure;
-import com.fuhouyu.framework.response.RestResult;
+import com.fuhouyu.framework.kms.KmsAutoConfigure;
+import com.fuhouyu.framework.response.BaseResponse;
+import com.fuhouyu.framework.utils.JacksonUtil;
 import com.fuhouyu.framework.web.WebAutoConfigure;
+import com.fuhouyu.framework.web.annotaions.NoRepeatSubmit;
+import com.fuhouyu.framework.web.enums.ErrorLevelEnum;
+import com.fuhouyu.framework.web.reponse.ErrorResponse;
+import com.fuhouyu.framework.web.reponse.ResponseHelper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.Assert;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * <p>
@@ -36,21 +55,42 @@ import org.springframework.util.Assert;
  * @since 2024/8/17 23:10
  */
 @SpringBootTest(classes = {
+        KmsAutoConfigure.class,
         WebAutoConfigure.class,
-        CacheAutoConfigure.class,
-        CaffeineCacheAutoconfigure.class,
+        CacheAutoConfigure.class
 })
+@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc
+@EnableWebMvc
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @EnableAspectJAutoProxy
 class WebFormNoRepeatSubmitTest {
 
     @Autowired
-    private FormTokenControllerTest formTokenControllerTest;
+    private MockMvc mockMvc;
 
     @Test
-    void testNoRepeatSubmit() {
-        RestResult<Boolean> restResult = formTokenControllerTest.success();
-        Assert.isTrue(restResult.getData(), "表单防重复提交验证失败。");
+    void testNoRepeatSubmit() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/v1/noRepeatSubmit")
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk()).andReturn();
+
+        BaseResponse<ErrorLevelEnum> baseResponse = JacksonUtil.readValue(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<ErrorResponse<ErrorLevelEnum>>() {
+                });
+        Assertions.assertEquals(400, baseResponse.getCode());
+    }
+
+    @RestController
+    public static class FormTokenController {
+
+        @NoRepeatSubmit
+        @PostMapping("/v1/noRepeatSubmit")
+        public BaseResponse<Boolean> success() {
+            return ResponseHelper.success(true);
+        }
+
     }
 }
 

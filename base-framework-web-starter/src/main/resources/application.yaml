@@ -6,7 +6,6 @@ base:
     cache:
       service:
         cache-service-type: caffeine
-    kms:
-      default:
-        sm2:
-          auto-generate: true
+    kms-national:
+      sm2:
+        auto-generate: true

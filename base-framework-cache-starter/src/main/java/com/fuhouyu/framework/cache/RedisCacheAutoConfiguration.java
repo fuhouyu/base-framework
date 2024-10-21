@@ -47,7 +47,7 @@ import java.util.List;
         name = "cache-service-type",
         havingValue = "redis")
 @AutoConfigureAfter(RedisAutoConfiguration.class)
-public class RedisCacheAutoConfigure {
+public class RedisCacheAutoConfiguration {
 
 
     @Bean

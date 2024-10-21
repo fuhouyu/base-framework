@@ -42,10 +42,10 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/8/15 20:18
  */
-@Import({WebMvcAutoConfigure.class, FormAutoConfigure.class})
-@ComponentScan(basePackageClasses = WebAutoConfigure.class)
+@Import({WebMvcAutoConfiguration.class, FormAutoConfiguration.class})
+@ComponentScan(basePackageClasses = WebAutoConfiguration.class)
 @ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.web.properties")
-public class WebAutoConfigure {
+public class WebAutoConfiguration {
 
 
     /**

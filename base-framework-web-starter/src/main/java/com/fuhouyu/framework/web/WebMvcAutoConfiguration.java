@@ -48,7 +48,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @EnableWebMvc
-public class WebMvcAutoConfigure implements WebMvcConfigurer {
+public class WebMvcAutoConfiguration implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
 

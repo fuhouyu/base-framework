@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.security.token;
+package com.fuhouyu.framework.security.serializer;
 
 /**
  * <p>
@@ -24,7 +24,7 @@ package com.fuhouyu.framework.security.token;
  * @author fuhouyu
  * @since 2024/8/14 21:30
  */
-public interface TokenStoreSerializationStrategy {
+public interface SerializationStrategy {
 
     /**
      * 从字节数组中进行反序列化

@@ -57,7 +57,7 @@ import java.util.Objects;
 @ConditionalOnMissingBean(KmsService.class)
 @EnableConfigurationProperties(KmsDefaultProperties.class)
 @RequiredArgsConstructor
-public class DefaultKmsAutoConfigure {
+public class DefaultKmsAutoConfiguration {
 
     private final KmsDefaultProperties properties;
 

@@ -29,10 +29,10 @@ import org.springframework.context.annotation.Import;
  * @author fuhouyu
  * @since 2024/8/13 21:00
  */
-@Import({RedisCacheAutoConfigure.class, CaffeineCacheAutoconfigure.class})
+@Import({RedisCacheAutoConfiguration.class, CaffeineCacheAutoconfiguration.class})
 @EnableConfigurationProperties(CacheProperties.class)
-@ConfigurationPropertiesScan(basePackageClasses = CacheAutoConfigure.class)
-public class CacheAutoConfigure {
+@ConfigurationPropertiesScan(basePackageClasses = CacheAutoConfiguration.class)
+public class CacheAutoConfiguration {
 
 
 }

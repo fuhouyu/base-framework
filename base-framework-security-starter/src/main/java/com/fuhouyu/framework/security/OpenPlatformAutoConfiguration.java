@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.kms;
+package com.fuhouyu.framework.security;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
+import com.fuhouyu.framework.security.properties.OpenPlatformAuthProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 /**
  * <p>
- * kms自动装配类
+ * 开放平台自动装配类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/17 17:27
+ * @since 2024/8/15 16:23
  */
-@ComponentScan(basePackageClasses = KmsAutoConfigure.class)
-@Import({DefaultKmsAutoConfigure.class})
-public class KmsAutoConfigure {
+@ConfigurationPropertiesScan(basePackageClasses = OpenPlatformAuthProperties.class)
+public class OpenPlatformAutoConfiguration {
 
 
 }

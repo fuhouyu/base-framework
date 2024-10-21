@@ -35,7 +35,7 @@ import java.util.Objects;
  * @since 2024/8/17 17:55
  */
 @SpringBootTest(classes = {
-        KmsAutoConfigure.class
+        KmsAutoConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class KmsServiceTest {

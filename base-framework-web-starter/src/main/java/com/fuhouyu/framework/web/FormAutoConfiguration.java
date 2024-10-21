@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Bean;
  * @since 2024/8/17 23:07
  */
 @RequiredArgsConstructor
-public class FormAutoConfigure {
+public class FormAutoConfiguration {
 
     private final CacheService<String, Object> cacheService;
 

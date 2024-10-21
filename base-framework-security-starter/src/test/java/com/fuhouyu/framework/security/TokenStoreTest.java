@@ -16,11 +16,10 @@
 
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.cache.CacheAutoConfigure;
+import com.fuhouyu.framework.cache.CacheAutoConfiguration;
 import com.fuhouyu.framework.cache.service.CacheService;
-import com.fuhouyu.framework.security.token.DefaultOAuth2Token;
+import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
-import com.fuhouyu.framework.security.token.TokenStoreCache;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.test.context.TestPropertySource;
@@ -49,7 +47,9 @@ import java.util.Collections;
  * @since 2024/8/14 22:35
  */
 @SpringBootTest(classes = {
-        CacheAutoConfigure.class,
+        CacheAutoConfiguration.class,
+        SecurityAutoConfiguration.class,
+
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class TokenStoreTest {
@@ -58,13 +58,13 @@ class TokenStoreTest {
     @Autowired
     private CacheService<String, Object> cacheService;
 
+    @Autowired
     private TokenStore tokenStore;
 
     private Authentication authentication;
 
     @BeforeEach
     void setup() {
-        tokenStore = new TokenStoreCache(cacheService);
         User user = new User("testUser", "testPassword", Collections.emptyList());
         authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
     }
@@ -72,23 +72,23 @@ class TokenStoreTest {
     @Test
     void testTokenStore() {
 
-        DefaultOAuth2Token accessToken = tokenStore.createToken(authentication, 60, 60);
-        Assertions.assertNotNull(accessToken, "生成的token不能为空");
+        TokenEntity tokenEntity = tokenStore.createToken(authentication, 60, 60);
+        Assertions.assertNotNull(tokenEntity, "生成的token不能为空");
 
-        Authentication tokenAuthentication = tokenStore.readAuthentication(accessToken);
+        Authentication tokenAuthentication = tokenStore.readAuthentication(tokenEntity.getAccessToken());
         Assertions.assertNotNull(tokenAuthentication, "未获取到token认证的对象");
 
-        OAuth2RefreshToken oAuth2RefreshToken = tokenStore.readRefreshToken(accessToken.getAuth2RefreshToken().getTokenValue());
+        OAuth2RefreshToken oAuth2RefreshToken = tokenStore.readRefreshToken(tokenEntity.getRefreshToken().getTokenValue());
         Assertions.assertNotNull(oAuth2RefreshToken, "未获取到刷新令牌对象");
 
         Authentication authenticationByRefreshToken = tokenStore.readAuthenticationForRefreshToken(oAuth2RefreshToken);
         Assertions.assertNotNull(authenticationByRefreshToken, "未通过刷新令牌获取到认证对象");
 
-        tokenStore.removeAllToken(accessToken);
-        OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(accessToken.getTokenValue());
-        Assertions.assertNull(oAuth2AccessToken, "access token 未被清除");
+        tokenStore.removeTokenEntity(tokenEntity);
+        TokenEntity notExists = tokenStore.readTokenEntity(tokenEntity.getAccessToken().getTokenValue());
+        Assertions.assertNull(notExists, "access token 未被清除");
 
-        Assertions.assertNull(tokenStore.readRefreshToken(accessToken.getAuth2RefreshToken().getTokenValue()), "refresh token 未被清除");
+        Assertions.assertNull(tokenStore.readRefreshToken(tokenEntity.getRefreshToken().getTokenValue()), "refresh token 未被清除");
     }
 
     @TestComponent

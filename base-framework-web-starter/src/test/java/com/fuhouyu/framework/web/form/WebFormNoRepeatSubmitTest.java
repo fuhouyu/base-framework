@@ -17,11 +17,11 @@
 package com.fuhouyu.framework.web.form;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fuhouyu.framework.cache.CacheAutoConfigure;
-import com.fuhouyu.framework.kms.KmsAutoConfigure;
+import com.fuhouyu.framework.cache.CacheAutoConfiguration;
+import com.fuhouyu.framework.kms.KmsAutoConfiguration;
 import com.fuhouyu.framework.response.BaseResponse;
 import com.fuhouyu.framework.utils.JacksonUtil;
-import com.fuhouyu.framework.web.WebAutoConfigure;
+import com.fuhouyu.framework.web.WebAutoConfiguration;
 import com.fuhouyu.framework.web.annotaions.NoRepeatSubmit;
 import com.fuhouyu.framework.web.enums.ErrorLevelEnum;
 import com.fuhouyu.framework.web.reponse.ErrorResponse;
@@ -55,9 +55,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2024/8/17 23:10
  */
 @SpringBootTest(classes = {
-        KmsAutoConfigure.class,
-        WebAutoConfigure.class,
-        CacheAutoConfigure.class
+        KmsAutoConfiguration.class,
+        WebAutoConfiguration.class,
+        CacheAutoConfiguration.class
 })
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc

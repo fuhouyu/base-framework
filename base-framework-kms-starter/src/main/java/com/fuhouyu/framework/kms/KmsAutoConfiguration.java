@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.resource;
+package com.fuhouyu.framework.kms;
 
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 /**
  * <p>
- * resource 资源自动装配类入口
+ * kms自动装配类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/16 18:36
+ * @since 2024/8/17 17:27
  */
-@ComponentScan(basePackageClasses = ResourceAutoConfigure.class)
-@Import({AliYunOssAutoConfigure.class, LocalFileResourceAutoConfigure.class})
-@ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.resource.properties")
-public class ResourceAutoConfigure {
+@ComponentScan(basePackageClasses = KmsAutoConfiguration.class)
+@Import({DefaultKmsAutoConfiguration.class})
+public class KmsAutoConfiguration {
+
 
 }

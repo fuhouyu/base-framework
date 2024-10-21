@@ -16,31 +16,21 @@
 
 package com.fuhouyu.framework.resource;
 
-import com.fuhouyu.framework.resource.service.ResourceService;
-import com.fuhouyu.framework.resource.service.impl.LocalFileServiceImpl;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.Resource;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 
 /**
  * <p>
- * 本地文件资源自动装配类
+ * resource 资源自动装配类入口
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/18 17:28
+ * @since 2024/8/16 18:36
  */
-public class LocalFileResourceAutoConfigure {
+@ComponentScan(basePackageClasses = ResourceAutoConfiguration.class)
+@Import({AliYunOssAutoConfiguration.class, LocalFileResourceAutoConfiguration.class})
+@ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.resource.properties")
+public class ResourceAutoConfiguration {
 
-
-    /**
-     * 本地资源文件bean
-     *
-     * @return bean对象
-     */
-    @Bean
-    @ConditionalOnMissingBean(Resource.class)
-    public ResourceService localFileResourceService() {
-        return new LocalFileServiceImpl();
-    }
 }

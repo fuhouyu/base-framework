@@ -17,13 +17,13 @@
 package com.fuhouyu.framework.web.fileter;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fuhouyu.framework.cache.CacheAutoConfigure;
-import com.fuhouyu.framework.kms.KmsAutoConfigure;
+import com.fuhouyu.framework.cache.CacheAutoConfiguration;
+import com.fuhouyu.framework.kms.KmsAutoConfiguration;
 import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.response.BaseResponse;
 import com.fuhouyu.framework.utils.HexUtil;
 import com.fuhouyu.framework.utils.JacksonUtil;
-import com.fuhouyu.framework.web.WebAutoConfigure;
+import com.fuhouyu.framework.web.WebAutoConfiguration;
 import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
 import com.fuhouyu.framework.web.reponse.ResponseHelper;
 import org.junit.jupiter.api.Test;
@@ -55,9 +55,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2024/8/21 23:15
  */
 @SpringBootTest(classes = {
-        KmsAutoConfigure.class,
-        WebAutoConfigure.class,
-        CacheAutoConfigure.class
+        KmsAutoConfiguration.class,
+        WebAutoConfiguration.class,
+        CacheAutoConfiguration.class
 })
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = {"classpath:application.yaml"})

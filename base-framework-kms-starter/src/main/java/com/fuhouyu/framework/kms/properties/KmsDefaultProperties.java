@@ -38,7 +38,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 public class KmsDefaultProperties {
 
-    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "kms.default";
+    /**
+     * 国密算法配置
+     */
+    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "kms-national";
 
     /**
      * sm2 配置，优先字符串读取，当字符串不存在时，读取密钥文件，当都不存在时，进行生成

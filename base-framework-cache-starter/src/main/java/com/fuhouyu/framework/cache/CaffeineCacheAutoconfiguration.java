@@ -40,7 +40,7 @@ import org.springframework.context.annotation.Primary;
 @ConditionalOnProperty(prefix = CacheServiceProperties.PREFIX,
         name = "cache-service-type",
         havingValue = "caffeine")
-public class CaffeineCacheAutoconfigure {
+public class CaffeineCacheAutoconfiguration {
 
     @Bean
     @Primary

@@ -17,7 +17,11 @@
 package com.fuhouyu.framework.security.token;
 
 import com.fuhouyu.framework.cache.service.CacheService;
+import com.fuhouyu.framework.security.entity.TokenEntity;
+import com.fuhouyu.framework.security.serializer.KryoSerializer;
+import com.fuhouyu.framework.security.serializer.SerializationStrategy;
 import com.fuhouyu.framework.utils.LoggerUtil;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.utils.Base64;
 import org.springframework.security.core.Authentication;
@@ -68,8 +72,8 @@ public class TokenStoreCache implements TokenStore {
 
     private final ZoneId zoneId;
 
-    private final TokenStoreSerializationStrategy serializationStrategy
-            = new KryoTokenSerializer();
+    private final SerializationStrategy serializationStrategy
+            = new KryoSerializer();
 
     private final CacheService<String, Object> cacheService;
 
@@ -85,7 +89,8 @@ public class TokenStoreCache implements TokenStore {
 
     /**
      * 构造函数
-     * @param zoneId 时区
+     *
+     * @param zoneId       时区
      * @param cacheService 缓存接口
      */
     public TokenStoreCache(ZoneId zoneId, CacheService<String, Object> cacheService) {
@@ -94,6 +99,7 @@ public class TokenStoreCache implements TokenStore {
 
     /**
      * 构造函数
+     *
      * @param cacheService 缓存接口
      */
     public TokenStoreCache(CacheService<String, Object> cacheService) {
@@ -102,8 +108,9 @@ public class TokenStoreCache implements TokenStore {
 
     /**
      * 构造函数
-     * @param prefix token前缀
-     * @param zoneId 时区
+     *
+     * @param prefix       token前缀
+     * @param zoneId       时区
      * @param cacheService 缓存接口
      */
     public TokenStoreCache(String prefix, ZoneId zoneId, CacheService<String, Object> cacheService) {
@@ -113,26 +120,27 @@ public class TokenStoreCache implements TokenStore {
     }
 
     @Override
-    public DefaultOAuth2Token createAccessToken(Authentication authentication, Integer accessTokenExpireSeconds) {
+    public OAuth2AccessToken createAccessToken(Authentication authentication, Integer accessTokenExpireSeconds) {
         String tokenValue = Base64.encodeBase64String(DEFAULT_TOKEN_GENERATOR.generateKey());
         Instant now = Instant.now().atZone(zoneId).toInstant();
-        return new DefaultOAuth2Token(
+        return new OAuth2AccessToken(
                 OAuth2AccessToken.TokenType.BEARER,
                 tokenValue,
                 now,
-                accessTokenExpireSeconds);
+                now.plusSeconds(accessTokenExpireSeconds));
     }
 
     @Override
-    public DefaultOAuth2Token createToken(Authentication authentication,
-                                          Integer accessTokenExpireSeconds,
-                                          Integer refreshTokenExpireSeconds) {
-        DefaultOAuth2Token existingAccessToken = this.getAccessToken(
+    public TokenEntity createToken(Authentication authentication,
+                                   Integer accessTokenExpireSeconds,
+                                   Integer refreshTokenExpireSeconds) {
+        TokenEntity tokenEntity = this.getTokenEntity(
                 authentication);
         Instant now = Instant.now().atZone(zoneId).toInstant();
         // 如果存在则验证这个token是否过期，过期则进去删除。
-        if (Objects.nonNull(existingAccessToken)) {
-            OAuth2RefreshToken auth2RefreshToken = existingAccessToken.getAuth2RefreshToken();
+        if (Objects.nonNull(tokenEntity)) {
+            OAuth2AccessToken existingAccessToken = tokenEntity.getAccessToken();
+            OAuth2RefreshToken auth2RefreshToken = tokenEntity.getRefreshToken();
             if (now.isAfter(Objects.requireNonNull(existingAccessToken.getExpiresAt()))) {
                 if (auth2RefreshToken != null) {
                     // 当accessToken不存在时，则删除该值关联的refreshToken
@@ -144,19 +152,19 @@ public class TokenStoreCache implements TokenStore {
             if (auth2RefreshToken == null) {
                 OAuth2RefreshToken refreshToken = this.createRefreshToken(refreshTokenExpireSeconds);
                 this.storeRefreshToken(refreshToken, authentication);
-                existingAccessToken.setAuth2RefreshToken(refreshToken);
-                this.storeAccessToken(existingAccessToken, authentication);
+                tokenEntity.setRefreshToken(refreshToken);
+                this.storeTokenEntity(tokenEntity, authentication);
             }
-            return existingAccessToken;
+            return tokenEntity;
         }
         // accessToken 和refresh Token都不存在时，生成
-        DefaultOAuth2Token accessToken = this.createAccessToken(
+        OAuth2AccessToken accessToken = this.createAccessToken(
                 authentication, accessTokenExpireSeconds);
         OAuth2RefreshToken refreshToken = this.createRefreshToken(refreshTokenExpireSeconds);
         this.storeRefreshToken(refreshToken, authentication);
-        accessToken.setAuth2RefreshToken(refreshToken);
-        this.storeAccessToken(accessToken, authentication);
-        return accessToken;
+        tokenEntity = new TokenEntity(accessToken, refreshToken);
+        this.storeTokenEntity(tokenEntity, authentication);
+        return tokenEntity;
     }
 
     @Override
@@ -179,54 +187,52 @@ public class TokenStoreCache implements TokenStore {
     }
 
     @Override
-    public void storeAccessToken(OAuth2AccessToken token, Authentication authentication) {
-        byte[] serializedAccessToken = this.serialize(token);
+    public void storeTokenEntity(TokenEntity tokenEntity, Authentication authentication) {
+
+        byte[] tokenEntityBytes = this.serialize(tokenEntity);
         byte[] serializedAuth = serialize(authentication);
-        // 存储认证令牌
-        long accessTokenExpireTime = this.expireTimeSeconds(token.getExpiresAt());
-        cacheService.set(this.serializeKey(ACCESS + token.getTokenValue()),
-                serializedAccessToken,
+
+        OAuth2AccessToken accessToken = tokenEntity.getAccessToken();
+        long accessTokenExpireTime = this.expireTimeSeconds(accessToken.getExpiresAt());
+        cacheService.set(this.serializeKey(ACCESS + accessToken.getTokenValue()),
+                tokenEntityBytes,
                 accessTokenExpireTime, TimeUnit.SECONDS);
-        cacheService.set(this.serializeKey(AUTH + token.getTokenValue()),
+        cacheService.set(this.serializeKey(AUTH + accessToken.getTokenValue()),
                 serializedAuth, accessTokenExpireTime, TimeUnit.SECONDS);
         cacheService.set(this
                         .serializeKey(AUTH_TO_ACCESS + authenticationKeyGenerator.extractKey(authentication)),
-                serializedAccessToken, accessTokenExpireTime, TimeUnit.SECONDS);
+                tokenEntityBytes, accessTokenExpireTime, TimeUnit.SECONDS);
 
-        if (token instanceof DefaultOAuth2Token accessToken) {
-            OAuth2RefreshToken auth2RefreshToken = accessToken.getAuth2RefreshToken();
-            if (Objects.nonNull(auth2RefreshToken) && Objects.nonNull(
-                    auth2RefreshToken.getTokenValue())) {
-                this.storeRefreshToken(auth2RefreshToken, authentication);
-            }
+        OAuth2RefreshToken refreshToken = tokenEntity.getRefreshToken();
+        if (Objects.nonNull(refreshToken) && Objects.nonNull(
+                refreshToken.getTokenValue())) {
+            this.storeRefreshToken(refreshToken, authentication);
         }
     }
 
 
     @Override
-    public OAuth2AccessToken readAccessToken(String tokenValue) {
+    public TokenEntity readTokenEntity(String tokenValue) {
         return serializationStrategy.deserialize(cacheService.get(this.serializeKey(ACCESS + tokenValue)));
     }
 
     @Override
-    public void removeAllToken(OAuth2AccessToken accessToken) {
-        if (Objects.isNull(accessToken)) {
-            return;
-        }
-        this.removeAccessToken(accessToken);
-        if (accessToken instanceof DefaultOAuth2Token defaultOAuth2Token) {
-            this.removeRefreshToken(defaultOAuth2Token.getAuth2RefreshToken());
-        }
+    public void removeTokenEntity(@NonNull TokenEntity tokenEntity) {
+        this.removeAccessToken(tokenEntity.getAccessToken());
+        this.removeRefreshToken(tokenEntity.getRefreshToken());
 
     }
 
     @Override
-    public void removeAllToken(String accessToken) {
-        this.removeAllToken(this.readAccessToken(accessToken));
+    public void removeTokenEntity(String accessToken) {
+        this.removeTokenEntity(this.readTokenEntity(accessToken));
     }
 
     @Override
     public void removeAccessToken(OAuth2AccessToken token) {
+        if (Objects.isNull(token)) {
+            return;
+        }
         this.removeAccessToken(token.getTokenValue());
     }
 
@@ -259,6 +265,9 @@ public class TokenStoreCache implements TokenStore {
 
     @Override
     public void removeRefreshToken(OAuth2RefreshToken token) {
+        if (Objects.isNull(token)) {
+            return;
+        }
         this.removeRefreshToken(token.getTokenValue());
     }
 
@@ -311,20 +320,23 @@ public class TokenStoreCache implements TokenStore {
     }
 
     @Override
-    public DefaultOAuth2Token getAccessToken(Authentication authentication) {
+    public TokenEntity getTokenEntity(Authentication authentication) {
         String key = authenticationKeyGenerator.extractKey(authentication);
         byte[] serializedKey = this.serializeKey(AUTH_TO_ACCESS + key);
         byte[] bytes = cacheService.get(serializedKey);
 
-        DefaultOAuth2Token accessToken = serializationStrategy.deserialize(bytes);
-        if (accessToken != null) {
-            Authentication storedAuthentication = readAuthentication(accessToken.getTokenValue());
-            if ((storedAuthentication == null || !key.equals(
-                    authenticationKeyGenerator.extractKey(storedAuthentication)))) {
-                storeAccessToken(accessToken, authentication);
-            }
+        TokenEntity tokenEntity = serializationStrategy.deserialize(bytes);
+        if (Objects.isNull(tokenEntity)) {
+            return null;
         }
-        return accessToken;
+        OAuth2AccessToken accessToken = tokenEntity.getAccessToken();
+        Authentication storedAuthentication = readAuthentication(accessToken.getTokenValue());
+        // 如果认证信息已过期，重新设置
+        if ((storedAuthentication == null || !key.equals(
+                authenticationKeyGenerator.extractKey(storedAuthentication)))) {
+            storeTokenEntity(tokenEntity, authentication);
+        }
+        return tokenEntity;
     }
 
     /**

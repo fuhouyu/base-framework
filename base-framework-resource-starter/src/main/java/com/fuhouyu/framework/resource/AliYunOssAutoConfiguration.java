@@ -46,7 +46,7 @@ import java.util.Objects;
 @ConditionalOnClass(OSS.class)
 @RequiredArgsConstructor
 @Slf4j
-public class AliYunOssAutoConfigure implements InitializingBean {
+public class AliYunOssAutoConfiguration implements InitializingBean {
 
     private final ResourceProperties resourceProperties;
 

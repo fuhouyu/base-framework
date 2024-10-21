@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.security.token;
+package com.fuhouyu.framework.security.serializer;
 
 import com.esotericsoftware.kryo.kryo5.Kryo;
 import com.esotericsoftware.kryo.kryo5.Serializer;
@@ -37,7 +37,7 @@ import java.util.*;
  * @author fuhouyu
  * @since 2024/8/14 21:33
  */
-public class KryoTokenSerializer implements TokenStoreSerializationStrategy {
+public class KryoSerializer implements SerializationStrategy {
 
     /**
      * 空白数组，如果序列化对象为空时，则返回该值
@@ -49,7 +49,7 @@ public class KryoTokenSerializer implements TokenStoreSerializationStrategy {
     /**
      * 初始化kryo
      */
-    public KryoTokenSerializer() {
+    public KryoSerializer() {
         this.kryoPool = new Pool<>(true, false, 8) {
             @Override
             protected Kryo create() {

@@ -16,8 +16,8 @@
 
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.cache.CacheAutoConfigure;
-import com.fuhouyu.framework.cache.CaffeineCacheAutoconfigure;
+import com.fuhouyu.framework.cache.CacheAutoConfiguration;
+import com.fuhouyu.framework.cache.CaffeineCacheAutoconfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,9 +34,9 @@ import org.springframework.util.Assert;
  * @since 2024/9/7 22:32
  */
 @SpringBootTest(classes = {
-        SecurityAutoConfigure.class,
-        CacheAutoConfigure.class,
-        CaffeineCacheAutoconfigure.class,
+        SecurityAutoConfiguration.class,
+        CacheAutoConfiguration.class,
+        CaffeineCacheAutoconfiguration.class,
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class Sm3PasswordEncoderTest {

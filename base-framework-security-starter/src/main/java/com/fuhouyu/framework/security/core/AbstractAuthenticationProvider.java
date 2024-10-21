@@ -61,23 +61,21 @@ public abstract class AbstractAuthenticationProvider<T> implements Authenticatio
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        T t = null;
-        UserDetails userDetails;
+        T t = this.loadPlatformUser(authentication);
         try {
-            t = this.loadPlatformUser(authentication);
-            userDetails = this.loadUserDetails(t);
+            UserDetails userDetails = this.loadUserDetails(t);
+            return UsernamePasswordAuthenticationToken.authenticated(userDetails,
+                    authentication.getCredentials(), Collections.emptyList());
         } catch (UsernameNotFoundException e) {
             if (Objects.isNull(registerFunction)) {
                 throw e;
             }
-            userDetails = this.registerIfUserNotFound(t);
+            return UsernamePasswordAuthenticationToken.authenticated(registerFunction.apply(t),
+                    authentication.getCredentials(), Collections.emptyList());
         } catch (Exception e) {
             LoggerUtil.error(log, "第三方平台认证请求失败:{}", e.getMessage());
             throw new AuthenticationServiceException(e.getMessage(), e);
         }
-        // 这里返回公共的认证请求
-        return UsernamePasswordAuthenticationToken.authenticated(userDetails,
-                authentication.getCredentials(), Collections.emptyList());
     }
 
 
@@ -97,14 +95,4 @@ public abstract class AbstractAuthenticationProvider<T> implements Authenticatio
      * @throws UsernameNotFoundException 未找到用户异常
      */
     public abstract UserDetails loadUserDetails(T t) throws UsernameNotFoundException;
-
-    /**
-     * 当用户不存在时的注册方法
-     *
-     * @param t 第三方的用户详情
-     * @return 用户详情
-     */
-    private UserDetails registerIfUserNotFound(T t) {
-        return registerFunction.apply(t);
-    }
 }

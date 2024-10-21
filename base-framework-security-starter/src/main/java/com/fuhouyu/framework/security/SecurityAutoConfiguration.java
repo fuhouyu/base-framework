@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.cache.CacheAutoConfigure;
+import com.fuhouyu.framework.cache.CacheAutoConfiguration;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.security.core.passwordencoder.PasswordEncoderFactory;
 import com.fuhouyu.framework.security.token.TokenStore;
@@ -44,10 +44,10 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/8/15 16:22
  */
-@ComponentScan(basePackageClasses = SecurityAutoConfigure.class)
-@Import({OpenPlatformAutoConfigure.class})
-@AutoConfigureAfter(CacheAutoConfigure.class)
-public class SecurityAutoConfigure {
+@ComponentScan(basePackageClasses = SecurityAutoConfiguration.class)
+@Import({OpenPlatformAutoConfiguration.class})
+@AutoConfigureAfter(CacheAutoConfiguration.class)
+public class SecurityAutoConfiguration {
 
     /**
      * redisToken存储.

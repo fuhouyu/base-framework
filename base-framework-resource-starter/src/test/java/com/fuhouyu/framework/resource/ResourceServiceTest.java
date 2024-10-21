@@ -41,7 +41,7 @@ import java.nio.file.Path;
  */
 @SpringBootTest(classes = {
 //        ResourceAutoConfigure.class,
-        LocalFileResourceAutoConfigure.class
+        LocalFileResourceAutoConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class ResourceServiceTest {

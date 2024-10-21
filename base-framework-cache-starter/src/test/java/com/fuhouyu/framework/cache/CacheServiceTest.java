@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 2024/8/13 22:06
  */
 @SpringBootTest(classes = {
-        CacheAutoConfigure.class,
+        CacheAutoConfiguration.class,
         RedisAutoConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})

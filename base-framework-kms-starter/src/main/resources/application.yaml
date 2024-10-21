@@ -1,6 +1,5 @@
 base:
   framework:
-    kms:
-      default:
-        sm2:
-          auto-generate: true
+    kms-national:
+      sm2:
+        auto-generate: true

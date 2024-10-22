@@ -17,6 +17,7 @@
 package com.fuhouyu.framework.security.properties;
 
 import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
+import com.fuhouyu.framework.security.core.GrantTypeAuthenticationTokenEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -46,19 +47,7 @@ public class OpenPlatformAuthProperties {
     /**
      * 客户端相关配置
      */
-    private Map<OpenPlatformAuthTypeEnum, AuthDetail> auth;
-
-    /**
-     * 平台类型
-     */
-    public enum OpenPlatformAuthTypeEnum {
-        /**
-         * 微信小程序
-         */
-        WECHAT_APPLET,
-
-
-    }
+    private Map<GrantTypeAuthenticationTokenEnum, AuthDetail> auth;
 
     /**
      * 授权的详情

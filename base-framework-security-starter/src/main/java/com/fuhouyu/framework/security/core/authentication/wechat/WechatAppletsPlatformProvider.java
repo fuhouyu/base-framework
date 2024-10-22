@@ -16,6 +16,8 @@
 
 package com.fuhouyu.framework.security.core.authentication.wechat;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.framework.security.core.AbstractAuthenticationProvider;
 import com.fuhouyu.framework.security.properties.OpenPlatformAuthProperties;
 import com.fuhouyu.framework.utils.JacksonUtil;
@@ -141,12 +143,15 @@ public class WechatAppletsPlatformProvider extends AbstractAuthenticationProvide
          */
         private final String jsCode;
 
+
         /**
          * 构造函数
          *
          * @param jsCode 登录时获取的 code，可通过wx.login获取
          */
-        public WechatAppletsAuthenticationToken(String jsCode) {
+        @JsonCreator
+        public WechatAppletsAuthenticationToken(
+                @JsonProperty("jsCode") String jsCode) {
             super(List.of());
             this.jsCode = jsCode;
         }

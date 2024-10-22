@@ -34,9 +34,9 @@ import org.springframework.util.Assert;
  * @since 2024/9/7 22:32
  */
 @SpringBootTest(classes = {
-        SecurityAutoConfiguration.class,
         CacheAutoConfiguration.class,
         CaffeineCacheAutoconfiguration.class,
+        SecurityAutoConfiguration.class,
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class Sm3PasswordEncoderTest {

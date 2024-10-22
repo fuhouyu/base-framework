@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.fuhouyu.framework.security.model.dto;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+package com.fuhouyu.framework.function;
 
 /**
  * <p>
- * 应用dto传输对象
+ * 回调函数
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/15 17:16
+ * @since 2024/10/22 21:01
  */
-@ToString
-@Getter
-@Setter
-public class ApplicationDTO {
+@FunctionalInterface
+public interface Callback<T> {
 
-    private String clientId;
-
-    private String clientSecret;
-
-    private Integer accessTokenExpireTime;
-
-    private Integer refreshTokenExpireTime;
+    /**
+     * 回调函数
+     *
+     * @param t t
+     */
+    void call(T t);
 }

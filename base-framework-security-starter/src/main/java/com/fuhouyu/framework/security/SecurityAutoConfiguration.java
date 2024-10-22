@@ -66,8 +66,8 @@ public class SecurityAutoConfiguration {
      * 认证管理器配置这里可以进行除其他登录模式的扩展，需要实现{@link AuthenticationProvider}
      *
      * @param authenticationProviders 认证提供者集合
-     * @param userDetailsService 用户接口详情
-     * @param passwordEncoder 密码认证管理器
+     * @param userDetailsService      用户接口详情
+     * @param passwordEncoder         密码认证管理器
      * @return 认证管理器
      */
     @Bean("authenticationManager")
@@ -94,7 +94,7 @@ public class SecurityAutoConfiguration {
     /**
      * dao层实现
      *
-     * @param passwordEncoder 密码管理器
+     * @param passwordEncoder    密码管理器
      * @param userDetailsService 用户详情接口
      * @return dao默认实现
      */

@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.framework.security.entity;
 
-import com.fuhouyu.framework.Entity;
+import com.fuhouyu.framework.common.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

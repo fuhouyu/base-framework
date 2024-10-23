@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.context;
 
-import com.fuhouyu.framework.service.AdditionalInformationFunction;
+import com.fuhouyu.framework.common.service.AdditionalInformationFunction;
 
 import java.io.Serializable;
 

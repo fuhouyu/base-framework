@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.web.enums;
 
-import com.fuhouyu.framework.response.BaseResponseCode;
+import com.fuhouyu.framework.common.response.BaseResponseCode;
 
 /**
  * <p>

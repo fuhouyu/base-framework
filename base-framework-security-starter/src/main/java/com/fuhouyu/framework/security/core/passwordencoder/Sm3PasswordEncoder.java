@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.security.core.passwordencoder;
 
 import cn.hutool.crypto.SmUtil;
-import com.fuhouyu.framework.utils.LoggerUtil;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.utils.Base64;
 import org.springframework.security.crypto.password.PasswordEncoder;

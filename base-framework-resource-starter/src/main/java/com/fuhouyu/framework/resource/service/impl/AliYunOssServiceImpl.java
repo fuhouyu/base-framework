@@ -20,11 +20,11 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.*;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fuhouyu.framework.common.utils.JacksonUtil;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.resource.exception.ResourceException;
 import com.fuhouyu.framework.resource.model.*;
 import com.fuhouyu.framework.resource.service.ResourceService;
-import com.fuhouyu.framework.utils.JacksonUtil;
-import com.fuhouyu.framework.utils.LoggerUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -17,10 +17,10 @@
 package com.fuhouyu.framework.web.controller;
 
 import com.fuhouyu.framework.cache.service.CacheService;
-import com.fuhouyu.framework.response.BaseResponse;
+import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
 import com.fuhouyu.framework.web.constants.FormTokenConstant;
-import com.fuhouyu.framework.web.reponse.ResponseHelper;
+import com.fuhouyu.framework.web.response.ResponseHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

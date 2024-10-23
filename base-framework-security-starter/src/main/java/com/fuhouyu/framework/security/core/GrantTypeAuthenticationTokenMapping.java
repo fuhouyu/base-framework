@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.framework.security.core;
 
-import com.fuhouyu.framework.utils.JacksonUtil;
+import com.fuhouyu.framework.common.utils.JacksonUtil;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 /**

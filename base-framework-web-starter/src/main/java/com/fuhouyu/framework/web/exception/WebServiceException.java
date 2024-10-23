@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.web.exception;
 
-import com.fuhouyu.framework.response.BaseResponseCode;
+import com.fuhouyu.framework.common.response.BaseResponseCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

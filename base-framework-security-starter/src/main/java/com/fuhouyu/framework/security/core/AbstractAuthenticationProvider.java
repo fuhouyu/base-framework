@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.security.core;
 
-import com.fuhouyu.framework.utils.LoggerUtil;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;

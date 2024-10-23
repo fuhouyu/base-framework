@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.resource.properties;
 
-import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
+import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
 import com.fuhouyu.framework.resource.enums.ResourceUploadTypeEnum;
 import lombok.Getter;
 import lombok.Setter;

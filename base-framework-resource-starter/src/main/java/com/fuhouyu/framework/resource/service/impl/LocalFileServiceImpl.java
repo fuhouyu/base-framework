@@ -16,13 +16,13 @@
 
 package com.fuhouyu.framework.resource.service.impl;
 
+import com.fuhouyu.framework.common.service.Callback;
+import com.fuhouyu.framework.common.utils.FileUtil;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.resource.constants.FileResourceMetadataConstant;
 import com.fuhouyu.framework.resource.exception.ResourceException;
 import com.fuhouyu.framework.resource.model.*;
 import com.fuhouyu.framework.resource.service.ResourceService;
-import com.fuhouyu.framework.service.Callback;
-import com.fuhouyu.framework.utils.FileUtil;
-import com.fuhouyu.framework.utils.LoggerUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;

@@ -17,11 +17,11 @@
 package com.fuhouyu.framework.web.exception;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fuhouyu.framework.response.BaseResponse;
-import com.fuhouyu.framework.utils.JacksonUtil;
-import com.fuhouyu.framework.utils.LoggerUtil;
+import com.fuhouyu.framework.common.response.BaseResponse;
+import com.fuhouyu.framework.common.utils.JacksonUtil;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
-import com.fuhouyu.framework.web.reponse.ResponseHelper;
+import com.fuhouyu.framework.web.response.ResponseHelper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;

@@ -16,13 +16,13 @@
 
 package com.fuhouyu.framework.log;
 
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.User;
 import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.core.LogRecordStoreService;
 import com.fuhouyu.framework.log.enums.OperationTypeEnum;
-import com.fuhouyu.framework.utils.LoggerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

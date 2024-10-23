@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.web.properties;
 
-import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
+import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

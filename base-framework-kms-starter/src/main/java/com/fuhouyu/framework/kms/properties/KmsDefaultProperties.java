@@ -18,7 +18,7 @@ package com.fuhouyu.framework.kms.properties;
 
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;
-import com.fuhouyu.framework.constants.ConfigPropertiesConstant;
+import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

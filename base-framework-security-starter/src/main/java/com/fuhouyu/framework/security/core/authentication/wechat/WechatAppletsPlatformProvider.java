@@ -18,10 +18,10 @@ package com.fuhouyu.framework.security.core.authentication.wechat;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fuhouyu.framework.common.utils.JacksonUtil;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.security.core.AbstractAuthenticationProvider;
 import com.fuhouyu.framework.security.properties.OpenPlatformAuthProperties;
-import com.fuhouyu.framework.utils.JacksonUtil;
-import com.fuhouyu.framework.utils.LoggerUtil;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

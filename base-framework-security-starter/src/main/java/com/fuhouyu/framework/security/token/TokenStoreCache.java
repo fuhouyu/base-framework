@@ -17,10 +17,10 @@
 package com.fuhouyu.framework.security.token;
 
 import com.fuhouyu.framework.cache.service.CacheService;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.framework.security.serializer.KryoSerializer;
 import com.fuhouyu.framework.security.serializer.SerializationStrategy;
-import com.fuhouyu.framework.utils.LoggerUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.utils.Base64;

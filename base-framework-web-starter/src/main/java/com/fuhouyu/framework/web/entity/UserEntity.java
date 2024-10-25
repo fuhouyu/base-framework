@@ -40,19 +40,40 @@ public class UserEntity implements User {
     @Serial
     private static final long serialVersionUID = 2389708129078213719L;
 
+    /**
+     * 用户id
+     */
     private Long id;
 
+    /**
+     * 用户名
+     */
     private String username;
 
+    /**
+     * 真实姓名
+     */
     private String realName;
 
+    /**
+     * 昵称
+     */
     private String nickname;
 
+    /**
+     * 性别
+     */
     private String gender;
 
+    /**
+     * 所属的账号id
+     */
     private String refAccountId;
 
-    private Map<String, Object> additionalInformation;
+    /**
+     * 扩展信息
+     */
+    private transient Map<String, Object> additionalInformation;
 
     public UserEntity() {
         this.additionalInformation = new HashMap<>();

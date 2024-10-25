@@ -360,19 +360,6 @@ public class TokenStoreCache implements TokenStore {
         return (prefix + key).getBytes(StandardCharsets.UTF_8);
     }
 
-    /**
-     * 从缓存中读取字节数组
-     *
-     * @param key key
-     * @return 字节数组
-     */
-    private byte[] getCacheBytes(String key) {
-        String result = (String) cacheService.get(key);
-        if (Objects.isNull(result)) {
-            return null;
-        }
-        return Base64.decodeBase64(result);
-    }
 
     /**
      * 返回过期时间

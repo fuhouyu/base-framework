@@ -45,6 +45,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <p>
@@ -163,7 +164,7 @@ public class DefaultKmsAutoConfiguration {
             throw new KmsException("sm2 公私钥未设置，且未启用自动生成");
         }
 
-        String parentPath = sm2Properties.getAutoGenerateLocalPath();
+        String parentPath = Optional.ofNullable(sm2Properties.getAutoGenerateLocalPath()).orElse("/tmp/keypair");
         Path publicKeyPath = Path.of(parentPath, "publicKey");
         Path privateKeyPath = Path.of(parentPath, "privateKey");
         if (Files.exists(publicKeyPath) && Files.exists(privateKeyPath)) {

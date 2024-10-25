@@ -16,6 +16,9 @@
 
 package com.fuhouyu.framework.context;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+
 /**
  * <p>
  * 上下文策略类
@@ -24,6 +27,7 @@ package com.fuhouyu.framework.context;
  * @author fuhouyu
  * @since 2024/8/14 10:08
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ContextHolderStrategy {
 
     private static final ThreadLocal<ContextFactory> THREAD_LOCAL;

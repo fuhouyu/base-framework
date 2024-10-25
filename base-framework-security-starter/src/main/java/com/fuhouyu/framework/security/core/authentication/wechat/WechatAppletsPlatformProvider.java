@@ -47,7 +47,6 @@ import java.util.function.Function;
 @Slf4j
 public class WechatAppletsPlatformProvider extends AbstractAuthenticationProvider<WechatAppletsUserInfo> {
 
-    // TODO 这里的restTemplate 后续待抽离
     private final RestTemplate restTemplate;
 
     private final UserDetailsService userDetailsService;

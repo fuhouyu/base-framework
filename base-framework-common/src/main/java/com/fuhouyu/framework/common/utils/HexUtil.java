@@ -82,7 +82,8 @@ public class HexUtil {
 
     private static void encodeHex(final byte[] data, final int dataLen,
                                   final char[] out) {
-        for (int i = 0, j = 0; i < dataLen; i++) {
+        int j = 0;
+        for (int i = 0; i < dataLen; i++) {
             out[j++] = HexUtil.DIGITS_LOWER[(0xF0 & data[i]) >>> 4];
             out[j++] = HexUtil.DIGITS_LOWER[0x0F & data[i]];
         }

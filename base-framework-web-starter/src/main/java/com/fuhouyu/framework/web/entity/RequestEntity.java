@@ -47,14 +47,29 @@ public class RequestEntity implements Request {
         this.additionalInformation = new HashMap<>(2);
     }
 
+    /**
+     * 认证信息
+     */
     private String authorization;
 
+    /**
+     * 请求ip
+     */
     private String requestIp;
 
+    /**
+     * 请求主机
+     */
     private String requestHost;
 
+    /**
+     * 请求目标
+     */
     private String requestTarget;
 
+    /**
+     * userAgent
+     */
     private String userAgent;
 
 }

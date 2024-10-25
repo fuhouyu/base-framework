@@ -95,7 +95,7 @@ class HttpControllerTest {
 
         @PostMapping("/v1/test/enc")
         @PrepareHttpBody
-        public BaseResponse<Object> post(@RequestBody ObjectNode body) throws Exception {
+        public BaseResponse<Object> post(@RequestBody ObjectNode body) {
             return ResponseHelper.success(body);
         }
 

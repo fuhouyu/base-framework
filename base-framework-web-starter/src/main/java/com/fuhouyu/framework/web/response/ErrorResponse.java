@@ -19,8 +19,6 @@ import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.web.enums.ErrorLevelEnum;
 import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
 
-import java.io.Serializable;
-
 /**
  * <p>
  * 错误响应
@@ -29,7 +27,7 @@ import java.io.Serializable;
  * @author fuhouyu
  * @since 2024/10/16 20:35
  */
-public class ErrorResponse<T extends Serializable> implements BaseResponse<T> {
+public class ErrorResponse<T> implements BaseResponse<T> {
 
     private final Integer code;
 

@@ -40,7 +40,6 @@ module base.framework.web.starter {
     exports com.fuhouyu.framework.web.exception;
     exports com.fuhouyu.framework.web.filter;
     exports com.fuhouyu.framework.web.handler;
-    exports com.fuhouyu.framework.web.properties;
     exports com.fuhouyu.framework.web.response;
     exports com.fuhouyu.framework.web.utils;
 

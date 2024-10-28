@@ -69,7 +69,7 @@ public class LoggerUtil {
      */
     public static void debug(Logger logger, String msg, Object... args) {
         if (logger.isDebugEnabled()) {
-            logger.error(msg, args);
+            logger.debug(msg, args);
         }
     }
 

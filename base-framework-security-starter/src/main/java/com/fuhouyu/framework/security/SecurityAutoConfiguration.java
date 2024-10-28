@@ -24,7 +24,7 @@ import com.fuhouyu.framework.security.token.TokenStoreCache;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,7 +44,7 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/8/15 16:22
  */
-@ComponentScan(basePackageClasses = SecurityAutoConfiguration.class)
+@Configuration
 @Import({OpenPlatformAutoConfiguration.class})
 @AutoConfigureAfter(CacheAutoConfiguration.class)
 public class SecurityAutoConfiguration {

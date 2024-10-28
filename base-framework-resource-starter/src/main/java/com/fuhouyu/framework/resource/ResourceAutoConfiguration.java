@@ -16,8 +16,9 @@
 
 package com.fuhouyu.framework.resource;
 
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.context.annotation.ComponentScan;
+import com.fuhouyu.framework.resource.properties.ResourceProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -28,9 +29,9 @@ import org.springframework.context.annotation.Import;
  * @author fuhouyu
  * @since 2024/8/16 18:36
  */
-@ComponentScan(basePackageClasses = ResourceAutoConfiguration.class)
 @Import({AliYunOssAutoConfiguration.class, LocalFileResourceAutoConfiguration.class})
-@ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.resource.properties")
+@EnableConfigurationProperties(ResourceProperties.class)
+@Configuration
 public class ResourceAutoConfiguration {
 
 }

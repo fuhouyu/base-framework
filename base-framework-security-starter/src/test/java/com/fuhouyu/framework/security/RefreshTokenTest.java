@@ -18,18 +18,14 @@ package com.fuhouyu.framework.security;
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
 import com.fuhouyu.framework.cache.CaffeineCacheAutoconfiguration;
 import com.fuhouyu.framework.security.core.GrantTypeAuthenticationTokenEnum;
-import com.fuhouyu.framework.security.core.authentication.refreshtoken.RefreshAuthenticationProvider;
 import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestComponent;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.TestPropertySource;
@@ -49,7 +45,7 @@ import java.util.Map;
         CacheAutoConfiguration.class,
         CaffeineCacheAutoconfiguration.class,
         SecurityAutoConfiguration.class,
-
+        BaseComponent.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class RefreshTokenTest {
@@ -76,13 +72,4 @@ class RefreshTokenTest {
         Assertions.assertNotNull(refreshTokenEntity);
     }
 
-    @TestComponent
-    public static class RefreshTokenTestComponent {
-
-
-        @Bean
-        public AuthenticationProvider refreshTokenAuthenticationProvider(TokenStore tokenStore) {
-            return new RefreshAuthenticationProvider(tokenStore);
-        }
-    }
 }

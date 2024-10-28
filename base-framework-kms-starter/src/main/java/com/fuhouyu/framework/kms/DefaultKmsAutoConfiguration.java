@@ -34,6 +34,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -58,6 +59,7 @@ import java.util.Optional;
 @ConditionalOnMissingBean(KmsService.class)
 @EnableConfigurationProperties(KmsDefaultProperties.class)
 @RequiredArgsConstructor
+@Configuration
 public class DefaultKmsAutoConfiguration {
 
     private final KmsDefaultProperties properties;

@@ -31,7 +31,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.Objects;
 
@@ -46,6 +48,8 @@ import java.util.Objects;
 @ConditionalOnClass(OSS.class)
 @RequiredArgsConstructor
 @Slf4j
+@EnableConfigurationProperties(AliYunOssProperties.class)
+@Configuration
 public class AliYunOssAutoConfiguration implements InitializingBean {
 
     private final ResourceProperties resourceProperties;

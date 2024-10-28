@@ -19,19 +19,21 @@ package com.fuhouyu.framework.log;
 import com.fuhouyu.framework.log.core.LogRecordAspectj;
 import com.fuhouyu.framework.log.core.LogRecordStoreService;
 import com.fuhouyu.framework.log.properties.LogRecordProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * <p>
@@ -41,11 +43,12 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/8/14 12:16
  */
-@ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.log.properties")
+@EnableConfigurationProperties(LogRecordProperties.class)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(prefix = LogRecordProperties.LOG_RECORD_PREFIX,
         name = "enabled",
         havingValue = "true")
-@ComponentScan(basePackageClasses = LogRecordAutoConfiguration.class)
+@RequiredArgsConstructor
 public class LogRecordAutoConfiguration implements InitializingBean {
 
     private final LogRecordProperties logRecordProperties;
@@ -54,11 +57,6 @@ public class LogRecordAutoConfiguration implements InitializingBean {
 
     private final BeanFactory beanFactory;
 
-    public LogRecordAutoConfiguration(LogRecordProperties logRecordProperties, ApplicationContext applicationContext, BeanFactory beanFactory) {
-        this.logRecordProperties = logRecordProperties;
-        this.applicationContext = applicationContext;
-        this.beanFactory = beanFactory;
-    }
 
     @Override
     public void afterPropertiesSet() throws Exception {

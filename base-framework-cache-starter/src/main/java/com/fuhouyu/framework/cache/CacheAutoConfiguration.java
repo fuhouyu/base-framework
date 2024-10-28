@@ -17,8 +17,8 @@
 package com.fuhouyu.framework.cache;
 
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -29,9 +29,9 @@ import org.springframework.context.annotation.Import;
  * @author fuhouyu
  * @since 2024/8/13 21:00
  */
+@Configuration
 @Import({RedisCacheAutoConfiguration.class, CaffeineCacheAutoconfiguration.class})
 @EnableConfigurationProperties(CacheProperties.class)
-@ConfigurationPropertiesScan(basePackageClasses = CacheAutoConfiguration.class)
 public class CacheAutoConfiguration {
 
 

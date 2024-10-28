@@ -21,11 +21,11 @@ import com.fuhouyu.framework.common.utils.FileUtil;
 import com.fuhouyu.framework.resource.exception.ResourceException;
 import com.fuhouyu.framework.resource.model.*;
 import com.fuhouyu.framework.resource.service.ResourceService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.Assert;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +59,7 @@ class ResourceServiceTest {
     void testResourceUpload() throws ResourceException {
         PutResourceResult putResourceResult =
                 resourceService.uploadFile(new PutResourceRequest(BUCKET_NAME, objectKey, FILE_INPUT_STREAM));
-        Assert.notNull(putResourceResult, "文件上传失败");
+        Assertions.assertNotNull(putResourceResult, "文件上传失败");
     }
 
 
@@ -68,14 +68,14 @@ class ResourceServiceTest {
         String filePath = LOCAL_FILE_PARENT + "resource_download.xml";
         DownloadResourceResult downloadResourceResult =
                 resourceService.downloadFile(new DownloadResourceRequest("./", "pom.xml", filePath, 1000));
-        Assert.notNull(downloadResourceResult, "文件下载失败");
+        Assertions.assertNotNull(downloadResourceResult, "文件下载失败");
         FileUtil.deleteFileIfExists(Path.of(filePath));
     }
 
     @Test
     void testResourceDelete() throws ResourceException {
         resourceService.deleteFile(BUCKET_NAME, objectKey);
-        Assert.isTrue((!resourceService.doesObjectExist(BUCKET_NAME, objectKey)), "文件未被删除");
+        Assertions.assertTrue((!resourceService.doesObjectExist(BUCKET_NAME, objectKey)), "文件未被删除");
     }
 
     @Test
@@ -84,7 +84,7 @@ class ResourceServiceTest {
                 objectKey);
         GetResourceResult getResourceResult = resourceService.getFile(getResourceRequest);
         InputStream objectContent = getResourceResult.getObjectContent();
-        Assert.notNull(objectContent, "资源文件下载失败");
+        Assertions.assertNotNull(objectContent, "资源文件下载失败");
         // 测试下载文件的写入
         String localFilePath = LOCAL_FILE_PARENT + "get_file.txt";
         try (objectContent;
@@ -101,12 +101,12 @@ class ResourceServiceTest {
     void testUploadFile() throws ResourceException {
         PutResourceRequest putResourceRequest = new PutResourceRequest(BUCKET_NAME, objectKey, FILE_INPUT_STREAM);
         PutResourceResult putResourceResult = this.resourceService.uploadFile(putResourceRequest);
-        Assert.notNull(putResourceResult, "返回结果为空");
+        Assertions.assertNotNull(putResourceResult, "返回结果为空");
 
         GetResourceRequest getResourceRequest = new GetResourceRequest(BUCKET_NAME, objectKey);
         GetResourceResult getResourceResult = resourceService.getFile(getResourceRequest);
         ResourceMetadata resourceMetadata = getResourceResult.getResourceMetadata();
-        Assert.notNull(resourceMetadata, "文件元数据为空");
+        Assertions.assertNotNull(resourceMetadata, "文件元数据为空");
     }
 
 
@@ -117,14 +117,14 @@ class ResourceServiceTest {
         InitiateUploadMultipartRequest initiateUploadMultipartRequest = new InitiateUploadMultipartRequest(BUCKET_NAME,
                 objectKey);
         InitiateUploadMultipartResult initiateUploadMultipartResult = resourceService.initiateMultipartUpload(initiateUploadMultipartRequest);
-        Assert.notNull(initiateUploadMultipartResult, "初始化上传id 返回的结果为空");
+        Assertions.assertNotNull(initiateUploadMultipartResult, "初始化上传id 返回的结果为空");
 
         uploadPartFile(localFilePath, initiateUploadMultipartResult.getUploadId());
 
         ListMultipartRequest listMultipartRequest = new ListMultipartRequest(BUCKET_NAME);
         listMultipartRequest.setUploadId(initiateUploadMultipartResult.getUploadId());
         ListMultipartResult listMultipartResult = resourceService.listParts(listMultipartRequest);
-        Assert.notNull(listMultipartResult, "列出分片 返回的文件不正确");
+        Assertions.assertNotNull(listMultipartResult, "列出分片 返回的文件不正确");
 
 
         UploadCompleteMultipartRequest uploadCompleteMultipartRequest = new UploadCompleteMultipartRequest(BUCKET_NAME);

@@ -18,12 +18,12 @@ package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
 import com.fuhouyu.framework.cache.CaffeineCacheAutoconfiguration;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.Assert;
 
 /**
  * <p>
@@ -37,6 +37,7 @@ import org.springframework.util.Assert;
         CacheAutoConfiguration.class,
         CaffeineCacheAutoconfiguration.class,
         SecurityAutoConfiguration.class,
+        BaseComponent.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class Sm3PasswordEncoderTest {
@@ -47,10 +48,9 @@ class Sm3PasswordEncoderTest {
     @Test
     void testSm3PasswordEncoder() {
         String encodePassword = passwordEncoder.encode("test123");
-        Assert.isTrue(passwordEncoder.matches("test123", encodePassword),
+        Assertions.assertTrue(passwordEncoder.matches("test123", encodePassword),
                 "sm3 正确密码验证失败");
 
-        Assert.isTrue(!passwordEncoder.matches("test124", encodePassword),
-                "sm3 错误密码验证失败");
+        Assertions.assertFalse(passwordEncoder.matches("test124", encodePassword), "sm3 错误密码验证失败");
     }
 }

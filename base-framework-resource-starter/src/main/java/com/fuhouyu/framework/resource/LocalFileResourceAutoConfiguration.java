@@ -20,7 +20,7 @@ import com.fuhouyu.framework.resource.service.ResourceService;
 import com.fuhouyu.framework.resource.service.impl.LocalFileServiceImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.Resource;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>
@@ -30,6 +30,7 @@ import org.springframework.core.io.Resource;
  * @author fuhouyu
  * @since 2024/8/18 17:28
  */
+@Configuration(proxyBeanMethods = false)
 public class LocalFileResourceAutoConfiguration {
 
 
@@ -39,7 +40,7 @@ public class LocalFileResourceAutoConfiguration {
      * @return bean对象
      */
     @Bean
-    @ConditionalOnMissingBean(Resource.class)
+    @ConditionalOnMissingBean(ResourceService.class)
     public ResourceService localFileResourceService() {
         return new LocalFileServiceImpl();
     }

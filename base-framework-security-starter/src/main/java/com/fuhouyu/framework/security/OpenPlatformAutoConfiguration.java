@@ -17,7 +17,8 @@
 package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.security.properties.OpenPlatformAuthProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>
@@ -27,7 +28,8 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
  * @author fuhouyu
  * @since 2024/8/15 16:23
  */
-@ConfigurationPropertiesScan(basePackageClasses = OpenPlatformAuthProperties.class)
+@Configuration
+@EnableConfigurationProperties(OpenPlatformAuthProperties.class)
 public class OpenPlatformAutoConfiguration {
 
 

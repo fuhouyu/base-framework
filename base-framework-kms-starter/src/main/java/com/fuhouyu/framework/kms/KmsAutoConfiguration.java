@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.kms;
 
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
@@ -27,8 +27,8 @@ import org.springframework.context.annotation.Import;
  * @author fuhouyu
  * @since 2024/8/17 17:27
  */
-@ComponentScan(basePackageClasses = KmsAutoConfiguration.class)
 @Import({DefaultKmsAutoConfiguration.class})
+@Configuration
 public class KmsAutoConfiguration {
 
 

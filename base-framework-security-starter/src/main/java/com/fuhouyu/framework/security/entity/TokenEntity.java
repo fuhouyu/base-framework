@@ -36,7 +36,7 @@ import java.io.Serial;
 @Getter
 @Setter
 @ToString
-public class TokenEntity implements Entity<TokenEntity> {
+public class TokenEntity implements Entity<OAuth2AccessToken> {
 
     @Serial
     private static final long serialVersionUID = 1897123986123785612L;
@@ -55,7 +55,7 @@ public class TokenEntity implements Entity<TokenEntity> {
     }
 
     @Override
-    public boolean sameIdentityAs(TokenEntity other) {
+    public boolean sameIdentityAs(OAuth2AccessToken other) {
         return EqualsBuilder.reflectionEquals(this, other);
     }
 }

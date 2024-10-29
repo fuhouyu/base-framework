@@ -77,21 +77,23 @@
         <maven.javadoc.skip>false</maven.javadoc.skip>
 
         <!--plugin version-->
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-clean-plugin.version>4.0.0-beta-1</maven-clean-plugin.version>
+        <maven-compiler-plugin.version>4.0.0-beta-1</maven-compiler-plugin.version>
+        <maven-source-plugin.version>4.0.0-beta-1</maven-source-plugin.version>
+        <maven-jar-plugin.version>4.0.0-beta-1</maven-jar-plugin.version>
+
         <spring-boot-maven-plugin.version>3.3.2</spring-boot-maven-plugin.version>
         <versions-maven-plugin.version>2.17.1</versions-maven-plugin.version>
         <clirr-maven-plugin.version>2.8</clirr-maven-plugin.version>
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <extra-enforcer-rules.version>1.8.0</extra-enforcer-rules.version>
         <maven-javadoc-plugin.version>3.10.0</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
         <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <apache-rat-plugin.version>0.16.1</apache-rat-plugin.version>
-        <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
-        <maven-easyj.version>1.1.5</maven-easyj.version>
+        <easyj-maven-plugin.version>1.1.5</easyj-maven-plugin.version>
 
         <!--外部依赖项-->
         <spring-boot-dependencies.version>3.3.5</spring-boot-dependencies.version>
@@ -284,6 +286,21 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>lib/</classpathPrefix>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
@@ -446,7 +463,7 @@
                 <plugin>
                     <groupId>icu.easyj.maven.plugins</groupId>
                     <artifactId>easyj-maven-plugin</artifactId>
-                    <version>${maven-easyj.version}</version>
+                    <version>${easyj-maven-plugin.version}</version>
                     <configuration>
                         <simplifiedPomFileName>.flattened-pom.xml</simplifiedPomFileName>
                         <useTabIndent>true</useTabIndent>
@@ -519,6 +536,10 @@
             <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

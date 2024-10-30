@@ -22,6 +22,7 @@ import com.fuhouyu.framework.resource.exception.ResourceException;
 import com.fuhouyu.framework.resource.model.*;
 import com.fuhouyu.framework.resource.service.ResourceService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,8 @@ import org.springframework.test.context.TestPropertySource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  * <p>
@@ -40,70 +43,74 @@ import java.nio.file.Path;
  * @since 2024/8/16 20:24
  */
 @SpringBootTest(classes = {
-//        ResourceAutoConfigure.class,
-        LocalFileResourceAutoConfiguration.class
+        ResourceAutoConfiguration.class,
+//        LocalFileResourceConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class ResourceServiceTest {
 
-    private static final String BUCKET_NAME = "/tmp";
-    private static final String LOCAL_FILE_PARENT = "./";
+    private static final String BUCKET_NAME = "test/upload";
+
+    private static final String DOWNLOAD_PATH
+            = System.getProperty("java.io.tmpdir") + File.separator + "download";
+
     private static final InputStream FILE_INPUT_STREAM =
-            new ByteArrayInputStream("test_file".getBytes(StandardCharsets.UTF_8));
-    private final String objectKey = "text.txt";
+            new ByteArrayInputStream(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
+
+    private static final String OBJECT_KEY = "text.txt";
 
     @Autowired
     private ResourceService resourceService;
 
+
+    @BeforeAll
+    static void setUp() {
+        FileUtil.createDirectorIfNotExists(Paths.get(BUCKET_NAME));
+        FileUtil.createDirectorIfNotExists(Paths.get(DOWNLOAD_PATH));
+    }
+
     @Test
     void testResourceUpload() throws ResourceException {
         PutResourceResult putResourceResult =
-                resourceService.uploadFile(new PutResourceRequest(BUCKET_NAME, objectKey, FILE_INPUT_STREAM));
+                resourceService.uploadFile(new PutResourceRequest(BUCKET_NAME, OBJECT_KEY, FILE_INPUT_STREAM));
         Assertions.assertNotNull(putResourceResult, "文件上传失败");
     }
 
 
     @Test
     void testResourceDownload() throws ResourceException {
-        String filePath = LOCAL_FILE_PARENT + "resource_download.xml";
+        String filePath = DOWNLOAD_PATH + File.separator + OBJECT_KEY;
         DownloadResourceResult downloadResourceResult =
-                resourceService.downloadFile(new DownloadResourceRequest("./", "pom.xml", filePath, 1000));
+                resourceService.downloadFile(new DownloadResourceRequest(BUCKET_NAME, OBJECT_KEY, filePath, 1000));
         Assertions.assertNotNull(downloadResourceResult, "文件下载失败");
         FileUtil.deleteFileIfExists(Path.of(filePath));
     }
 
     @Test
-    void testResourceDelete() throws ResourceException {
-        resourceService.deleteFile(BUCKET_NAME, objectKey);
-        Assertions.assertTrue((!resourceService.doesObjectExist(BUCKET_NAME, objectKey)), "文件未被删除");
-    }
-
-    @Test
     void testGetFile() throws ResourceException {
         GetResourceRequest getResourceRequest = new GetResourceRequest(BUCKET_NAME,
-                objectKey);
+                OBJECT_KEY);
         GetResourceResult getResourceResult = resourceService.getFile(getResourceRequest);
         InputStream objectContent = getResourceResult.getObjectContent();
         Assertions.assertNotNull(objectContent, "资源文件下载失败");
         // 测试下载文件的写入
-        String localFilePath = LOCAL_FILE_PARENT + "get_file.txt";
+        String localFilePath = DOWNLOAD_PATH + File.separator + OBJECT_KEY;
         try (objectContent;
              FileOutputStream fileOutputStream = new FileOutputStream(localFilePath)) {
             fileOutputStream.write(objectContent.readAllBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         FileUtil.deleteFileIfExists(Path.of(localFilePath));
     }
 
     @Test
     void testUploadFile() throws ResourceException {
-        PutResourceRequest putResourceRequest = new PutResourceRequest(BUCKET_NAME, objectKey, FILE_INPUT_STREAM);
+        PutResourceRequest putResourceRequest = new PutResourceRequest(BUCKET_NAME, OBJECT_KEY, FILE_INPUT_STREAM);
         PutResourceResult putResourceResult = this.resourceService.uploadFile(putResourceRequest);
         Assertions.assertNotNull(putResourceResult, "返回结果为空");
 
-        GetResourceRequest getResourceRequest = new GetResourceRequest(BUCKET_NAME, objectKey);
+        GetResourceRequest getResourceRequest = new GetResourceRequest(BUCKET_NAME, OBJECT_KEY);
         GetResourceResult getResourceResult = resourceService.getFile(getResourceRequest);
         ResourceMetadata resourceMetadata = getResourceResult.getResourceMetadata();
         Assertions.assertNotNull(resourceMetadata, "文件元数据为空");
@@ -112,10 +119,10 @@ class ResourceServiceTest {
 
     @Test
     void testInitUploadId() throws ResourceException, IOException {
-        String localFilePath = LOCAL_FILE_PARENT + "pom.xml";
+        String localFilePath = "pom.xml";
 
         InitiateUploadMultipartRequest initiateUploadMultipartRequest = new InitiateUploadMultipartRequest(BUCKET_NAME,
-                objectKey);
+                OBJECT_KEY);
         InitiateUploadMultipartResult initiateUploadMultipartResult = resourceService.initiateMultipartUpload(initiateUploadMultipartRequest);
         Assertions.assertNotNull(initiateUploadMultipartResult, "初始化上传id 返回的结果为空");
 

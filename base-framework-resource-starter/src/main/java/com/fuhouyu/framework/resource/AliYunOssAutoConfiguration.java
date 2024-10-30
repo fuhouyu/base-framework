@@ -22,8 +22,6 @@ import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.STSAssumeRoleSessionCredentialsProvider;
 import com.aliyuncs.exceptions.ClientException;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
-import com.fuhouyu.framework.resource.properties.AliYunOssProperties;
-import com.fuhouyu.framework.resource.properties.BaseOssResourceProperties;
 import com.fuhouyu.framework.resource.properties.ResourceProperties;
 import com.fuhouyu.framework.resource.service.ResourceService;
 import com.fuhouyu.framework.resource.service.impl.AliYunOssServiceImpl;
@@ -31,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -48,8 +46,9 @@ import java.util.Objects;
 @ConditionalOnClass(OSS.class)
 @RequiredArgsConstructor
 @Slf4j
-@EnableConfigurationProperties(AliYunOssProperties.class)
 @Configuration
+@ConditionalOnProperty(prefix = ResourceProperties.PREFIX,
+        name = "upload-type", havingValue = "ali")
 public class AliYunOssAutoConfiguration implements InitializingBean {
 
     private final ResourceProperties resourceProperties;
@@ -62,7 +61,7 @@ public class AliYunOssAutoConfiguration implements InitializingBean {
      */
     @Bean
     public OSS ossClient() {
-        AliYunOssProperties ossConfig = resourceProperties.getAliOssConfig();
+        ResourceProperties.AliYunOssProperties ossConfig = resourceProperties.getAliyunOss();
 
         if (ossConfig.isEnableSts()) {
             STSAssumeRoleSessionCredentialsProvider credentialsProvider;
@@ -96,8 +95,8 @@ public class AliYunOssAutoConfiguration implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        BaseOssResourceProperties ossConfig = resourceProperties.getAliOssConfig();
-        if (Objects.isNull(ossConfig)) {
+        ResourceProperties.AliYunOssProperties aliOssConfig = resourceProperties.getAliyunOss();
+        if (Objects.isNull(aliOssConfig)) {
             throw new IllegalArgumentException("阿里云oss未设置相应的ak/sk");
         }
     }

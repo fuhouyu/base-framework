@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Import;
  * @author fuhouyu
  * @since 2024/8/16 18:36
  */
-@Import({AliYunOssAutoConfiguration.class, LocalFileResourceAutoConfiguration.class})
+@Import({AliYunOssAutoConfiguration.class, LocalFileResourceConfiguration.class})
 @EnableConfigurationProperties(ResourceProperties.class)
 @Configuration
 public class ResourceAutoConfiguration {

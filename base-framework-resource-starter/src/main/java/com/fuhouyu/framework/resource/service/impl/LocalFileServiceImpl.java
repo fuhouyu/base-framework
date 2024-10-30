@@ -49,22 +49,27 @@ import java.util.stream.Stream;
 @Slf4j
 public class LocalFileServiceImpl implements ResourceService {
 
-    private static final int DEFAULT_BYTES_LENGTH = 8192;
+    private static final String TMP_DIRECT = System.getProperty("java.io.tmpdir");
 
-    private static final String TMP_DIRECT = "/tmp";
+    private static final int DEFAULT_BYTES_LENGTH = 8192;
+    private final String basePath;
 
     private static final String SPACER = ":";
 
-
+    public LocalFileServiceImpl(String basePath) {
+        this.basePath = basePath;
+        FileUtil.createDirectorIfNotExists(Paths.get(basePath));
+    }
 
     @Override
     public GetResourceResult getFile(GetResourceRequest genericDownloadFileRequest) throws ResourceException {
         String bucketName = genericDownloadFileRequest.getBucketName();
         String objectKey = genericDownloadFileRequest.getObjectKey();
-        byte[] bytes = this.doDownloadFile(bucketName, objectKey, genericDownloadFileRequest.getRange());
+        Path absPath = this.concatPath(bucketName, objectKey);
+        byte[] bytes = this.doDownloadFile(absPath, genericDownloadFileRequest.getRange());
         GetResourceResult getResourceResult = new GetResourceResult(bucketName, objectKey);
         getResourceResult.setObjectContent(new ByteArrayInputStream(bytes));
-        getResourceResult.setResourceMetadata(this.getFileResourceMetadata(Paths.get(bucketName, objectKey)));
+        getResourceResult.setResourceMetadata(this.getFileResourceMetadata(absPath));
         return getResourceResult;
     }
 
@@ -72,7 +77,7 @@ public class LocalFileServiceImpl implements ResourceService {
     public ResourceMetadata getFile(GetResourceRequest genericDownloadFileRequest, File file) throws ResourceException {
         String bucketName = genericDownloadFileRequest.getBucketName();
         String objectKey = genericDownloadFileRequest.getObjectKey();
-        Path sourcePath = Paths.get(bucketName, objectKey);
+        Path sourcePath = this.concatPath(bucketName, objectKey);
         try {
             FileUtil.copyFile(sourcePath,
                     file.toPath());
@@ -96,7 +101,7 @@ public class LocalFileServiceImpl implements ResourceService {
         String bucketName = putResourceRequest.getBucketName();
         File file = putResourceRequest.getFile();
 
-        Path path = Paths.get(bucketName, objectKey);
+        Path path = this.concatPath(bucketName, objectKey);
 
         FileUtil.createDirectorIfNotExists(path.getParent());
         FileUtil.deleteFileIfExists(path);
@@ -174,7 +179,7 @@ public class LocalFileServiceImpl implements ResourceService {
         }
         String bucketName = bucketNameAndObjectKey[0];
         String objectKey = bucketNameAndObjectKey[1];
-        Path targetPath = Paths.get(bucketName, objectKey);
+        Path targetPath = this.concatPath(bucketName, objectKey);
 
         FileUtil.deleteFileIfExists(targetPath);
         FileUtil.createDirectorIfNotExists(targetPath.getParent());
@@ -230,7 +235,7 @@ public class LocalFileServiceImpl implements ResourceService {
 
     @Override
     public boolean doesObjectExist(String bucketName, String objectKey) {
-        return Files.exists(Paths.get(bucketName, objectKey));
+        return Files.exists(this.concatPath(bucketName, objectKey));
     }
 
     @Override
@@ -241,8 +246,8 @@ public class LocalFileServiceImpl implements ResourceService {
     @Override
     public CopyResourceResult copyFile(String sourceBucketName, String sourceObjectKey, String destBucketName, String destObjectKey) {
         try {
-            Path targetPath = Paths.get(destBucketName, destBucketName);
-            FileUtil.copyFile(Paths.get(sourceBucketName, sourceObjectKey),
+            Path targetPath = this.concatPath(destBucketName, destObjectKey);
+            FileUtil.copyFile(this.concatPath(sourceBucketName, sourceObjectKey),
                     targetPath);
             String etag = FileUtil.calculateFileDigest(targetPath, this.getMd5MessageDigest());
             FileUtil.setFileAttribute(targetPath,
@@ -260,30 +265,26 @@ public class LocalFileServiceImpl implements ResourceService {
 
     @Override
     public void deleteFile(String bucketName, String objectKey) {
-        FileUtil.deleteFileIfExists(Paths.get(bucketName, objectKey));
+        FileUtil.deleteFileIfExists(this.concatPath(bucketName, objectKey));
     }
 
 
     /**
      * 执行文件下载
      *
-     * @param bucketName 桶名
-     * @param objectKey  对象key
-     * @param ranges     是否范围下载，如果为空，则下载所有的文件
+     * @param path   文件路径
+     * @param ranges 是否范围下载，如果为空，则下载所有的文件
      * @return 文件下载的字节数组
      * @throws ResourceException 资源异常
      */
-    private byte[] doDownloadFile(String bucketName,
-                                  String objectKey,
-                                  long[] ranges) throws ResourceException {
+    private byte[] doDownloadFile(Path path, long[] ranges) throws ResourceException {
 
-        try (FileChannel fileChannel = FileChannel.open(Paths.get(bucketName, objectKey), StandardOpenOption.READ)) {
+        try (FileChannel fileChannel = FileChannel.open(path, StandardOpenOption.READ)) {
             if (Objects.nonNull(ranges)) {
                 return this.rangesDownload(ranges, fileChannel);
             }
-            ByteBuffer byteBuffer = ByteBuffer.allocate(DEFAULT_BYTES_LENGTH);
             byte[] bytes = new byte[(int) fileChannel.size()];
-            this.doReadFileToBytes(fileChannel, byteBuffer, bytes);
+            this.doReadFileToBytes(fileChannel, bytes);
             return bytes;
         } catch (IOException e) {
             throw new ResourceException(e.getMessage(), e);
@@ -306,9 +307,8 @@ public class LocalFileServiceImpl implements ResourceService {
             throw new IllegalArgumentException("文件资源范围下载取值不正常");
         }
 
-        ByteBuffer byteBuffer = ByteBuffer.allocate((int) totalSize);
         byte[] bytes = new byte[(int) totalSize];
-        this.doReadFileToBytes(fileChannel, byteBuffer, bytes);
+        this.doReadFileToBytes(fileChannel, bytes);
         return bytes;
     }
 
@@ -316,24 +316,18 @@ public class LocalFileServiceImpl implements ResourceService {
      * 读取文件字节流
      *
      * @param fileChannel 文件通道
-     * @param byteBuffer  byteBuffer
-     * @param bytes       字节数组
+     * @param bytes 字节数组
      * @throws IOException io异常
      */
-    private void doReadFileToBytes(FileChannel fileChannel,
-                                   ByteBuffer byteBuffer,
-                                   byte[] bytes) throws IOException {
+    private void doReadFileToBytes(FileChannel fileChannel, byte[] bytes) throws IOException {
         int position = 0;
-        int readLength = byteBuffer.capacity();
         int totalFileSize = (int) fileChannel.size();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(DEFAULT_BYTES_LENGTH);
         while ((fileChannel.read(byteBuffer)) > 0) {
             byteBuffer.flip();
-            if (position + readLength > totalFileSize) {
-                readLength = totalFileSize - position;
-            }
-            byteBuffer.get(bytes, Math.min(position, totalFileSize),
-                    readLength);
-            position += readLength;
+            int remainingBytes = Math.min(byteBuffer.remaining(), totalFileSize - position);
+            byteBuffer.get(bytes, position, remainingBytes);
+            position += remainingBytes;
             byteBuffer.clear();
         }
     }
@@ -367,8 +361,8 @@ public class LocalFileServiceImpl implements ResourceService {
      * @param tmpUploadFilePath 分片文件路径
      * @param targetPath        目标路径
      * @param uploadId          上传的文件id
-     * @throws ResourceException 资源异常
      * @return etag
+     * @throws ResourceException 资源异常
      */
     public String mergeFile(Path tmpUploadFilePath, Path targetPath, String uploadId) throws ResourceException {
         try {
@@ -445,4 +439,15 @@ public class LocalFileServiceImpl implements ResourceService {
             throw new IllegalArgumentException("No Such Algorithm" + e.getMessage(), e);
         }
     }
+
+    /**
+     * 拼接路径
+     *
+     * @param paths 路径数组
+     * @return 拼接后的路径
+     */
+    private Path concatPath(String... paths) {
+        return Paths.get(basePath, paths);
+    }
+
 }

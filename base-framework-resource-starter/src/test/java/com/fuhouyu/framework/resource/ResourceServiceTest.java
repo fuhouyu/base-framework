@@ -79,11 +79,11 @@ class ResourceServiceTest {
 
     @Test
     void testResourceDownload() throws ResourceException {
-        String filePath = DOWNLOAD_PATH + File.separator + OBJECT_KEY;
+        String filePath = DOWNLOAD_PATH + File.separator +
+                UUID.randomUUID() + ".txt";
         DownloadResourceResult downloadResourceResult =
                 resourceService.downloadFile(new DownloadResourceRequest(BUCKET_NAME, OBJECT_KEY, filePath, 1000));
         Assertions.assertNotNull(downloadResourceResult, "文件下载失败");
-        FileUtil.deleteFileIfExists(Path.of(filePath));
     }
 
     @Test
@@ -94,7 +94,7 @@ class ResourceServiceTest {
         InputStream objectContent = getResourceResult.getObjectContent();
         Assertions.assertNotNull(objectContent, "资源文件下载失败");
         // 测试下载文件的写入
-        String localFilePath = DOWNLOAD_PATH + File.separator + OBJECT_KEY;
+        String localFilePath = DOWNLOAD_PATH + File.separator + UUID.randomUUID() + ".txt";
         try (objectContent;
              FileOutputStream fileOutputStream = new FileOutputStream(localFilePath)) {
             fileOutputStream.write(objectContent.readAllBytes());

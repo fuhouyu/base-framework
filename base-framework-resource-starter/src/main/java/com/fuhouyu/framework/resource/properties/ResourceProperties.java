@@ -50,6 +50,77 @@ public class ResourceProperties {
     /**
      * 文件资源配置基类
      */
-    private AliYunOssProperties aliOssConfig;
+    private AliYunOssProperties aliyunOss;
 
+    /**
+     * 本地配置
+     */
+    private LocalResourceProperties localResource;
+
+    @Getter
+    @Setter
+    @ToString
+    public static class LocalResourceProperties {
+        /**
+         * 根路径
+         */
+        private String basePath;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class CloudResourceProperties {
+        /**
+         * endpoint
+         */
+        private String endpoint;
+
+        /**
+         * ak
+         */
+        private String accessKey;
+
+        /**
+         * sk
+         */
+        private String secretKey;
+    }
+
+
+    @Getter
+    @Setter
+    @ToString(callSuper = true)
+    public static class AliYunOssProperties extends CloudResourceProperties {
+        /**
+         * 区域.
+         */
+        private String region;
+
+        /**
+         * 是否启用sts，默认为false
+         */
+        private boolean enableSts;
+
+        /**
+         * sts相关配置，获取webToken必须要有该值.
+         */
+        private StsConfig sts;
+
+        /**
+         * stsConfig.
+         */
+        @ToString
+        @Getter
+        @Setter
+        public static class StsConfig {
+
+            private String endpoint;
+
+            private String roleArn;
+
+            private Integer expire;
+
+        }
+    }
 }

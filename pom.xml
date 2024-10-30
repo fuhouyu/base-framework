@@ -77,10 +77,10 @@
         <maven.javadoc.skip>false</maven.javadoc.skip>
 
         <!--plugin version-->
-        <maven-clean-plugin.version>4.0.0-beta-1</maven-clean-plugin.version>
-        <maven-compiler-plugin.version>4.0.0-beta-1</maven-compiler-plugin.version>
-        <maven-source-plugin.version>4.0.0-beta-1</maven-source-plugin.version>
-        <maven-jar-plugin.version>4.0.0-beta-1</maven-jar-plugin.version>
+        <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
 
         <spring-boot-maven-plugin.version>3.3.2</spring-boot-maven-plugin.version>
         <versions-maven-plugin.version>2.17.1</versions-maven-plugin.version>
@@ -188,13 +188,6 @@
                 <groupId>com.esotericsoftware</groupId>
                 <artifactId>kryo5</artifactId>
                 <version>${kryo5.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>com.aliyun.oss</groupId>

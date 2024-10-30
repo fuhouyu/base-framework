@@ -69,30 +69,27 @@ class ResourceServiceTest {
         FileUtil.createDirectorIfNotExists(Paths.get(DOWNLOAD_PATH));
     }
 
+
     @Test
-    void testResourceUpload() throws ResourceException {
+    void testResource() throws ResourceException {
+        // 文件上传
         PutResourceResult putResourceResult =
                 resourceService.uploadFile(new PutResourceRequest(BUCKET_NAME, OBJECT_KEY, FILE_INPUT_STREAM));
         Assertions.assertNotNull(putResourceResult, "文件上传失败");
-    }
-
-
-    @Test
-    void testResourceDownload() throws ResourceException {
+        // 下载文件
         String filePath = DOWNLOAD_PATH + File.separator +
                 UUID.randomUUID() + ".txt";
         DownloadResourceResult downloadResourceResult =
                 resourceService.downloadFile(new DownloadResourceRequest(BUCKET_NAME, OBJECT_KEY, filePath, 1000));
         Assertions.assertNotNull(downloadResourceResult, "文件下载失败");
-    }
-
-    @Test
-    void testGetFile() throws ResourceException {
+        FileUtil.deleteFileIfExists(Paths.get(filePath));
+        // 获取文件
         GetResourceRequest getResourceRequest = new GetResourceRequest(BUCKET_NAME,
                 OBJECT_KEY);
         GetResourceResult getResourceResult = resourceService.getFile(getResourceRequest);
         InputStream objectContent = getResourceResult.getObjectContent();
         Assertions.assertNotNull(objectContent, "资源文件下载失败");
+        Assertions.assertNotNull(getResourceResult.getResourceMetadata(), "文件元数据为空");
         // 测试下载文件的写入
         String localFilePath = DOWNLOAD_PATH + File.separator + UUID.randomUUID() + ".txt";
         try (objectContent;
@@ -102,23 +99,13 @@ class ResourceServiceTest {
             throw new RuntimeException(e);
         }
         FileUtil.deleteFileIfExists(Path.of(localFilePath));
+        // 删除文件
+        resourceService.deleteFile(BUCKET_NAME, OBJECT_KEY);
+        Assertions.assertFalse(resourceService.doesObjectExist(BUCKET_NAME, OBJECT_KEY), "文件清理失败");
     }
 
     @Test
-    void testUploadFile() throws ResourceException {
-        PutResourceRequest putResourceRequest = new PutResourceRequest(BUCKET_NAME, OBJECT_KEY, FILE_INPUT_STREAM);
-        PutResourceResult putResourceResult = this.resourceService.uploadFile(putResourceRequest);
-        Assertions.assertNotNull(putResourceResult, "返回结果为空");
-
-        GetResourceRequest getResourceRequest = new GetResourceRequest(BUCKET_NAME, OBJECT_KEY);
-        GetResourceResult getResourceResult = resourceService.getFile(getResourceRequest);
-        ResourceMetadata resourceMetadata = getResourceResult.getResourceMetadata();
-        Assertions.assertNotNull(resourceMetadata, "文件元数据为空");
-    }
-
-
-    @Test
-    void testInitUploadId() throws ResourceException, IOException {
+    void testMultiPartFile() throws ResourceException, IOException {
         String localFilePath = "pom.xml";
 
         InitiateUploadMultipartRequest initiateUploadMultipartRequest = new InitiateUploadMultipartRequest(BUCKET_NAME,

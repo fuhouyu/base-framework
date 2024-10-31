@@ -48,8 +48,8 @@ import java.util.Objects;
 @Slf4j
 @Configuration
 @ConditionalOnProperty(prefix = ResourceProperties.PREFIX,
-        name = "upload-type", havingValue = "ali")
-public class AliYunOssAutoConfiguration implements InitializingBean {
+        name = "type", havingValue = "ali")
+public class AliYunOssConfiguration implements InitializingBean {
 
     private final ResourceProperties resourceProperties;
 
@@ -61,7 +61,7 @@ public class AliYunOssAutoConfiguration implements InitializingBean {
      */
     @Bean
     public OSS ossClient() {
-        ResourceProperties.AliYunOssProperties ossConfig = resourceProperties.getAliyunOss();
+        ResourceProperties.AliYunOssProperties ossConfig = resourceProperties.getAli();
 
         if (ossConfig.isEnableSts()) {
             STSAssumeRoleSessionCredentialsProvider credentialsProvider;
@@ -95,7 +95,7 @@ public class AliYunOssAutoConfiguration implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        ResourceProperties.AliYunOssProperties aliOssConfig = resourceProperties.getAliyunOss();
+        ResourceProperties.AliYunOssProperties aliOssConfig = resourceProperties.getAli();
         if (Objects.isNull(aliOssConfig)) {
             throw new IllegalArgumentException("阿里云oss未设置相应的ak/sk");
         }

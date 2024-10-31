@@ -1,4 +1,4 @@
 base:
   framework:
     resource:
-      upload-type: local
+      type: local

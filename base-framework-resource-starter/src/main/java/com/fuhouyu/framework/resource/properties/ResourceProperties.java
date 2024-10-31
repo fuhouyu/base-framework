@@ -45,17 +45,17 @@ public class ResourceProperties {
     /**
      * 文件上传的类型
      */
-    private ResourceUploadTypeEnum uploadType;
+    private ResourceUploadTypeEnum type;
 
     /**
      * 文件资源配置基类
      */
-    private AliYunOssProperties aliyunOss;
+    private AliYunOssProperties ali;
 
     /**
      * 本地配置
      */
-    private LocalResourceProperties localResource;
+    private LocalResourceProperties local;
 
     @Getter
     @Setter

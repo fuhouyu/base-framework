@@ -41,7 +41,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @ConditionalOnProperty(prefix = ResourceProperties.PREFIX,
-        name = "upload-type", havingValue = "local")
+        name = "type", havingValue = "local")
 public class LocalFileResourceConfiguration {
 
     private final ResourceProperties resourceProperties;
@@ -55,12 +55,12 @@ public class LocalFileResourceConfiguration {
     @ConditionalOnMissingBean(ResourceService.class)
     public ResourceService localFileResourceService() {
         String basePath;
-        if (Objects.isNull(resourceProperties.getLocalResource()) ||
-                Objects.isNull(resourceProperties.getLocalResource().getBasePath())) {
+        if (Objects.isNull(resourceProperties.getLocal()) ||
+                Objects.isNull(resourceProperties.getLocal().getBasePath())) {
             basePath = System.getProperty("java.io.tmpdir");
             LoggerUtil.warn(log, "本地路径不存在，获取系统tmp路径:{}", basePath);
         } else {
-            basePath = resourceProperties.getLocalResource().getBasePath();
+            basePath = resourceProperties.getLocal().getBasePath();
         }
         return new LocalFileServiceImpl(basePath);
     }

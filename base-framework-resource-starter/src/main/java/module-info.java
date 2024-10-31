@@ -23,8 +23,10 @@ module base.framework.resource.starter {
     requires spring.boot.autoconfigure;
     requires spring.context;
     requires spring.core;
+    requires org.mapstruct;
 
     opens com.fuhouyu.framework.resource to spring.core;
+    opens com.fuhouyu.framework.resource.assembler to org.mapstruct;
 
     exports com.fuhouyu.framework.resource;
     exports com.fuhouyu.framework.resource.constants;

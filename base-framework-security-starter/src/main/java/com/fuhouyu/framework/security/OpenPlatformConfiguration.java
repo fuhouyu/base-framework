@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web;
+package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.cache.service.CacheService;
-import com.fuhouyu.framework.web.aspectj.NoRepeatSubmitAspectj;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
+import com.fuhouyu.framework.security.properties.OpenPlatformAuthProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>
- * form表单自动装配类
+ * 开放平台自动装配类
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/17 23:07
+ * @since 2024/8/15 16:23
  */
-@RequiredArgsConstructor
-public class FormAutoConfiguration {
+@Configuration
+@EnableConfigurationProperties(OpenPlatformAuthProperties.class)
+public class OpenPlatformConfiguration {
 
-    private final CacheService<String, Object> cacheService;
 
-
-    @Bean
-    public NoRepeatSubmitAspectj noDuplicateSubmitAspect() {
-        return new NoRepeatSubmitAspectj(cacheService);
-    }
 }

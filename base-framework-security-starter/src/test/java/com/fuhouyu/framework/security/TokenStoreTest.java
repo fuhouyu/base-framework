@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
-import com.fuhouyu.framework.cache.CaffeineCacheAutoconfiguration;
+import com.fuhouyu.framework.cache.CaffeineCacheConfiguration;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
@@ -44,7 +44,7 @@ import java.util.Collections;
  */
 @SpringBootTest(classes = {
         CacheAutoConfiguration.class,
-        CaffeineCacheAutoconfiguration.class,
+        CaffeineCacheConfiguration.class,
         SecurityAutoConfiguration.class,
         BaseComponent.class
 })

@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Import;
  * @author fuhouyu
  * @since 2024/8/17 17:27
  */
-@Import({DefaultKmsAutoConfiguration.class})
+@Import({DefaultKmsConfiguration.class})
 @Configuration
 public class KmsAutoConfiguration {
 

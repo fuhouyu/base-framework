@@ -45,7 +45,7 @@ import java.util.List;
  * @since 2024/8/15 16:22
  */
 @Configuration
-@Import({OpenPlatformAutoConfiguration.class})
+@Import({OpenPlatformConfiguration.class})
 @AutoConfigureAfter(CacheAutoConfiguration.class)
 public class SecurityAutoConfiguration {
 

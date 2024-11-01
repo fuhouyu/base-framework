@@ -49,7 +49,7 @@ import java.util.List;
         havingValue = "redis")
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 @Configuration
-public class RedisCacheAutoConfiguration {
+public class RedisCacheConfiguration {
 
 
     @Bean

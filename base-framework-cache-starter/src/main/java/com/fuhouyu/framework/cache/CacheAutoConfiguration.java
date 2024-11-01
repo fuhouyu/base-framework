@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Import;
  * @since 2024/8/13 21:00
  */
 @Configuration
-@Import({RedisCacheAutoConfiguration.class, CaffeineCacheAutoconfiguration.class})
+@Import({RedisCacheConfiguration.class, CaffeineCacheConfiguration.class})
 @EnableConfigurationProperties(CacheProperties.class)
 public class CacheAutoConfiguration {
 

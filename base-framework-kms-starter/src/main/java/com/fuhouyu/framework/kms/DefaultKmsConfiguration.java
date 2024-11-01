@@ -60,7 +60,7 @@ import java.util.Optional;
 @EnableConfigurationProperties(KmsDefaultProperties.class)
 @RequiredArgsConstructor
 @Configuration
-public class DefaultKmsAutoConfiguration {
+public class DefaultKmsConfiguration {
 
     private final KmsDefaultProperties properties;
 

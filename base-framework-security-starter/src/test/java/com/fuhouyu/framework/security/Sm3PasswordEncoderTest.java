@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
-import com.fuhouyu.framework.cache.CaffeineCacheAutoconfiguration;
+import com.fuhouyu.framework.cache.CaffeineCacheConfiguration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import org.springframework.test.context.TestPropertySource;
  */
 @SpringBootTest(classes = {
         CacheAutoConfiguration.class,
-        CaffeineCacheAutoconfiguration.class,
+        CaffeineCacheConfiguration.class,
         SecurityAutoConfiguration.class,
         BaseComponent.class
 })

@@ -18,8 +18,8 @@ package com.fuhouyu.framework.web;
 
 import com.fuhouyu.framework.common.constants.HttpRequestHeaderConstant;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
+import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.kms.service.KmsService;
-import com.fuhouyu.framework.web.entity.UserEntity;
 import com.fuhouyu.framework.web.filter.DefaultHttpBodyFilter;
 import com.fuhouyu.framework.web.filter.HttpBodyFilter;
 import com.fuhouyu.framework.web.handler.ParseHttpRequest;

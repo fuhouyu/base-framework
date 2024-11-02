@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.web.entity;
+package com.fuhouyu.framework.context.user;
 
-import com.fuhouyu.framework.context.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

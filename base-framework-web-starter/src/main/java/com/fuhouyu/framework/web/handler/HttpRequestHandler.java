@@ -18,8 +18,8 @@ package com.fuhouyu.framework.web.handler;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.DefaultListableContextFactory;
-import com.fuhouyu.framework.context.Request;
-import com.fuhouyu.framework.context.User;
+import com.fuhouyu.framework.context.request.Request;
+import com.fuhouyu.framework.context.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

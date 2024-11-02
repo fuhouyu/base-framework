@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.context;
+package com.fuhouyu.framework.context.request;
 
 import com.fuhouyu.framework.common.service.AdditionalInformationFunction;
 
@@ -22,54 +22,48 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 用户接口
+ * request请求
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 09:38
+ * @since 2024/8/18 14:51
  */
-public interface User extends Serializable, AdditionalInformationFunction {
+public interface Request extends AdditionalInformationFunction, Serializable {
 
     /**
-     * 用户的主键id
+     * 从请求头中获取认证信息
      *
-     * @return 主键id
+     * @return 请求中头的认证信息，例如token
      */
-    Long getId();
+    String getAuthorization();
 
     /**
-     * 登录的用户名
+     * 当前请求的ip
      *
-     * @return 用户名
+     * @return 来源ip
      */
-    String getUsername();
+    String getRequestIp();
+
 
     /**
-     * 用户的真实姓名，可能为空
+     * 当前请求的host
      *
-     * @return 真实姓名
+     * @return 请求的host
      */
-    String getRealName();
+    String getRequestHost();
 
     /**
-     * 用户昵称，可能为空
+     * 获取请求的目标方法
      *
-     * @return 用户昵称
+     * @return 获取请求的目标方法
      */
-    String getNickname();
+    String getRequestTarget();
 
     /**
-     * 用户性别，可能为空
+     * 获取用户请求代理
      *
-     * @return 用户性别
+     * @return 用户请求代理
      */
-    String getGender();
-
-    /**
-     * 第三方账号id，用户为第三方登录时存在该值
-     *
-     * @return 第三方账号id
-     */
-    String getRefAccountId();
+    String getUserAgent();
 
 }

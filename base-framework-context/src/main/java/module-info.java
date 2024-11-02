@@ -18,4 +18,6 @@ module base.framework.context {
 
     exports com.fuhouyu.framework.context;
     exports com.fuhouyu.framework.context.exception;
+    exports com.fuhouyu.framework.context.user;
+    exports com.fuhouyu.framework.context.request;
 }

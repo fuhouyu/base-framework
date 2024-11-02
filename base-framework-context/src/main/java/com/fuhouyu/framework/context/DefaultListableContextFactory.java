@@ -16,6 +16,8 @@
 package com.fuhouyu.framework.context;
 
 import com.fuhouyu.framework.context.exception.ContextNotFoundException;
+import com.fuhouyu.framework.context.request.Request;
+import com.fuhouyu.framework.context.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

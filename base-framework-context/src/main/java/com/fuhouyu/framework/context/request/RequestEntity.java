@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.entity;
+package com.fuhouyu.framework.context.request;
 
-import com.fuhouyu.framework.context.Request;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

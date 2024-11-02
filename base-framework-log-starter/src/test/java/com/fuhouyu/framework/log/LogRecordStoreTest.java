@@ -19,7 +19,7 @@ package com.fuhouyu.framework.log;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.DefaultListableContextFactory;
-import com.fuhouyu.framework.context.User;
+import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.core.LogRecordStoreService;
 import com.fuhouyu.framework.log.enums.OperationTypeEnum;

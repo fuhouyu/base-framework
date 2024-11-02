@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.security.token;
 
 import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.Request;
+import com.fuhouyu.framework.context.request.Request;
 import org.springframework.security.core.Authentication;
 
 import java.math.BigInteger;

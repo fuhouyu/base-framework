@@ -16,9 +16,9 @@
 package com.fuhouyu.framework.web.handler;
 
 import com.fuhouyu.framework.common.utils.HttpRequestUtil;
-import com.fuhouyu.framework.context.Request;
-import com.fuhouyu.framework.context.User;
-import com.fuhouyu.framework.web.entity.RequestEntity;
+import com.fuhouyu.framework.context.request.Request;
+import com.fuhouyu.framework.context.request.RequestEntity;
+import com.fuhouyu.framework.context.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import org.springframework.http.HttpHeaders;

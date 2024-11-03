@@ -18,6 +18,7 @@ package com.fuhouyu.framework.security;
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
 import com.fuhouyu.framework.cache.CaffeineCacheConfiguration;
 import com.fuhouyu.framework.security.core.GrantTypeAuthenticationTokenEnum;
+import com.fuhouyu.framework.security.entity.GrantTypeAuthenticationEntity;
 import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.framework.security.token.TokenStore;
 import org.junit.jupiter.api.Assertions;
@@ -29,9 +30,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.TestPropertySource;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>
@@ -62,11 +60,11 @@ class RefreshTokenTest {
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         TokenEntity tokenEntity = tokenStore.createToken(authenticate, 6000, 6000);
         Assertions.assertNotNull(tokenEntity);
-
-        GrantTypeAuthenticationTokenEnum grantTypeAuthenticationTokenEnum = GrantTypeAuthenticationTokenEnum.safeEnumValueOf("REFRESH_TOKEN");
-        Map<String, String> map = new HashMap<>();
-        map.put("refreshToken", tokenEntity.getRefreshToken().getTokenValue());
-        AbstractAuthenticationToken abstractAuthenticationToken = grantTypeAuthenticationTokenEnum.loadAuthenticationToken(map);
+        GrantTypeAuthenticationEntity grantTypeAuthenticationEntity =
+                new GrantTypeAuthenticationEntity(GrantTypeAuthenticationTokenEnum.PASSWORD.getGrantType(),
+                        "admin", "admin");
+//        grantTypeAuthenticationEntity.addParameter("refreshToken", tokenEntity.getRefreshToken().getTokenValue());
+        AbstractAuthenticationToken abstractAuthenticationToken = grantTypeAuthenticationEntity.createAuthenticationToken();
         Authentication refreshAuthenticate = authenticationManager.authenticate(abstractAuthenticationToken);
         TokenEntity refreshTokenEntity = tokenStore.createToken(refreshAuthenticate, 6000, 6000);
         Assertions.assertNotNull(refreshTokenEntity);

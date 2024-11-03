@@ -15,11 +15,17 @@
  */
 package com.fuhouyu.framework.security.core;
 
+import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.security.core.authentication.refreshtoken.RefreshAuthenticationProvider;
 import com.fuhouyu.framework.security.core.authentication.wechat.WechatAppletsPlatformProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,16 +40,19 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 @SuppressWarnings("unchecked")
 public enum GrantTypeAuthenticationTokenEnum implements GrantTypeAuthenticationTokenMapping {
 
-    /**
-     * 微信小程序
-     */
-    WECHAT_APPLETS("WECHAT_APPLETS") {
+    PASSWORD("PASSWORD") {
         @Override
         public <T extends AbstractAuthenticationToken> Class<T> getAuthenticationTokenClass() {
-            return (Class<T>) WechatAppletsPlatformProvider.WechatAppletsAuthenticationToken.class;
+            return (Class<T>) UsernamePasswordAuthenticationToken.class;
+        }
+
+        @Override
+        public AbstractAuthenticationToken loadAuthenticationToken(Object param) {
+            Map<String, Object> map = JacksonUtil.tryParse(() ->
+                    JacksonUtil.getObjectMapper().convertValue(param, HashMap.class));
+            return new UsernamePasswordAuthenticationToken(map.get("principal"), map.get("credentials"));
         }
     },
-
     /**
      * 刷新令牌
      */
@@ -52,8 +61,17 @@ public enum GrantTypeAuthenticationTokenEnum implements GrantTypeAuthenticationT
         public <T extends AbstractAuthenticationToken> Class<T> getAuthenticationTokenClass() {
             return (Class<T>) RefreshAuthenticationProvider.RefreshAuthenticationToken.class;
         }
-    }
-    ;
+    },
+
+    /**
+     * 微信小程序
+     */
+    WECHAT_APPLETS("WECHAT_APPLETS") {
+        @Override
+        public <T extends AbstractAuthenticationToken> Class<T> getAuthenticationTokenClass() {
+            return (Class<T>) WechatAppletsPlatformProvider.WechatAppletsAuthenticationToken.class;
+        }
+    };
 
     private final String grantType;
 
@@ -65,12 +83,10 @@ public enum GrantTypeAuthenticationTokenEnum implements GrantTypeAuthenticationT
      */
     public static GrantTypeAuthenticationTokenEnum safeEnumValueOf(String grantType) {
         try {
-            return GrantTypeAuthenticationTokenEnum.valueOf(grantType);
+            return GrantTypeAuthenticationTokenEnum.valueOf(grantType.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new IllegalArgumentException("Invalid value for enum: " + grantType);
         }
     }
 
-    @Override
-    public abstract <T extends AbstractAuthenticationToken> Class<T> getAuthenticationTokenClass();
 }

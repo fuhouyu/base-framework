@@ -1,0 +1,25 @@
+base:
+  framework:
+    cache:
+      service:
+        cache-service-type: caffeine
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          gitlab:
+            provider: gitlab
+            client-id: b8cfade18e2d4a264c768076e0fdb0492bcb35802a85e1ff6c73ebe16043a268
+            client-secret: gloas-1f0346b92b61a5d04f3a98df8abbe79ad380c500817011a9f06b3a47f6e0980c
+            authorization-grant-type: authorization_code
+            redirect-uri: http://127.0.0.1:8080/login/oauth2/code/login-client
+            scope: openid,profile
+            client-name: gitlab
+        provider:
+          gitlab:
+            authorization-uri: https://gitlab.com/oauth/authorize
+            token-uri: https://gitlab.com/oauth/token
+            user-info-uri: https://gitlab.com/oauth/userinfo
+            jwk-set-uri: https://gitlab.com/oauth/discovery/keys
+            user-name-attribute: email

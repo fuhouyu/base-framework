@@ -29,14 +29,15 @@ module base.framework.security.starter {
     requires spring.security.oauth2.core;
     requires spring.data.redis;
     requires spring.web;
+    requires spring.security.oauth2.client;
+    requires spring.security.oauth2.jose;
     opens com.fuhouyu.framework.security to spring.core;
     opens com.fuhouyu.framework.security.entity to com.esotericsoftware.kryo.kryo5;
-    exports com.fuhouyu.framework.security.core.authentication.refreshtoken to com.fasterxml.jackson.databind;
+    exports com.fuhouyu.framework.security.core.provider.refreshtoken to com.fasterxml.jackson.databind;
 
     exports com.fuhouyu.framework.security;
     exports com.fuhouyu.framework.security.core;
     exports com.fuhouyu.framework.security.entity;
-    exports com.fuhouyu.framework.security.properties;
     exports com.fuhouyu.framework.security.serializer;
     exports com.fuhouyu.framework.security.token;
 }

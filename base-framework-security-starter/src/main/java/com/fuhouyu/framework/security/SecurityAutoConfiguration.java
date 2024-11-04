@@ -23,6 +23,7 @@ import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.security.token.TokenStoreCache;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -30,8 +31,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -44,9 +43,12 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/8/15 16:22
  */
-@Configuration
-@Import({OpenPlatformConfiguration.class})
-@AutoConfigureAfter(CacheAutoConfiguration.class)
+@Configuration(proxyBeanMethods = false)
+@AutoConfigureAfter({
+        CacheAutoConfiguration.class,
+        OAuth2ClientAutoConfiguration.class
+})
+@Import({AuthenticationProviderConfiguration.class})
 public class SecurityAutoConfiguration {
 
     /**
@@ -66,17 +68,11 @@ public class SecurityAutoConfiguration {
      * 认证管理器配置这里可以进行除其他登录模式的扩展，需要实现{@link AuthenticationProvider}
      *
      * @param authenticationProviders 认证提供者集合
-     * @param userDetailsService      用户接口详情
-     * @param passwordEncoder         密码认证管理器
      * @return 认证管理器
      */
-    @Bean("authenticationManager")
+    @Bean
     @Primary
-    public AuthenticationManager authenticationManager(
-            List<AuthenticationProvider> authenticationProviders,
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
-        authenticationProviders.add(daoAuthenticationProvider(userDetailsService, passwordEncoder));
+    public AuthenticationManager authenticationManager(List<AuthenticationProvider> authenticationProviders) {
         return new ProviderManager(authenticationProviders);
     }
 
@@ -89,20 +85,6 @@ public class SecurityAutoConfiguration {
     @ConditionalOnMissingBean(PasswordEncoder.class)
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactory.createDelegatingPasswordEncoder("sm3");
-    }
-
-    /**
-     * dao层实现
-     *
-     * @param passwordEncoder    密码管理器
-     * @param userDetailsService 用户详情接口
-     * @return dao默认实现
-     */
-    private AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService,
-                                                             PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        return daoAuthenticationProvider;
     }
 
 

@@ -16,8 +16,7 @@
 package com.fuhouyu.framework.security.core;
 
 import com.fuhouyu.framework.common.utils.JacksonUtil;
-import com.fuhouyu.framework.security.core.authentication.refreshtoken.RefreshAuthenticationProvider;
-import com.fuhouyu.framework.security.core.authentication.wechat.WechatAppletsPlatformProvider;
+import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -62,16 +61,7 @@ public enum GrantTypeAuthenticationTokenEnum implements GrantTypeAuthenticationT
             return (Class<T>) RefreshAuthenticationProvider.RefreshAuthenticationToken.class;
         }
     },
-
-    /**
-     * 微信小程序
-     */
-    WECHAT_APPLETS("WECHAT_APPLETS") {
-        @Override
-        public <T extends AbstractAuthenticationToken> Class<T> getAuthenticationTokenClass() {
-            return (Class<T>) WechatAppletsPlatformProvider.WechatAppletsAuthenticationToken.class;
-        }
-    };
+    ;
 
     private final String grantType;
 

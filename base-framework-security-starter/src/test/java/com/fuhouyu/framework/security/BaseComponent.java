@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.security.core.authentication.refreshtoken.RefreshAuthenticationProvider;
+import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
 import com.fuhouyu.framework.security.token.TokenStore;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Bean;

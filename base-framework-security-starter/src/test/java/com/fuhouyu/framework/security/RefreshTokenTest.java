@@ -15,8 +15,6 @@
  */
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.cache.CacheAutoConfiguration;
-import com.fuhouyu.framework.cache.CaffeineCacheConfiguration;
 import com.fuhouyu.framework.security.core.GrantTypeAuthenticationTokenEnum;
 import com.fuhouyu.framework.security.entity.GrantTypeAuthenticationEntity;
 import com.fuhouyu.framework.security.entity.TokenEntity;
@@ -24,12 +22,10 @@ import com.fuhouyu.framework.security.token.TokenStore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.test.context.TestPropertySource;
 
 /**
  * <p>
@@ -39,14 +35,7 @@ import org.springframework.test.context.TestPropertySource;
  * @author fuhouyu
  * @since 2024/10/22 22:21
  */
-@SpringBootTest(classes = {
-        CacheAutoConfiguration.class,
-        CaffeineCacheConfiguration.class,
-        SecurityAutoConfiguration.class,
-        BaseComponent.class
-})
-@TestPropertySource(locations = {"classpath:application.yaml"})
-class RefreshTokenTest {
+class RefreshTokenTest extends BaseTest {
 
     @Autowired
     private TokenStore tokenStore;

@@ -18,22 +18,15 @@ package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
 import com.fuhouyu.framework.cache.service.CacheService;
-import com.fuhouyu.framework.security.core.passwordencoder.PasswordEncoderFactory;
 import com.fuhouyu.framework.security.token.TokenStore;
 import com.fuhouyu.framework.security.token.TokenStoreCache;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.List;
 
 /**
  * <p>
@@ -48,7 +41,7 @@ import java.util.List;
         CacheAutoConfiguration.class,
         OAuth2ClientAutoConfiguration.class
 })
-@Import({AuthenticationProviderConfiguration.class})
+@Import({AuthenticationConfiguration.class})
 public class SecurityAutoConfiguration {
 
     /**
@@ -59,33 +52,9 @@ public class SecurityAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(TokenStore.class)
+    @ConditionalOnBean(CacheService.class)
     public TokenStore tokenStore(CacheService<String, Object> cacheService) {
         return new TokenStoreCache("user", cacheService);
     }
-
-
-    /**
-     * 认证管理器配置这里可以进行除其他登录模式的扩展，需要实现{@link AuthenticationProvider}
-     *
-     * @param authenticationProviders 认证提供者集合
-     * @return 认证管理器
-     */
-    @Bean
-    @Primary
-    public AuthenticationManager authenticationManager(List<AuthenticationProvider> authenticationProviders) {
-        return new ProviderManager(authenticationProviders);
-    }
-
-    /**
-     * 返回sm3 密码编码器的bean，当passwordEncoder不存在时，则会创建。
-     *
-     * @return sm3 密码编码器bean
-     */
-    @Bean
-    @ConditionalOnMissingBean(PasswordEncoder.class)
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactory.createDelegatingPasswordEncoder("sm3");
-    }
-
 
 }

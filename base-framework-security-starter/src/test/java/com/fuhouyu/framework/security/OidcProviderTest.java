@@ -15,17 +15,13 @@
  */
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.cache.CacheAutoConfiguration;
-import com.fuhouyu.framework.cache.CaffeineCacheConfiguration;
 import com.fuhouyu.framework.security.core.provider.oidc.OidcAuthenticationToken;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.security.core.Authentication;
 
 /**
  * <p>
@@ -35,21 +31,12 @@ import org.springframework.test.context.TestPropertySource;
  * @author fuhouyu
  * @since 2024/11/4 22:12
  */
-@SpringBootTest(classes = {
-        OAuth2ClientAutoConfiguration.class,
-        CacheAutoConfiguration.class,
-        CaffeineCacheConfiguration.class,
-        SecurityAutoConfiguration.class,
-        BaseComponent.class
-})
-@SpringBootApplication
 @Disabled
-@TestPropertySource(locations = {"classpath:application.yaml"})
-class OidcProviderTest {
+class OidcProviderTest extends BaseTest {
 
-    private static final String CODE = "code";
+    private static final String CODE = "17896f8f71b37868e2e399d814f53ca06e3c4f6a94dc3132d688f0b8b767c907";
 
-    private static final String STATE = "state";
+    private static final String STATE = "-02_gJnVuE_n-rsQilIWRM82bBBXxO9z5VdIfSDlfAU=";
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -57,6 +44,8 @@ class OidcProviderTest {
     @Test
     void testOidc() {
         OidcAuthenticationToken oidcAuthenticationToken = new OidcAuthenticationToken(CODE, STATE, "gitlab");
-        authenticationManager.authenticate(oidcAuthenticationToken);
+        Authentication authenticate = authenticationManager.authenticate(oidcAuthenticationToken);
+        Assertions.assertNotNull(authenticate);
+        Assertions.assertTrue(authenticate.isAuthenticated());
     }
 }

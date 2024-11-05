@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.framework.security.core.provider.oidc;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -39,6 +40,7 @@ import java.util.Collections;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode(callSuper = true)
 public class OidcAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String code;
@@ -47,11 +49,11 @@ public class OidcAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String clientId;
 
-    private final transient OAuth2User principal;
+    private transient OAuth2User principal;
 
-    private final OAuth2AccessToken accessToken;
+    private OAuth2AccessToken accessToken;
 
-    private final OAuth2RefreshToken refreshToken;
+    private OAuth2RefreshToken refreshToken;
 
     private String nonce;
 
@@ -68,11 +70,16 @@ public class OidcAuthenticationToken extends AbstractAuthenticationToken {
         this.principal = principal;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.setAuthenticated(true);
     }
 
 
     public OidcAuthenticationToken(String code, String state, String clientId) {
-        this(code, state, clientId, null, Collections.emptyList(), null, null);
+        super(Collections.emptyList());
+        this.code = code;
+        this.state = state;
+        this.clientId = clientId;
+        this.setAuthenticated(false);
     }
 
     @Override

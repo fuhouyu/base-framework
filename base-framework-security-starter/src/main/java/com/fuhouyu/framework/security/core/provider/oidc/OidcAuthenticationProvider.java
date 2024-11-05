@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.framework.security.core.provider.oidc;
 
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -76,13 +77,20 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
     private static final String INVALID_ID_TOKEN_ERROR_CODE = "invalid_id_token";
 
     private static final String INVALID_NONCE_ERROR_CODE = "invalid_nonce";
+
     private static final MediaType APPLICATION_FORM_URLENCODED_UTF8 = new MediaType(
             MediaType.APPLICATION_FORM_URLENCODED, StandardCharsets.UTF_8);
-    private final GrantedAuthoritiesMapper authoritiesMapper = ((authorities) -> authorities);
+
+    private final GrantedAuthoritiesMapper authoritiesMapper = authorities -> authorities;
+
     private final UserDetailsService userDetailsService;
+
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> userService;
+
     private final ClientRegistrationRepository clientRegistrationRepository;
+
     private final JwtDecoderFactory<ClientRegistration> jwtDecoderFactory = new OidcIdTokenDecoderFactory();
+
     private final RestOperations restOperations;
 
     public OidcAuthenticationProvider(OAuth2UserService<OAuth2UserRequest, OAuth2User> userService,
@@ -110,7 +118,7 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
         if (Objects.isNull(clientRegistration)) {
             throw new IllegalArgumentException("invalid client id " + oidcAuthenticationToken.getClientId());
         }
-        RequestEntity<?> requestEntity = this.createRequestEntity(clientRegistration);
+        RequestEntity<?> requestEntity = this.createRequestEntity(clientRegistration, oidcAuthenticationToken);
         OAuth2AccessTokenResponse accessTokenResponse = this.getResponse(requestEntity);
         Map<String, Object> additionalParameters = this.getAdditionalParameters(accessTokenResponse, clientRegistration);
         OidcIdToken idToken = createOidcToken(clientRegistration, accessTokenResponse);
@@ -118,9 +126,6 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
         OAuth2User oidcUser = this.userService.loadUser(new OidcUserRequest(clientRegistration,
                 accessTokenResponse.getAccessToken(), idToken, additionalParameters));
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(oidcUser.getName());
-        if (Objects.isNull(userDetails)) {
-            throw new IllegalArgumentException("系统中的用户不存在");
-        }
         Collection<? extends GrantedAuthority> mappedAuthorities = this.authoritiesMapper
                 .mapAuthorities(oidcUser.getAuthorities());
         OidcAuthenticationToken result = new OidcAuthenticationToken(
@@ -215,13 +220,19 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
             ResponseEntity<OAuth2AccessTokenResponse> tokenResponse = this.restOperations.exchange(request, OAuth2AccessTokenResponse.class);
             Assert.notNull(tokenResponse,
                     "The authorization server responded to this Authorization Code grant request with an empty body; as such, it cannot be materialized into an OAuth2AccessTokenResponse instance. Please check the HTTP response code in your server logs for more details.");
-            return tokenResponse.getBody();
+            OAuth2AccessTokenResponse responseBody = tokenResponse.getBody();
+            Assert.notNull(responseBody, "Response Body is null");
+            return responseBody;
         } catch (RestClientException ex) {
             OAuth2Error oauth2Error = new OAuth2Error(INVALID_TOKEN_RESPONSE_ERROR_CODE,
                     "An error occurred while attempting to retrieve the OAuth 2.0 Access Token Response: "
                             + ex.getMessage(),
                     null);
             throw new OAuth2AuthorizationException(oauth2Error, ex);
+        } catch (OAuth2AuthorizationException e) {
+            LoggerUtil.error(log, "第三方平台使用失败，entity:{} , 失败原因:{}",
+                    request, e.getError());
+            throw new IllegalArgumentException("第三方平台登录失败");
         }
     }
 
@@ -229,14 +240,16 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
      * 创建请求实体
      *
      * @param clientRegistration 客户端注册信息
+     * @param oidcAuthenticationToken oidc 认证token
      * @return 请求实体
      */
-    private RequestEntity<?> createRequestEntity(ClientRegistration clientRegistration) {
+    private RequestEntity<?> createRequestEntity(ClientRegistration clientRegistration,
+                                                 OidcAuthenticationToken oidcAuthenticationToken) {
         URI uri = UriComponentsBuilder
                 .fromUriString(clientRegistration.getProviderDetails().getTokenUri())
                 .build()
                 .toUri();
-        return new RequestEntity<>(this.createParameters(clientRegistration),
+        return new RequestEntity<>(this.createParameters(clientRegistration, oidcAuthenticationToken),
                 this.createHttpHeaders(clientRegistration), HttpMethod.POST, uri);
     }
 
@@ -250,6 +263,7 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(APPLICATION_JSON));
         headers.setContentType(APPLICATION_FORM_URLENCODED_UTF8);
+
         if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
             String clientId = URLEncoder.encode(clientRegistration.getClientId(), StandardCharsets.UTF_8);
             String clientSecret = URLEncoder.encode(clientRegistration.getClientSecret(), StandardCharsets.UTF_8);
@@ -262,11 +276,14 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
      * 设置参数
      *
      * @param clientRegistration 客户端注册信息
+     * @param oidcAuthenticationToken oidc token
      * @return 参数对象
      */
-    private MultiValueMap<String, String> createParameters(ClientRegistration clientRegistration) {
+    private MultiValueMap<String, String> createParameters(ClientRegistration clientRegistration,
+                                                           OidcAuthenticationToken oidcAuthenticationToken) {
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-        parameters.set(OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrantType.CLIENT_CREDENTIALS.getValue());
+        parameters.set(OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrantType.AUTHORIZATION_CODE.getValue());
+        parameters.set(OAuth2ParameterNames.CODE, oidcAuthenticationToken.getCode());
         if (!ClientAuthenticationMethod.CLIENT_SECRET_BASIC
                 .equals(clientRegistration.getClientAuthenticationMethod())) {
             parameters.set(OAuth2ParameterNames.CLIENT_ID, clientRegistration.getClientId());

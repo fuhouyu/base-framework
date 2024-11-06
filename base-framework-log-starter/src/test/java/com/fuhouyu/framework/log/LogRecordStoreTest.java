@@ -64,6 +64,11 @@ class LogRecordStoreTest {
             }
 
             @Override
+            public Long getTenantId() {
+                return 0L;
+            }
+
+            @Override
             public String getUsername() {
                 return "test-username";
             }

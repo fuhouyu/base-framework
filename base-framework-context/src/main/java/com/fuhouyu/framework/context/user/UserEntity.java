@@ -45,6 +45,11 @@ public class UserEntity implements User {
     private Long id;
 
     /**
+     * 租户id
+     */
+    private Long tenantId;
+
+    /**
      * 用户名
      */
     private String username;

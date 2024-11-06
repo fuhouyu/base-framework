@@ -38,6 +38,13 @@ public interface User extends Serializable, AdditionalInformationFunction {
     Long getId();
 
     /**
+     * 租户id
+     *
+     * @return 租户id
+     */
+    Long getTenantId();
+
+    /**
      * 登录的用户名
      *
      * @return 用户名
@@ -71,5 +78,6 @@ public interface User extends Serializable, AdditionalInformationFunction {
      * @return 第三方账号id
      */
     String getRefAccountId();
+
 
 }

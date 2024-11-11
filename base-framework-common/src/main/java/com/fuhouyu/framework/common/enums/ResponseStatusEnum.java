@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.enums;
+package com.fuhouyu.framework.common.enums;
 
-import com.fuhouyu.framework.common.response.BaseResponseCode;
+import com.fuhouyu.framework.common.response.BaseResponseStatus;
 
 /**
  * <p>
@@ -26,7 +26,7 @@ import com.fuhouyu.framework.common.response.BaseResponseCode;
  * @author fuhouyu
  * @since 2024/8/13 17:40
  */
-public enum ResponseCodeEnum implements BaseResponseCode {
+public enum ResponseStatusEnum implements BaseResponseStatus {
 
     // 200
 
@@ -73,7 +73,7 @@ public enum ResponseCodeEnum implements BaseResponseCode {
     private final String message;
 
 
-    ResponseCodeEnum(int code, String message) {
+    ResponseStatusEnum(int code, String message) {
         this.code = code;
         this.message = message;
     }

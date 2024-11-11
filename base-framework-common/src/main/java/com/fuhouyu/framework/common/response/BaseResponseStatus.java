@@ -13,31 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.web.enums;
+
+package com.fuhouyu.framework.common.response;
 
 /**
  * <p>
- * 错误级别
+ * 响应状态
  * </p>
  *
  * @author fuhouyu
- * @since 2024/10/16 20:34
+ * @since 2024/8/13 17:39
  */
-public enum ErrorLevelEnum {
+public interface BaseResponseStatus {
 
     /**
-     * info
+     * 获取响应码
+     *
+     * @return 响应码
      */
-    INFO,
+    int getCode();
 
     /**
-     * warn
+     * 获取具体的响应信息
+     *
+     * @return 响应信息
      */
-    WARN,
-
-    /**
-     * error
-     */
-    ERROR,
-    ;
+    String getMessage();
 }

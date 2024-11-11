@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.response;
+package com.fuhouyu.framework.common.response;
 
-
-import com.fuhouyu.framework.common.response.BaseResponse;
-import com.fuhouyu.framework.common.response.BaseResponseCode;
 
 /**
  * <p>
@@ -46,20 +43,20 @@ public class ResponseHelper {
         return new ErrorResponse<>(code, message, data);
     }
 
-    public static <T> BaseResponse<T> failed(BaseResponseCode baseResponseCode) {
-        return failed(baseResponseCode.getCode(), baseResponseCode.getMessage(), null);
+    public static <T> BaseResponse<T> failed(BaseResponseStatus baseResponseStatus) {
+        return failed(baseResponseStatus.getCode(), baseResponseStatus.getMessage(), null);
     }
 
-    public static <T> BaseResponse<T> failed(BaseResponseCode baseResponseCode, String message) {
-        return failed(baseResponseCode.getCode(), message, null);
+    public static <T> BaseResponse<T> failed(BaseResponseStatus baseResponseStatus, String message) {
+        return failed(baseResponseStatus.getCode(), message, null);
     }
 
-    public static <T> BaseResponse<T> failed(BaseResponseCode baseResponseCode, T data) {
-        return failed(baseResponseCode.getCode(), baseResponseCode.getMessage(), data);
+    public static <T> BaseResponse<T> failed(BaseResponseStatus baseResponseStatus, T data) {
+        return failed(baseResponseStatus.getCode(), baseResponseStatus.getMessage(), data);
     }
 
-    public static <T> BaseResponse<T> failed(BaseResponseCode baseResponseCode, String message, T data) {
-        return failed(baseResponseCode.getCode(), message, data);
+    public static <T> BaseResponse<T> failed(BaseResponseStatus baseResponseStatus, String message, T data) {
+        return failed(baseResponseStatus.getCode(), message, data);
     }
 
 }

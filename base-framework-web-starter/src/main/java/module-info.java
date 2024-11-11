@@ -35,15 +35,12 @@ module base.framework.web.starter {
     exports com.fuhouyu.framework.web.aspectj;
     exports com.fuhouyu.framework.web.constants;
     exports com.fuhouyu.framework.web.controller;
-    exports com.fuhouyu.framework.web.enums;
     exports com.fuhouyu.framework.web.exception;
     exports com.fuhouyu.framework.web.filter;
     exports com.fuhouyu.framework.web.handler;
-    exports com.fuhouyu.framework.web.response;
     exports com.fuhouyu.framework.web.utils;
 
 
     opens com.fuhouyu.framework.web to spring.core;
     opens com.fuhouyu.framework.web.controller to spring.core;
-    opens com.fuhouyu.framework.web.response to com.fasterxml.jackson.databind;
 }

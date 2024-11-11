@@ -18,13 +18,13 @@ package com.fuhouyu.framework.web;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
+import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
 import com.fuhouyu.framework.common.response.BaseResponse;
+import com.fuhouyu.framework.common.response.ErrorResponse;
+import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.kms.KmsAutoConfiguration;
 import com.fuhouyu.framework.web.annotaions.NoRepeatSubmit;
-import com.fuhouyu.framework.web.enums.ErrorLevelEnum;
-import com.fuhouyu.framework.web.response.ErrorResponse;
-import com.fuhouyu.framework.web.response.ResponseHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

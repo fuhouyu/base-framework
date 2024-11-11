@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.web.response;
+package com.fuhouyu.framework.common.response;
 
-import com.fuhouyu.framework.common.response.BaseResponse;
-import com.fuhouyu.framework.common.response.BaseResponseCode;
-import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serial;
 
@@ -34,8 +33,13 @@ public class SuccessResponse<T> implements BaseResponse<T> {
     @Serial
     private static final long serialVersionUID = 1625431681231238161L;
 
-    private final BaseResponseCode response;
+    @Schema(name = "code", description = "响应码", requiredMode = Schema.RequiredMode.REQUIRED)
+    private final Integer code;
 
+    @Schema(name = "message", description = "响应消息", requiredMode = Schema.RequiredMode.REQUIRED)
+    private final String message;
+
+    @Schema(name = "data", description = "响应数据", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private final T data;
 
     public SuccessResponse() {
@@ -44,18 +48,19 @@ public class SuccessResponse<T> implements BaseResponse<T> {
 
     public SuccessResponse(T data) {
         this.data = data;
-        this.response = ResponseCodeEnum.SUCCESS;
+        this.code = ResponseStatusEnum.SUCCESS.getCode();
+        this.message = ResponseStatusEnum.SUCCESS.getMessage();
 
     }
 
     @Override
     public Integer getCode() {
-        return this.response.getCode();
+        return this.code;
     }
 
     @Override
     public String getMessage() {
-        return this.response.getMessage();
+        return this.message;
     }
 
     @Override

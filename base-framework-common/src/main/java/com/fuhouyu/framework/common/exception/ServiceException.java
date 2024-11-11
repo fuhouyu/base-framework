@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.exception;
+package com.fuhouyu.framework.common.exception;
 
-import com.fuhouyu.framework.common.response.BaseResponseCode;
+import com.fuhouyu.framework.common.response.BaseResponseStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
  * <p>
- * web服务异常类
+ * 服务异常类
  * </p>
  *
  * @author fuhouyu
@@ -32,20 +32,20 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-public class WebServiceException extends RuntimeException {
+public class ServiceException extends RuntimeException {
 
     private final int status;
 
     private final String message;
 
-    private final transient BaseResponseCode responseStatus;
+    private final transient BaseResponseStatus responseStatus;
 
     /**
      * 构造函数
      *
      * @param responseStatus 响应状态
      */
-    public WebServiceException(BaseResponseCode responseStatus) {
+    public ServiceException(BaseResponseStatus responseStatus) {
         this.responseStatus = responseStatus;
         this.status = responseStatus.getCode();
         this.message = responseStatus.getMessage();
@@ -56,7 +56,7 @@ public class WebServiceException extends RuntimeException {
      * @param responseStatus 响应状态
      * @param errorMessage 错误信息
      */
-    public WebServiceException(BaseResponseCode responseStatus, String errorMessage) {
+    public ServiceException(BaseResponseStatus responseStatus, String errorMessage) {
         this.status = responseStatus.getCode();
         this.message = errorMessage;
         this.responseStatus = responseStatus;

@@ -17,10 +17,10 @@
 package com.fuhouyu.framework.web.aspectj;
 
 import com.fuhouyu.framework.cache.service.CacheService;
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.web.annotaions.NoRepeatSubmit;
 import com.fuhouyu.framework.web.constants.FormTokenConstant;
-import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
-import com.fuhouyu.framework.web.exception.WebServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -69,15 +69,15 @@ public class NoRepeatSubmitAspectj {
         }
         String formTokenHeader = request.getHeader(noRepeatSubmit.headerToken());
         if (!StringUtils.hasText(formTokenHeader)) {
-            throw new WebServiceException(
-                    ResponseCodeEnum.INVALID_PARAM,
+            throw new ServiceException(
+                    ResponseStatusEnum.INVALID_PARAM,
                     noRepeatSubmit.message());
         }
         Object formToken = cacheService.get(FormTokenConstant.TOKEN_PREFIX
                 + formTokenHeader);
         if (Objects.isNull(formToken)) {
-            throw new WebServiceException(
-                    ResponseCodeEnum.INVALID_PARAM,
+            throw new ServiceException(
+                    ResponseStatusEnum.INVALID_PARAM,
                     noRepeatSubmit.message());
         }
         cacheService.delete(FormTokenConstant.TOKEN_PREFIX + formTokenHeader);

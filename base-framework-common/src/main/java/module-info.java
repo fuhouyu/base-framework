@@ -22,6 +22,7 @@ module base.framework.common {
     requires transitive org.apache.commons.lang3;
     requires transitive org.slf4j;
     requires transitive com.fasterxml.jackson.databind;
+    requires io.swagger.v3.oas.annotations;
 
     exports com.fuhouyu.framework.common;
     exports com.fuhouyu.framework.common.constants;
@@ -30,4 +31,7 @@ module base.framework.common {
     exports com.fuhouyu.framework.common.response;
     exports com.fuhouyu.framework.common.service;
     exports com.fuhouyu.framework.common.utils;
+    exports com.fuhouyu.framework.common.enums;
+
+    opens com.fuhouyu.framework.common.response to com.fasterxml.jackson.databind;
 }

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.web.response;
+package com.fuhouyu.framework.common.response;
 
-import com.fuhouyu.framework.common.response.BaseResponse;
-import com.fuhouyu.framework.web.enums.ErrorLevelEnum;
-import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
+import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * <p>
@@ -29,8 +29,10 @@ import com.fuhouyu.framework.web.enums.ResponseCodeEnum;
  */
 public class ErrorResponse<T> implements BaseResponse<T> {
 
+    @Schema(name = "code", description = "响应码", requiredMode = Schema.RequiredMode.REQUIRED)
     private final Integer code;
 
+    @Schema(name = "message", description = "响应消息", requiredMode = Schema.RequiredMode.REQUIRED)
     private final String message;
 
     private final T data;
@@ -47,7 +49,7 @@ public class ErrorResponse<T> implements BaseResponse<T> {
     }
 
     public ErrorResponse() {
-        this(ResponseCodeEnum.SERVER_ERROR.getCode(), ResponseCodeEnum.SERVER_ERROR.getMessage());
+        this(ResponseStatusEnum.SERVER_ERROR.getCode(), ResponseStatusEnum.SERVER_ERROR.getMessage());
     }
 
     @Override

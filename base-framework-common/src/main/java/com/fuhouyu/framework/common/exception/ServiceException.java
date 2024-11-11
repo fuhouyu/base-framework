@@ -62,4 +62,17 @@ public class ServiceException extends RuntimeException {
         this.responseStatus = responseStatus;
     }
 
+    /**
+     * 构造函数
+     *
+     * @param responseStatus 响应状态
+     * @param format         格式化
+     * @param args           字符串参数
+     */
+    public ServiceException(BaseResponseStatus responseStatus, String format, Object... args) {
+        this.status = responseStatus.getCode();
+        this.message = String.format(format, args);
+        this.responseStatus = responseStatus;
+    }
+
 }

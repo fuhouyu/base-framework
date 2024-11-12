@@ -17,6 +17,7 @@
 package com.fuhouyu.framework.web.exception;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.response.BaseResponse;
@@ -80,7 +81,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(NoResourceFoundException.class)
-    public BaseResponse<String> noResourceFoundException(ServletWebRequest request, NoResourceFoundException e) {
+    public BaseResponse<ErrorLevelEnum> noResourceFoundException(ServletWebRequest request, NoResourceFoundException e) {
         this.printExceptionLog(e, Exception.class.getSimpleName(), request);
         return ResponseHelper.failed(ResponseStatusEnum.NOT_FOUND,
                 String.format("当前访问地址：%s 不存在", e.getMessage().replace("No static resource ", "").trim()));
@@ -94,7 +95,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public BaseResponse<Void> methodNotSupportException(ServletWebRequest request, HttpRequestMethodNotSupportedException e) {
+    public BaseResponse<ErrorLevelEnum> methodNotSupportException(ServletWebRequest request, HttpRequestMethodNotSupportedException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
         return ResponseHelper.failed(ResponseStatusEnum.METHOD_NOT_ALLOWED);
     }
@@ -107,7 +108,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ResponseStatusException.class)
-    public BaseResponse<String> notFoundException(ServletWebRequest request, ResponseStatusException e) {
+    public BaseResponse<ErrorLevelEnum> notFoundException(ServletWebRequest request, ResponseStatusException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
         return ResponseHelper.failed(ResponseStatusEnum.SERVER_ERROR, e.getMessage());
     }
@@ -119,7 +120,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ServiceException.class)
-    public BaseResponse<String> serviceExceptionHandler(ServiceException serviceException) {
+    public BaseResponse<ErrorLevelEnum> serviceExceptionHandler(ServiceException serviceException) {
         return ResponseHelper.failed(serviceException.getResponseStatus(), serviceException.getMessage());
     }
 
@@ -131,7 +132,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public BaseResponse<String> methodArgumentNotValidExceptionHandler(ServletWebRequest request, MethodArgumentNotValidException e) {
+    public BaseResponse<ErrorLevelEnum> methodArgumentNotValidExceptionHandler(ServletWebRequest request, MethodArgumentNotValidException e) {
         Map<String, String> errorMessageMap = new TreeMap<>(String::compareToIgnoreCase);
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             errorMessageMap.put(fieldError.getField(), fieldError.getDefaultMessage());
@@ -155,7 +156,7 @@ public class WebExceptionHandler {
             NumberFormatException.class,
             HttpMessageConversionException.class
     })
-    public BaseResponse<String> handleHttpMediaTypeException(ServletWebRequest request,
+    public BaseResponse<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request,
                                                            Exception e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         return ResponseHelper.failed(ResponseStatusEnum.INVALID_PARAM, e.getMessage());
@@ -169,7 +170,7 @@ public class WebExceptionHandler {
      * @return 包装后的响应
      */
     @ExceptionHandler(HttpMediaTypeException.class)
-    public BaseResponse<String> handleHttpMediaTypeException(ServletWebRequest request, HttpMediaTypeException e) {
+    public BaseResponse<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request, HttpMediaTypeException e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         return ResponseHelper.failed(ResponseStatusEnum.NOT_SUPPORT_MEDIA_TYPE, e.getMessage());
     }
@@ -183,7 +184,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public BaseResponse<String> constraintViolationException(ServletWebRequest request, ConstraintViolationException e) {
+    public BaseResponse<ErrorLevelEnum> constraintViolationException(ServletWebRequest request, ConstraintViolationException e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         StringBuilder sb = new StringBuilder();

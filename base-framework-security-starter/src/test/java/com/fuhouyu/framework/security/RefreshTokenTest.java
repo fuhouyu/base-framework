@@ -15,9 +15,8 @@
  */
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.security.core.GrantTypeAuthenticationTokenEnum;
-import com.fuhouyu.framework.security.entity.GrantTypeAuthenticationEntity;
-import com.fuhouyu.framework.security.entity.TokenEntity;
+import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
+import com.fuhouyu.framework.security.token.OAuth2Token;
 import com.fuhouyu.framework.security.token.TokenStore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -47,16 +46,13 @@ class RefreshTokenTest extends BaseTest {
     void testRefreshToken() {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("admin", "admin");
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        TokenEntity tokenEntity = tokenStore.createToken(authenticate, 6000, 6000);
-        Assertions.assertNotNull(tokenEntity);
-        GrantTypeAuthenticationEntity grantTypeAuthenticationEntity =
-                new GrantTypeAuthenticationEntity(GrantTypeAuthenticationTokenEnum.PASSWORD.getGrantType(),
-                        "admin", "admin");
-//        grantTypeAuthenticationEntity.addParameter("refreshToken", tokenEntity.getRefreshToken().getTokenValue());
-        AbstractAuthenticationToken abstractAuthenticationToken = grantTypeAuthenticationEntity.createAuthenticationToken();
+        OAuth2Token auth2Token = tokenStore.createToken(authenticate, 6000, 6000);
+        Assertions.assertNotNull(auth2Token);
+        AbstractAuthenticationToken abstractAuthenticationToken =
+                new RefreshAuthenticationProvider.RefreshAuthenticationToken(auth2Token.getRefreshToken().getTokenValue());
         Authentication refreshAuthenticate = authenticationManager.authenticate(abstractAuthenticationToken);
-        TokenEntity refreshTokenEntity = tokenStore.createToken(refreshAuthenticate, 6000, 6000);
-        Assertions.assertNotNull(refreshTokenEntity);
+        OAuth2Token refreshOAuth2Token = tokenStore.createToken(refreshAuthenticate, 6000, 6000);
+        Assertions.assertNotNull(refreshOAuth2Token);
     }
 
 }

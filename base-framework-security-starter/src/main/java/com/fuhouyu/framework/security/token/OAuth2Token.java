@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.security.entity;
+package com.fuhouyu.framework.security.token;
 
 import com.fuhouyu.framework.common.Entity;
 import lombok.Getter;
@@ -36,7 +36,7 @@ import java.io.Serial;
 @Getter
 @Setter
 @ToString
-public class TokenEntity implements Entity<OAuth2AccessToken> {
+public class OAuth2Token implements Entity<OAuth2AccessToken> {
 
     @Serial
     private static final long serialVersionUID = 1897123986123785612L;
@@ -45,11 +45,11 @@ public class TokenEntity implements Entity<OAuth2AccessToken> {
 
     private OAuth2RefreshToken refreshToken;
 
-    public TokenEntity(OAuth2AccessToken accessToken) {
+    public OAuth2Token(OAuth2AccessToken accessToken) {
         this(accessToken, null);
     }
 
-    public TokenEntity(OAuth2AccessToken accessToken, OAuth2RefreshToken refreshToken) {
+    public OAuth2Token(OAuth2AccessToken accessToken, OAuth2RefreshToken refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }

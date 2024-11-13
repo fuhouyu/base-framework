@@ -16,6 +16,7 @@
 package com.fuhouyu.framework.security.core.provider.oidc;
 
 import com.fuhouyu.framework.common.utils.LoggerUtil;
+import com.fuhouyu.framework.security.core.DefaultUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -25,7 +26,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.client.oidc.authentication.OidcIdTokenDecoderFactory;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -72,6 +72,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Slf4j
 public class OidcAuthenticationProvider implements AuthenticationProvider {
 
+    public static final String ACCOUNT_TYPE = "OIDC";
+
     private static final String INVALID_TOKEN_RESPONSE_ERROR_CODE = "invalid_token_response";
 
     private static final String INVALID_ID_TOKEN_ERROR_CODE = "invalid_id_token";
@@ -83,7 +85,7 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
 
     private final GrantedAuthoritiesMapper authoritiesMapper = authorities -> authorities;
 
-    private final UserDetailsService userDetailsService;
+    private final DefaultUserService userDetailsService;
 
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> userService;
 
@@ -94,7 +96,7 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
     private final RestOperations restOperations;
 
     public OidcAuthenticationProvider(OAuth2UserService<OAuth2UserRequest, OAuth2User> userService,
-                                      UserDetailsService userDetailsService,
+                                      DefaultUserService userDetailsService,
                                       ClientRegistrationRepository clientRegistrationRepository) {
         this.userService = userService;
         this.userDetailsService = userDetailsService;
@@ -125,7 +127,7 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
         validateNonce(oidcAuthenticationToken.getNonce(), idToken);
         OAuth2User oidcUser = this.userService.loadUser(new OidcUserRequest(clientRegistration,
                 accessTokenResponse.getAccessToken(), idToken, additionalParameters));
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(oidcUser.getName());
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(oidcUser.getName(), ACCOUNT_TYPE);
         Collection<? extends GrantedAuthority> mappedAuthorities = this.authoritiesMapper
                 .mapAuthorities(oidcUser.getAuthorities());
         OidcAuthenticationToken result = new OidcAuthenticationToken(

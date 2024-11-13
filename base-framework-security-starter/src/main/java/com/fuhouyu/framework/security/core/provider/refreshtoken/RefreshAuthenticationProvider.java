@@ -17,6 +17,8 @@ package com.fuhouyu.framework.security.core.provider.refreshtoken;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.security.token.TokenStore;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -40,19 +42,20 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class RefreshAuthenticationProvider implements AuthenticationProvider {
 
-    private final TokenStore tokenStore;
+    public static final String ACCOUNT_TYPE = "REFRESH_TOKEN";
 
+    private final TokenStore tokenStore;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String refreshToken = (String) authentication.getPrincipal();
         if (!StringUtils.hasText(refreshToken)) {
-            throw new IllegalArgumentException("刷新令牌为空");
+            throw new ServiceException(ResponseStatusEnum.REFRESH_TOKEN_EXPIRE);
         }
         Authentication storeTokenAuthentication = tokenStore.readAuthenticationForRefreshToken(
                 refreshToken);
         if (Objects.isNull(storeTokenAuthentication)) {
-            throw new IllegalArgumentException("刷牌令牌已过期");
+            throw new ServiceException(ResponseStatusEnum.REFRESH_TOKEN_EXPIRE);
         }
         tokenStore.removeAccessTokenUsingRefreshToken(refreshToken);
         tokenStore.removeRefreshToken(refreshToken);

@@ -18,7 +18,6 @@ package com.fuhouyu.framework.security.token;
 
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
-import com.fuhouyu.framework.security.entity.TokenEntity;
 import com.fuhouyu.framework.security.serializer.KryoSerializer;
 import com.fuhouyu.framework.security.serializer.SerializationStrategy;
 import lombok.NonNull;
@@ -31,6 +30,7 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -64,6 +64,16 @@ public class TokenStoreCache implements TokenStore {
     private static final String REFRESH_TO_ACCESS = "refresh_to_access" + SEPARATE;
 
     private static final BytesKeyGenerator DEFAULT_TOKEN_GENERATOR = KeyGenerators.secureRandom(20);
+
+    /**
+     * 默认的token 过期时间
+     */
+    private static final long TOKEN_EXPIRE_SECONDS = Duration.ofHours(1).getSeconds();
+
+    /**
+     * 默认的刷新令牌过期时间
+     */
+    private static final long REFRESH_TOKEN_EXPIRE_SECONDS = Duration.ofDays(1).getSeconds();
 
     private final AuthenticationKeyGenerator authenticationKeyGenerator
             = new DefaultAuthenticationKeyGenerator();
@@ -120,7 +130,7 @@ public class TokenStoreCache implements TokenStore {
     }
 
     @Override
-    public OAuth2AccessToken createAccessToken(Authentication authentication, Integer accessTokenExpireSeconds) {
+    public OAuth2AccessToken createAccessToken(Authentication authentication, long accessTokenExpireSeconds) {
         String tokenValue = Base64.encodeBase64String(DEFAULT_TOKEN_GENERATOR.generateKey());
         Instant now = Instant.now().atZone(zoneId).toInstant();
         return new OAuth2AccessToken(
@@ -131,16 +141,21 @@ public class TokenStoreCache implements TokenStore {
     }
 
     @Override
-    public TokenEntity createToken(Authentication authentication,
-                                   Integer accessTokenExpireSeconds,
-                                   Integer refreshTokenExpireSeconds) {
-        TokenEntity tokenEntity = this.getTokenEntity(
+    public OAuth2Token createToken(Authentication authentication) {
+        return this.createToken(authentication, TOKEN_EXPIRE_SECONDS, REFRESH_TOKEN_EXPIRE_SECONDS);
+    }
+
+    @Override
+    public OAuth2Token createToken(Authentication authentication,
+                                   long accessTokenExpireSeconds,
+                                   long refreshTokenExpireSeconds) {
+        OAuth2Token auth2Token = this.getTokenEntity(
                 authentication);
         Instant now = Instant.now().atZone(zoneId).toInstant();
         // 如果存在则验证这个token是否过期，过期则进去删除。
-        if (Objects.nonNull(tokenEntity)) {
-            OAuth2AccessToken existingAccessToken = tokenEntity.getAccessToken();
-            OAuth2RefreshToken auth2RefreshToken = tokenEntity.getRefreshToken();
+        if (Objects.nonNull(auth2Token)) {
+            OAuth2AccessToken existingAccessToken = auth2Token.getAccessToken();
+            OAuth2RefreshToken auth2RefreshToken = auth2Token.getRefreshToken();
             if (now.isAfter(Objects.requireNonNull(existingAccessToken.getExpiresAt()))) {
                 if (auth2RefreshToken != null) {
                     // 当accessToken不存在时，则删除该值关联的refreshToken
@@ -152,23 +167,23 @@ public class TokenStoreCache implements TokenStore {
             if (auth2RefreshToken == null) {
                 OAuth2RefreshToken refreshToken = this.createRefreshToken(refreshTokenExpireSeconds);
                 this.storeRefreshToken(refreshToken, authentication);
-                tokenEntity.setRefreshToken(refreshToken);
-                this.storeTokenEntity(tokenEntity, authentication);
+                auth2Token.setRefreshToken(refreshToken);
+                this.storeAuth2Token(auth2Token, authentication);
             }
-            return tokenEntity;
+            return auth2Token;
         }
         // accessToken 和refresh Token都不存在时，生成
         OAuth2AccessToken accessToken = this.createAccessToken(
                 authentication, accessTokenExpireSeconds);
         OAuth2RefreshToken refreshToken = this.createRefreshToken(refreshTokenExpireSeconds);
         this.storeRefreshToken(refreshToken, authentication);
-        tokenEntity = new TokenEntity(accessToken, refreshToken);
-        this.storeTokenEntity(tokenEntity, authentication);
-        return tokenEntity;
+        auth2Token = new OAuth2Token(accessToken, refreshToken);
+        this.storeAuth2Token(auth2Token, authentication);
+        return auth2Token;
     }
 
     @Override
-    public OAuth2RefreshToken createRefreshToken(Integer refreshTokenExpireSeconds) {
+    public OAuth2RefreshToken createRefreshToken(long refreshTokenExpireSeconds) {
         String tokenValue = Base64.encodeBase64String(DEFAULT_TOKEN_GENERATOR.generateKey());
         Instant now = Instant.now().atZone(zoneId).toInstant();
         return new OAuth2RefreshToken(tokenValue, now,
@@ -187,12 +202,12 @@ public class TokenStoreCache implements TokenStore {
     }
 
     @Override
-    public void storeTokenEntity(TokenEntity tokenEntity, Authentication authentication) {
+    public void storeAuth2Token(OAuth2Token auth2Token, Authentication authentication) {
 
-        byte[] tokenEntityBytes = this.serialize(tokenEntity);
+        byte[] tokenEntityBytes = this.serialize(auth2Token);
         byte[] serializedAuth = serialize(authentication);
 
-        OAuth2AccessToken accessToken = tokenEntity.getAccessToken();
+        OAuth2AccessToken accessToken = auth2Token.getAccessToken();
         long accessTokenExpireTime = this.expireTimeSeconds(accessToken.getExpiresAt());
         cacheService.set(this.serializeKey(ACCESS + accessToken.getTokenValue()),
                 tokenEntityBytes,
@@ -202,30 +217,32 @@ public class TokenStoreCache implements TokenStore {
         cacheService.set(this
                         .serializeKey(AUTH_TO_ACCESS + authenticationKeyGenerator.extractKey(authentication)),
                 tokenEntityBytes, accessTokenExpireTime, TimeUnit.SECONDS);
-
-        OAuth2RefreshToken refreshToken = tokenEntity.getRefreshToken();
+        OAuth2RefreshToken refreshToken = auth2Token.getRefreshToken();
         if (Objects.nonNull(refreshToken) && Objects.nonNull(
                 refreshToken.getTokenValue())) {
+            // 刷新令牌指向accessToken
+            this.cacheService.set(this.serializeKey(REFRESH_TO_ACCESS + refreshToken.getTokenValue()),
+                    this.serialize(accessToken.getTokenValue()), accessTokenExpireTime, TimeUnit.SECONDS);
             this.storeRefreshToken(refreshToken, authentication);
         }
     }
 
 
     @Override
-    public TokenEntity readTokenEntity(String tokenValue) {
+    public OAuth2Token readAuth2Token(String tokenValue) {
         return serializationStrategy.deserialize(cacheService.get(this.serializeKey(ACCESS + tokenValue)));
     }
 
     @Override
-    public void removeTokenEntity(@NonNull TokenEntity tokenEntity) {
-        this.removeAccessToken(tokenEntity.getAccessToken());
-        this.removeRefreshToken(tokenEntity.getRefreshToken());
+    public void removeAuth2Token(@NonNull OAuth2Token auth2Token) {
+        this.removeAccessToken(auth2Token.getAccessToken());
+        this.removeRefreshToken(auth2Token.getRefreshToken());
 
     }
 
     @Override
-    public void removeTokenEntity(String accessToken) {
-        this.removeTokenEntity(this.readTokenEntity(accessToken));
+    public void removeAuth2Token(String accessToken) {
+        this.removeAuth2Token(this.readAuth2Token(accessToken));
     }
 
     @Override
@@ -278,14 +295,14 @@ public class TokenStoreCache implements TokenStore {
         byte[] refresh2AccessKey = this.serializeKey(REFRESH_TO_ACCESS + tokenValue);
         cacheService.delete(refreshKey);
         cacheService.delete(refreshAuthKey);
-        cacheService.delete(refresh2AccessKey);
 
-        byte[] accessTokenBytes = cacheService.get(refreshKey);
+        byte[] accessTokenBytes = cacheService.get(refresh2AccessKey);
         if (Objects.isNull(accessTokenBytes)) {
             return;
         }
         String accessTokenValue = serializationStrategy.deserializeString(accessTokenBytes);
         byte[] access2RefreshKey = this.serializeKey(ACCESS_TO_REFRESH + accessTokenValue);
+        cacheService.delete(refresh2AccessKey);
         cacheService.delete(access2RefreshKey);
     }
 
@@ -320,23 +337,23 @@ public class TokenStoreCache implements TokenStore {
     }
 
     @Override
-    public TokenEntity getTokenEntity(Authentication authentication) {
+    public OAuth2Token getTokenEntity(Authentication authentication) {
         String key = authenticationKeyGenerator.extractKey(authentication);
         byte[] serializedKey = this.serializeKey(AUTH_TO_ACCESS + key);
         byte[] bytes = cacheService.get(serializedKey);
 
-        TokenEntity tokenEntity = serializationStrategy.deserialize(bytes);
-        if (Objects.isNull(tokenEntity)) {
+        OAuth2Token auth2Token = serializationStrategy.deserialize(bytes);
+        if (Objects.isNull(auth2Token)) {
             return null;
         }
-        OAuth2AccessToken accessToken = tokenEntity.getAccessToken();
+        OAuth2AccessToken accessToken = auth2Token.getAccessToken();
         Authentication storedAuthentication = readAuthentication(accessToken.getTokenValue());
         // 如果认证信息已过期，重新设置
         if ((storedAuthentication == null || !key.equals(
                 authenticationKeyGenerator.extractKey(storedAuthentication)))) {
-            storeTokenEntity(tokenEntity, authentication);
+            storeAuth2Token(auth2Token, authentication);
         }
-        return tokenEntity;
+        return auth2Token;
     }
 
     /**

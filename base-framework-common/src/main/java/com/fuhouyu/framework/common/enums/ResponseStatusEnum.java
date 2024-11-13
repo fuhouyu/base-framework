@@ -47,6 +47,16 @@ public enum ResponseStatusEnum implements BaseResponseStatus {
     NOT_AUTH(401, "用户无权限"),
 
     /**
+     * 用户登录信息已过期
+     */
+    TOKEN_EXPIRE(402, "用户登录信息已过期"),
+
+    /**
+     * 刷新令牌已过期
+     */
+    REFRESH_TOKEN_EXPIRE(403, "刷新令牌已失效"),
+
+    /**
      * 资源不存在或已被删除
      */
     NOT_FOUND(404, "资源不存在或已被删除"),

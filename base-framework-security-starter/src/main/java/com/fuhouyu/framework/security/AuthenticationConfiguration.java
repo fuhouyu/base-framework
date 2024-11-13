@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.framework.security;
 
+import com.fuhouyu.framework.security.core.DefaultUserService;
 import com.fuhouyu.framework.security.core.passwordencoder.PasswordEncoderFactory;
 import com.fuhouyu.framework.security.core.provider.oidc.OidcAuthenticationProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -67,8 +68,8 @@ public class AuthenticationConfiguration {
      * @return oidcProvider
      */
     @Bean
-    @ConditionalOnBean({UserDetailsService.class, ClientRegistrationRepository.class})
-    public AuthenticationProvider oidcAuthenticationProvider(UserDetailsService userDetailsService,
+    @ConditionalOnBean({DefaultUserService.class, ClientRegistrationRepository.class})
+    public AuthenticationProvider oidcAuthenticationProvider(DefaultUserService userDetailsService,
                                                              ClientRegistrationRepository clientRegistrationRepository) {
         return new OidcAuthenticationProvider(new DefaultOAuth2UserService(), userDetailsService, clientRegistrationRepository);
     }

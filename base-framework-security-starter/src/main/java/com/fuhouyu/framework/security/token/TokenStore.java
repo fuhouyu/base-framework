@@ -16,7 +16,6 @@
 
 package com.fuhouyu.framework.security.token;
 
-import com.fuhouyu.framework.security.entity.TokenEntity;
 import lombok.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -33,6 +32,14 @@ import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 public interface TokenStore {
 
     /**
+     * 创建token
+     *
+     * @param authentication 认证信息
+     * @return 返回token实体类
+     */
+    OAuth2Token createToken(Authentication authentication);
+
+    /**
      * 创建认证令牌和刷新令牌，返回token实体.
      *
      * @param authentication            认证信息
@@ -40,9 +47,9 @@ public interface TokenStore {
      * @param refreshTokenExpireSeconds 刷新令牌过期时间(s)
      * @return 返回token实体类
      */
-    TokenEntity createToken(Authentication authentication,
-                            Integer accessTokenExpireSeconds,
-                            Integer refreshTokenExpireSeconds);
+    OAuth2Token createToken(Authentication authentication,
+                            long accessTokenExpireSeconds,
+                            long refreshTokenExpireSeconds);
 
     /**
      * 创建认证令牌.
@@ -52,7 +59,7 @@ public interface TokenStore {
      * @return 认证token
      */
     OAuth2AccessToken createAccessToken(Authentication authentication,
-                                         Integer accessTokenExpireSeconds);
+                                        long accessTokenExpireSeconds);
 
 
     /**
@@ -61,7 +68,7 @@ public interface TokenStore {
      * @param refreshTokenExpireSeconds 刷新令牌的过期时间
      * @return 刷新令牌
      */
-    OAuth2RefreshToken createRefreshToken(Integer refreshTokenExpireSeconds);
+    OAuth2RefreshToken createRefreshToken(long refreshTokenExpireSeconds);
 
     /**
      * 读取token中存储的认证信息.
@@ -84,10 +91,10 @@ public interface TokenStore {
     /**
      * 存储token实体
      *
-     * @param tokenEntity token实体
+     * @param auth2Token     token实体
      * @param authentication 认证信息
      */
-    void storeTokenEntity(TokenEntity tokenEntity, Authentication authentication);
+    void storeAuth2Token(OAuth2Token auth2Token, Authentication authentication);
 
 
     /**
@@ -96,7 +103,7 @@ public interface TokenStore {
      * @param tokenValue 认证token
      * @return token实体
      */
-    TokenEntity readTokenEntity(String tokenValue);
+    OAuth2Token readAuth2Token(String tokenValue);
 
 
     /**
@@ -109,16 +116,16 @@ public interface TokenStore {
     /**
      * 通过token实体删除所有存储的实体及token
      *
-     * @param tokenEntity token实体
+     * @param auth2Token token实体
      */
-    void removeTokenEntity(@NonNull TokenEntity tokenEntity);
+    void removeAuth2Token(@NonNull OAuth2Token auth2Token);
 
     /**
      * 删除所有的token
      *
      * @param accessToken 认证令牌
      */
-    void removeTokenEntity(String accessToken);
+    void removeAuth2Token(String accessToken);
 
     /**
      * 删除token.
@@ -196,5 +203,5 @@ public interface TokenStore {
      * @param authentication 认证信息
      * @return token实体
      */
-    TokenEntity getTokenEntity(Authentication authentication);
+    OAuth2Token getTokenEntity(Authentication authentication);
 }

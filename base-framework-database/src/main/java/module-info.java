@@ -16,6 +16,13 @@
 
 module base.framework.database {
     requires org.mybatis;
+    requires spring.context;
+    requires spring.boot.autoconfigure;
+    requires spring.aop;
+    requires spring.core;
+    requires spring.tx;
+    requires base.framework.common;
+    requires spring.boot;
 
     exports com.fuhouyu.framework.database.interceptor;
     exports com.fuhouyu.framework.database.annotations;

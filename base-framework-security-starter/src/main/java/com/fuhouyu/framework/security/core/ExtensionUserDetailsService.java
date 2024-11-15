@@ -27,7 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * @author fuhouyu
  * @since 2024/11/13 21:07
  */
-public interface DefaultUserService extends UserDetailsService {
+public interface ExtensionUserDetailsService extends UserDetailsService {
 
 
     /**

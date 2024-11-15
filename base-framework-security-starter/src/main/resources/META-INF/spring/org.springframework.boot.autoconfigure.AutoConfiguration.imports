@@ -1,1 +1,2 @@
 com.fuhouyu.framework.security.SecurityAutoConfiguration
+com.fuhouyu.framework.security.AuthenticationAutoConfiguration

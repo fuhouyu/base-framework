@@ -16,7 +16,7 @@
 package com.fuhouyu.framework.security.core.provider.oidc;
 
 import com.fuhouyu.framework.common.utils.LoggerUtil;
-import com.fuhouyu.framework.security.core.DefaultUserService;
+import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -85,7 +85,7 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
 
     private final GrantedAuthoritiesMapper authoritiesMapper = authorities -> authorities;
 
-    private final DefaultUserService userDetailsService;
+    private final ExtensionUserDetailsService userDetailsService;
 
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> userService;
 
@@ -96,7 +96,7 @@ public class OidcAuthenticationProvider implements AuthenticationProvider {
     private final RestOperations restOperations;
 
     public OidcAuthenticationProvider(OAuth2UserService<OAuth2UserRequest, OAuth2User> userService,
-                                      DefaultUserService userDetailsService,
+                                      ExtensionUserDetailsService userDetailsService,
                                       ClientRegistrationRepository clientRegistrationRepository) {
         this.userService = userService;
         this.userDetailsService = userDetailsService;

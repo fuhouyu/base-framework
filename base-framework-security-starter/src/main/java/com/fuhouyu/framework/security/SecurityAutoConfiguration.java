@@ -23,10 +23,8 @@ import com.fuhouyu.framework.security.token.TokenStoreCache;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  * <p>
@@ -37,11 +35,7 @@ import org.springframework.context.annotation.Import;
  * @since 2024/8/15 16:22
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter({
-        CacheAutoConfiguration.class,
-        OAuth2ClientAutoConfiguration.class
-})
-@Import({AuthenticationConfiguration.class})
+@AutoConfigureAfter(CacheAutoConfiguration.class)
 public class SecurityAutoConfiguration {
 
     /**
@@ -54,7 +48,7 @@ public class SecurityAutoConfiguration {
     @ConditionalOnMissingBean(TokenStore.class)
     @ConditionalOnBean(CacheService.class)
     public TokenStore tokenStore(CacheService<String, Object> cacheService) {
-        return new TokenStoreCache("user", cacheService);
+        return new TokenStoreCache("user:", cacheService);
     }
 
 }

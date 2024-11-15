@@ -15,11 +15,15 @@
  */
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.security.core.DefaultUserService;
+import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.framework.security.core.passwordencoder.PasswordEncoderFactory;
 import com.fuhouyu.framework.security.core.provider.oidc.OidcAuthenticationProvider;
+import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
+import com.fuhouyu.framework.security.token.TokenStore;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -42,8 +46,13 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/11/4 22:06
  */
-@Configuration
-public class AuthenticationConfiguration {
+@Configuration(proxyBeanMethods = false)
+@AutoConfigureAfter({
+        SecurityAutoConfiguration.class,
+        OAuth2ClientAutoConfiguration.class
+})
+
+public class AuthenticationAutoConfiguration {
 
     /**
      * dao层实现
@@ -68,10 +77,23 @@ public class AuthenticationConfiguration {
      * @return oidcProvider
      */
     @Bean
-    @ConditionalOnBean({DefaultUserService.class, ClientRegistrationRepository.class})
-    public AuthenticationProvider oidcAuthenticationProvider(DefaultUserService userDetailsService,
+    @ConditionalOnBean({ExtensionUserDetailsService.class, ClientRegistrationRepository.class})
+    public AuthenticationProvider oidcAuthenticationProvider(ExtensionUserDetailsService userDetailsService,
                                                              ClientRegistrationRepository clientRegistrationRepository) {
         return new OidcAuthenticationProvider(new DefaultOAuth2UserService(), userDetailsService, clientRegistrationRepository);
+    }
+
+
+    /**
+     * 刷新令牌提供者
+     *
+     * @param tokenStore token存储
+     * @return provider
+     */
+    @Bean
+    @ConditionalOnBean(TokenStore.class)
+    public AuthenticationProvider refreshTokenAuthenticationProvider(TokenStore tokenStore) {
+        return new RefreshAuthenticationProvider(tokenStore);
     }
 
 

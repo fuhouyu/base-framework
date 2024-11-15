@@ -16,14 +16,10 @@
 package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
-import com.fuhouyu.framework.cache.CaffeineCacheConfiguration;
-import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
-import com.fuhouyu.framework.security.token.TokenStore;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,9 +42,9 @@ import java.util.List;
 @SpringBootTest(classes = {
         BaseTest.BaseComponent.class,
         CacheAutoConfiguration.class,
-        CaffeineCacheConfiguration.class,
-        OAuth2ClientAutoConfiguration.class,
         SecurityAutoConfiguration.class,
+        OAuth2ClientAutoConfiguration.class,
+        AuthenticationAutoConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @EnableWebSecurity
@@ -57,11 +53,6 @@ abstract class BaseTest {
 
     @TestComponent
     static class BaseComponent {
-
-        @Bean
-        public AuthenticationProvider refreshTokenAuthenticationProvider(TokenStore tokenStore) {
-            return new RefreshAuthenticationProvider(tokenStore);
-        }
 
         @Bean
         public RestTemplate restTemplate() {

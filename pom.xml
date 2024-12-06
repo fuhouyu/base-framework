@@ -67,7 +67,7 @@
 
     <properties>
         <revision>1.0.0-SNAPSHOT</revision>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -97,8 +97,8 @@
 
         <!--外部依赖项-->
         <spring-boot-dependencies.version>3.3.5</spring-boot-dependencies.version>
-        <spring-cloud-dependencies.version>2023.0.3</spring-cloud-dependencies.version>
-        <spring-cloud-alibaba-dependencies.version>2023.0.1.2</spring-cloud-alibaba-dependencies.version>
+        <spring-cloud-dependencies.version>2024.0.0</spring-cloud-dependencies.version>
+        <spring-cloud-alibaba-dependencies.version>2023.0.3.2</spring-cloud-alibaba-dependencies.version>
         <springdoc-openapi-starter-webmvc-api.version>2.6.0</springdoc-openapi-starter-webmvc-api.version>
         <spring-boot-starter-data-redis.version>3.3.3</spring-boot-starter-data-redis.version>
         <jedis.version>5.2.0-beta4</jedis.version>

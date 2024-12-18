@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:/tmp/h2/tenant_admin
+    username: username
+    password: password
+    type: com.alibaba.druid.pool.DruidDataSource
+  sql:
+    init:
+      mode: always
+      schema-locations: db/migrate/test.sql
+      username: username
+      password: password
+  h2:
+    console:
+      enabled: true
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+logging:
+  level:
+    org.springframework.jdbc.datasource.init: DEBUG
+base:
+  framework:
+    database:
+      transaction-expression: '*'

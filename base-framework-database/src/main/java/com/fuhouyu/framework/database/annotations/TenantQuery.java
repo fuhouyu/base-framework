@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.framework.database.annotations;
 
-module base.framework.database {
-    requires org.mybatis;
-    requires spring.context;
-    requires spring.boot.autoconfigure;
-    requires spring.aop;
-    requires spring.core;
-    requires spring.tx;
-    requires spring.boot;
-    requires java.sql;
-    requires jsqlparser;
-    requires org.aspectj.weaver;
-    requires base.framework.context;
+import java.lang.annotation.*;
 
-    exports com.fuhouyu.framework.database.properties;
+/**
+ * <p>
+ * 租户查询
+ * 从当前线程中取出租户id查询
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/17 21:57
+ */
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface TenantQuery {
 
-    exports com.fuhouyu.framework.database.interceptor;
-    exports com.fuhouyu.framework.database.annotations;
-    opens com.fuhouyu.framework.database to spring.core;
+    /**
+     * 租户查询的列名
+     *
+     * @return 列名
+     */
+    String column() default "owner_tenant_id";
+
 }

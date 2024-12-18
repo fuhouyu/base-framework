@@ -13,23 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.framework.database.entity;
 
-module base.framework.database {
-    requires org.mybatis;
-    requires spring.context;
-    requires spring.boot.autoconfigure;
-    requires spring.aop;
-    requires spring.core;
-    requires spring.tx;
-    requires spring.boot;
-    requires java.sql;
-    requires jsqlparser;
-    requires org.aspectj.weaver;
-    requires base.framework.context;
+import lombok.Data;
 
-    exports com.fuhouyu.framework.database.properties;
+import java.time.LocalDateTime;
 
-    exports com.fuhouyu.framework.database.interceptor;
-    exports com.fuhouyu.framework.database.annotations;
-    opens com.fuhouyu.framework.database to spring.core;
+/**
+ * <p>
+ *
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/12/18 21:24
+ */
+@Data
+public class Users {
+
+    private Long id;
+
+    private String username;
+
+    private String password;
+
+    private LocalDateTime createAt;
+
+    private String createBy;
+
+    private LocalDateTime updateAt;
+
+    private String updateBy;
+
+    private Long ownerTenantId;
+
 }

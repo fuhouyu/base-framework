@@ -18,6 +18,8 @@ package com.fuhouyu.framework.common.utils;
 
 import com.fuhouyu.framework.common.constants.HttpRequestHeaderConstant;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -28,12 +30,8 @@ import org.apache.commons.lang3.StringUtils;
  * @author fuhouyu
  * @since 2024/8/18 16:32
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpRequestUtil {
-
-
-    private HttpRequestUtil() {
-
-    }
 
 
     /**
@@ -43,13 +41,7 @@ public class HttpRequestUtil {
      * @return remote ip address.
      */
     public static String getRemoteIp(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader(HttpRequestHeaderConstant.X_FORWARDED_FOR);
-
-        if (!StringUtils.isBlank(xForwardedFor)) {
-            return xForwardedFor.split(",")[0].trim();
-        }
-        String nginxHeader = request.getHeader(HttpRequestHeaderConstant.X_REAL_IP);
-        return StringUtils.isBlank(nginxHeader) ? request.getRemoteAddr() : nginxHeader;
+        return IpUtil.getRequestIp(request);
     }
 
 

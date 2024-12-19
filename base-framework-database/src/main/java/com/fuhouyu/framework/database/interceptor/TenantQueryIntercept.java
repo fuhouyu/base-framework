@@ -54,7 +54,6 @@ import java.util.Objects;
                 @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class}),
         }
 )
-@SuppressWarnings("unchecked")
 public class TenantQueryIntercept implements Interceptor {
 
     public static final DefaultReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();

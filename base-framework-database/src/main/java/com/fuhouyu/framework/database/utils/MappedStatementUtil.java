@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.mapping.MappedStatement;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * <p>
@@ -69,6 +70,40 @@ public class MappedStatementUtil {
                 return method;
             }
         }
+        // 获取父类接口方法
+        Method method = getInterfaceMethods(mapperClass, methodName);
+        if (Objects.nonNull(method)) {
+            return method;
+        }
         throw new IllegalArgumentException(String.format("方法未找到: %s in class %s", methodName, className));
+    }
+
+    /**
+     * 获取父级的接口
+     *
+     * @param clazz      class
+     * @param methodName 方法名称
+     */
+    private static Method getInterfaceMethods(Class<?> clazz, String methodName) {
+        if (Objects.isNull(clazz)) {
+            return null;
+        }
+        // 获取当前类实现的接口
+        for (Class<?> superInterface : clazz.getInterfaces()) {
+            for (Method method : superInterface.getDeclaredMethods()) {
+                if (method.getName().equals(methodName)) {
+                    return method;
+                }
+            }
+            // 递归处理父接口
+            MappedStatementUtil.getInterfaceMethods(superInterface, methodName);
+        }
+
+        // 递归处理父类的接口
+        Class<?> superClass = clazz.getSuperclass();
+        if (Objects.nonNull(superClass) && superClass != Object.class) {
+            return MappedStatementUtil.getInterfaceMethods(superClass, methodName);
+        }
+        return null;
     }
 }

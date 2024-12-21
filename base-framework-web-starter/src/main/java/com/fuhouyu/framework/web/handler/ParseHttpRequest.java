@@ -20,6 +20,7 @@ import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.request.RequestEntity;
 import com.fuhouyu.framework.context.user.User;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.http.HttpHeaders;
 
@@ -40,9 +41,11 @@ public interface ParseHttpRequest {
      * 解析请求
      *
      * @param request 请求
+     * @param handler 处理器
+     * @param response 响应
      * @return 用户详情
      */
-    User parseUser(@NonNull HttpServletRequest request);
+    User parseUser(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler);
 
     /**
      * 解析请求

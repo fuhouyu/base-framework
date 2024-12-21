@@ -65,7 +65,7 @@ public class WebAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(ParseHttpRequest.class)
     public ParseHttpRequest parseHttpRequest() {
-        return request -> {
+        return (request, response, handler) -> {
             String userinfoHeader = request.getHeader(HttpRequestHeaderConstant.USERINFO_HEADER);
             if (Objects.isNull(userinfoHeader)) {
                 return null;

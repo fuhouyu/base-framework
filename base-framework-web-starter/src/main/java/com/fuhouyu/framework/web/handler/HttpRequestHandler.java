@@ -44,7 +44,7 @@ public class HttpRequestHandler implements AsyncHandlerInterceptor {
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
-        User user = parseHttpRequest.parseUser(request);
+        User user = parseHttpRequest.parseUser(request, response, handler);
         Request requestEntity = parseHttpRequest.parseRequest(request);
         DefaultListableContextFactory context = new DefaultListableContextFactory();
         context.setUser(user);

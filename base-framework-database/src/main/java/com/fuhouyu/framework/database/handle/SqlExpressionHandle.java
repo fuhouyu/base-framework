@@ -13,33 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.database.mapper;
+package com.fuhouyu.framework.database.handle;
 
-import com.fuhouyu.framework.database.Users;
-import com.fuhouyu.framework.database.annotations.TenantQuery;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Expression;
 
-import java.util.List;
+import java.lang.reflect.Method;
 
 /**
  * <p>
- *
+ * sql处理器
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/18 21:24
+ * @since 2024/12/28 17:55
  */
-@Mapper
-public interface UserMapper {
+public interface SqlExpressionHandle {
 
-    void insert(@Param("list") List<Users> list);
-
-    void delete(Long id);
-
-    @TenantQuery
-    Users queryById(Long id);
-
-    @TenantQuery
-    List<Users> queryList();
+    /**
+     * 获取 SQL 片段
+     *
+     * @param where  待执行 SQL Where 条件表达式
+     * @param method sql执行的方法
+     * @return JSqlParser 条件表达式，返回的条件表达式会覆盖原有的条件表达式
+     */
+    Expression getSqlSegment(Expression where, Method method) throws JSQLParserException;
 }

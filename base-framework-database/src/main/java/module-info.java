@@ -26,10 +26,14 @@ module base.framework.database {
     requires jsqlparser;
     requires org.aspectj.weaver;
     requires base.framework.context;
+    requires pagehelper;
+    requires java.desktop;
+    requires spring.expression;
 
     exports com.fuhouyu.framework.database.properties;
 
     exports com.fuhouyu.framework.database.interceptor;
     exports com.fuhouyu.framework.database.annotations;
-    opens com.fuhouyu.framework.database to spring.core;
+    opens com.fuhouyu.framework.database to spring.core, spring.context, org.mybatis;
+    exports com.fuhouyu.framework.database.handle;
 }

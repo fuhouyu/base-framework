@@ -19,6 +19,7 @@ mybatis:
 logging:
   level:
     org.springframework.jdbc.datasource.init: DEBUG
+    com.fuhouyu.framework.database.mapper: DEBUG
 base:
   framework:
     database:

@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.database.interceptor;
+package com.fuhouyu.framework.database.handle;
 
-import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.database.annotations.TenantQuery;
 import com.fuhouyu.framework.database.utils.MappedStatementUtil;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -33,33 +30,47 @@ import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.util.List;
 import java.util.Objects;
-
 
 /**
  * <p>
- * 租户查询
+ * sql预处理
  * </p>
  *
  * @author fuhouyu
- * @since 2024/12/17 22:02
+ * @since 2024/12/28 18:12
  */
 @Intercepts(
         {
                 @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class}),
         }
 )
-public class TenantQueryIntercept implements Interceptor {
+public class PrepareSqlHandle implements Interceptor {
 
     public static final DefaultReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
+    private final List<SqlExpressionHandle> sqlExpressionHandleList;
+
+    public PrepareSqlHandle() {
+        this(null);
+    }
+
+    public PrepareSqlHandle(List<SqlExpressionHandle> sqlExpressionHandleList) {
+        this.sqlExpressionHandleList = sqlExpressionHandleList;
+    }
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        if (CollectionUtils.isEmpty(sqlExpressionHandleList)) {
+            return invocation.proceed();
+        }
         StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
         // StatementHandler
         StatementHandler sh = (StatementHandler) invocation.getTarget();
@@ -72,27 +83,24 @@ public class TenantQueryIntercept implements Interceptor {
         }
         BoundSql boundSql = statementHandler.getBoundSql();
         Method method = MappedStatementUtil.resolveMethodFromMappedStatement(mappedStatement);
-        TenantQuery tenantQueryAnnotation = method.getAnnotation(TenantQuery.class);
-        if (Objects.isNull(tenantQueryAnnotation)) {
-            return invocation.proceed();
-        }
         //获取到原始sql语句
         String sql = boundSql.getSql();
         PlainSelect plainSelect = (PlainSelect) CCJSqlParserUtil.parse(sql);
         Expression where = plainSelect.getWhere();
-
-        String tenantQuery = String.format("%s = %s", tenantQueryAnnotation.column(), ContextHolderStrategy.getContext().getUser().getTenantId());
-        AndExpression expression = new AndExpression(where, CCJSqlParserUtil.parseExpression(tenantQuery));
-        plainSelect.setWhere(expression);
-
+        for (SqlExpressionHandle sqlExpressionHandle : sqlExpressionHandleList) {
+            where = sqlExpressionHandle.getSqlSegment(where, method);
+        }
+        if (Objects.isNull(where)) {
+            return invocation.proceed();
+        }
         //通过反射修改sql语句
         Field field = boundSql.getClass().getDeclaredField("sql");
+        plainSelect.setWhere(where);
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, boundSql, plainSelect.toString());
         //执行结果
         return invocation.proceed();
     }
-
 
     private MetaObject getMetaObject(Object object) {
         return MetaObject.forObject(object, SystemMetaObject.DEFAULT_OBJECT_FACTORY, SystemMetaObject.DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);

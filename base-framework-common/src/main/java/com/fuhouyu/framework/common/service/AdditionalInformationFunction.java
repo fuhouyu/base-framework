@@ -53,4 +53,37 @@ public interface AdditionalInformationFunction {
     default void putAdditionalInformationAll(Map<String, Object> additionalInformationMap) {
         this.getAdditionalInformation().putAll(additionalInformationMap);
     }
+
+    /**
+     * 添加value值，key为当前类型的类名
+     *
+     * @param value value
+     */
+    default void putAdditionalInformation(Object value) {
+        this.getAdditionalInformation().put(value.getClass().getCanonicalName(), value);
+    }
+
+    /**
+     * 获取附加信息值
+     *
+     * @param clazz 类型
+     * @param <T>   泛型
+     * @return 附加信息值
+     */
+    @SuppressWarnings("unchecked")
+    default <T> T getAdditionalInformation(Class<T> clazz) {
+        return (T) this.getAdditionalInformation().get(clazz.getCanonicalName());
+    }
+
+    /**
+     * 获取附加信息值
+     *
+     * @param key 获取类型
+     * @param <T> 泛型
+     * @return 附加信息值
+     */
+    @SuppressWarnings("unchecked")
+    default <T> T getAdditionalInformation(String key) {
+        return (T) this.getAdditionalInformation().get(key);
+    }
 }

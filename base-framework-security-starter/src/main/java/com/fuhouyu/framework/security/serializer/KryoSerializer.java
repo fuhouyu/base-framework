@@ -57,8 +57,8 @@ public class KryoSerializer implements SerializationStrategy {
                 // Configure the Kryo instance.
                 kryo.setRegistrationRequired(false);
                 // 设置初始化策略，如果没有默认无参构造器，那么就需要设置此项,使用此策略构造一个无参构造器
-                Set<?> unmodifiableSet = Collections.unmodifiableSet(new HashSet<>(0));
-                List<?> unmodifiableList = Collections.unmodifiableList(new ArrayList<>(0));
+                Set<Object> unmodifiableSet = Collections.unmodifiableSet(HashSet.newHashSet(0));
+                List<Object> unmodifiableList = Collections.unmodifiableList(new ArrayList<>(0));
                 kryo.register(unmodifiableSet.getClass(),
                         new CollectionSerializer(unmodifiableSet));
                 kryo.register(unmodifiableList.getClass(),
@@ -144,28 +144,44 @@ public class KryoSerializer implements SerializationStrategy {
      */
     static class CollectionSerializer extends Serializer<Collection<?>> {
 
-        private final Collection<?> defaultCollection;
+        private final Collection<Object> defaultCollection;
 
-        public CollectionSerializer(Collection<?> defaultCollection) {
+        public CollectionSerializer(Collection<Object> defaultCollection) {
             this.defaultCollection = defaultCollection;
         }
 
         @Override
-        public void write(Kryo kryo, Output output, Collection<?> object) {
-            if (CollectionUtils.isEmpty(object)) {
-                kryo.writeObjectOrNull(output, null, object.getClass());
+        public void write(Kryo kryo, Output output, Collection<?> collection) {
+            // 检查集合是否为空
+            if (CollectionUtils.isEmpty(collection)) {
+                output.writeBoolean(true);
             } else {
-                kryo.writeObject(output, object);
+                output.writeBoolean(false);
+                output.writeInt(collection.size());
+                for (Object item : collection) {
+                    kryo.writeClassAndObject(output, item);
+                }
             }
         }
 
         @Override
         public Collection<?> read(Kryo kryo, Input input, Class<? extends Collection<?>> type) {
-            // 在这里处理空集合的反序列化
-            // 其他属性的反序列化...
-            Collection<?> collection = kryo.readObjectOrNull(input, type);
-            return collection == null ? defaultCollection : collection;
+            // 检查是否为空
+            boolean isEmpty = input.readBoolean();
+            if (isEmpty) {
+                return defaultCollection;
+            }
+
+            // 读取集合大小
+            int size = input.readInt();
+            List<Object> list = new ArrayList<>(size);
+            // 读取每个元素
+            for (int i = 0; i < size; i++) {
+                list.add(kryo.readClassAndObject(input));
+            }
+            return Collections.unmodifiableCollection(list);
         }
+
     }
 
 }

@@ -36,7 +36,6 @@
             <email>fuhouyu@live.cn</email>
             <url>https://github.com/fuhouyu/base-framework</url>
         </developer>
-
     </developers>
 
     <issueManagement>
@@ -51,6 +50,13 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <scm>
+        <url>git@github.com:fuhouyu/base-framework.git</url>
+        <connection>scm:git@github.com:fuhouyu/base-framework.git</connection>
+        <developerConnection>scm:git@github.com:fuhouyu/base-framework.git</developerConnection>
+        <tag>base-framework-${revision}</tag>
+    </scm>
 
     <modules>
         <module>base-framework-dependencies</module>
@@ -97,6 +103,7 @@
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
         <native-maven-plugin.version>0.10.4</native-maven-plugin.version>
         <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
 
         <!--外部依赖项-->
         <spring-boot-dependencies.version>3.4.0</spring-boot-dependencies.version>
@@ -523,6 +530,20 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>${maven-assembly-plugin}</version>
                     <executions>
@@ -656,4 +677,50 @@
         </repository>
     </repositories>
 
+    <profiles>
+        <profile>
+            <id>maven-deploy</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <properties>
+                <maven.javadoc.skip>false</maven.javadoc.skip>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype</id>
+            <name>Central Repository Snapshot</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype</id>
+            <name>Central Repository Release</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 </project>

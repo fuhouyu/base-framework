@@ -16,7 +16,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fuhouyu.framework.database.mapper.UserMapper">
-    <resultMap id="BaseResultMap" type="com.fuhouyu.framework.database.entity.Users" >
+    <resultMap id="BaseResultMap" type="com.fuhouyu.framework.database.Users" >
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>

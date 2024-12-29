@@ -18,7 +18,6 @@ package com.fuhouyu.framework.database;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.user.UserEntity;
-import com.fuhouyu.framework.database.entity.Users;
 import com.fuhouyu.framework.database.mapper.UserMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.page.PageMethod;
@@ -97,8 +96,8 @@ class DatabaseTest {
         this.userMapper.insert(list);
         // 分页查询
         try (Page<Object> page = PageMethod.startPage(1, 1)) {
-            List<Users> resultList = this.userMapper.queryList();
-            Assertions.assertNotEquals(page.getTotal(), list.size() / 2);
+            List<Users> results = this.userMapper.queryList();
+            Assertions.assertNotEquals(page.getTotal(), results.size() / 2);
         }
         this.userMapper.queryById(123L);
     }

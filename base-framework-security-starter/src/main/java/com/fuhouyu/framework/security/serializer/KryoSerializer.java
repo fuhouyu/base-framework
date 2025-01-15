@@ -179,7 +179,7 @@ public class KryoSerializer implements SerializationStrategy {
             for (int i = 0; i < size; i++) {
                 list.add(kryo.readClassAndObject(input));
             }
-            return Collections.unmodifiableCollection(list);
+            return Collections.unmodifiableList(list);
         }
 
     }

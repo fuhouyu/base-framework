@@ -82,7 +82,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
         jackson2HttpMessageConverter.setObjectMapper(objectMapper);
         //放到第一个
-        converters.add(0, jackson2HttpMessageConverter);
+        converters.addFirst(jackson2HttpMessageConverter);
     }
 
     @Override

@@ -1,4 +1,6 @@
 base:
   framework:
-    resource:
-      type: local
+    s3:
+      access-key-id: test_username
+      secret-key: test_password
+      endpoint: http://127.0.0.1:9000

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2024 the original author or authors.
+ * Copyright 2024-2025 fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,44 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.framework.resource.properties;
 
-package com.fuhouyu.framework.resource.model;
-
+import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * <p>
- * 文件下载的结果
+ * s3协议属性配置
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/16 17:19
+ * @since 2025/2/9 12:37
  */
+@ConfigurationProperties(prefix = S3Properties.PREFIX)
 @ToString
 @Getter
 @Setter
-public class DownloadResourceResult {
+public class S3Properties {
 
     /**
-     * 文件元数据
+     * 资源配置的前缀
      */
-    private ResourceMetadata resourceMetadata;
+    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "s3";
 
     /**
-     * 构造函数
+     * endpoint
      */
-    public DownloadResourceResult() {
-    }
+    private String endpoint;
 
     /**
-     * 构造函数
-     *
-     * @param resourceMetadata 资源元数据
+     * ak
      */
-    public DownloadResourceResult(ResourceMetadata resourceMetadata) {
-        this.resourceMetadata = resourceMetadata;
-    }
+    private String accessKeyId;
 
+    /**
+     * sk
+     */
+    private String secretKey;
+
+    /**
+     * 区域
+     */
+    private String region;
 }

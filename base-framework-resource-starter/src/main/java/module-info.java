@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 module base.framework.resource.starter {
-    requires aliyun.java.sdk.core;
-    requires aliyun.sdk.oss;
     requires transitive base.framework.common;
     requires transitive com.fasterxml.jackson.core;
     requires spring.beans;
@@ -23,16 +21,12 @@ module base.framework.resource.starter {
     requires spring.boot.autoconfigure;
     requires spring.context;
     requires spring.core;
-    requires org.mapstruct;
+    requires minio;
 
     opens com.fuhouyu.framework.resource to spring.core;
-    opens com.fuhouyu.framework.resource.assembler to org.mapstruct;
+    opens com.fuhouyu.framework.resource.properties to spring.beans;
 
     exports com.fuhouyu.framework.resource;
-    exports com.fuhouyu.framework.resource.constants;
-    exports com.fuhouyu.framework.resource.enums;
-    exports com.fuhouyu.framework.resource.exception;
-    exports com.fuhouyu.framework.resource.model;
     exports com.fuhouyu.framework.resource.properties;
-    exports com.fuhouyu.framework.resource.service;
+
 }

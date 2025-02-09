@@ -16,10 +16,14 @@
 
 package com.fuhouyu.framework.resource;
 
-import com.fuhouyu.framework.resource.properties.ResourceProperties;
+import com.fuhouyu.framework.resource.properties.S3Properties;
+import io.minio.MinioClient;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.util.Assert;
 
 /**
  * <p>
@@ -29,9 +33,32 @@ import org.springframework.context.annotation.Import;
  * @author fuhouyu
  * @since 2024/8/16 18:36
  */
-@Import({AliYunOssConfiguration.class, LocalFileResourceConfiguration.class})
-@EnableConfigurationProperties(ResourceProperties.class)
-@Configuration
-public class ResourceAutoConfiguration {
+@EnableConfigurationProperties(S3Properties.class)
+@Configuration(proxyBeanMethods = false)
+@RequiredArgsConstructor
+public class ResourceAutoConfiguration implements InitializingBean {
+
+    private final S3Properties s3Properties;
+
+    /**
+     * minio 客户端初始化
+     *
+     * @return minioClient
+     */
+    @Bean
+    public MinioClient minioClient() {
+        return
+                MinioClient.builder()
+                        .endpoint(s3Properties.getEndpoint())
+                        .credentials(s3Properties.getAccessKeyId(), s3Properties.getSecretKey())
+                        .build();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(s3Properties.getEndpoint(), "s3 endpoint未设置");
+        Assert.notNull(s3Properties.getAccessKeyId(), "s3 accessKey未设置");
+        Assert.notNull(s3Properties.getSecretKey(), "s3 secretKey未设置");
+    }
 
 }

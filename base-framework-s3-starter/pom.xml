@@ -25,9 +25,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>base-framework-resource-starter</artifactId>
-    <name>Base Framework Resource Starter</name>
-    <description>资源服务组件</description>
+    <artifactId>base-framework-s3-starter</artifactId>
+    <name>Base Framework S3 Starter</name>
+    <description>S3资源服务组件</description>
 
     <dependencies>
         <dependency>
@@ -52,10 +52,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.minio</groupId>
-            <artifactId>minio</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
             <scope>test</scope>
@@ -64,6 +60,10 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
         </dependency>
     </dependencies>
 

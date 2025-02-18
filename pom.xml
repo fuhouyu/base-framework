@@ -66,7 +66,7 @@
         <module>base-framework-common</module>
         <module>base-framework-security-starter</module>
         <module>base-framework-web-starter</module>
-        <module>base-framework-resource-starter</module>
+        <module>base-framework-s3-starter</module>
         <module>base-framework-kms-starter</module>
         <module>base-framework-database</module>
     </modules>
@@ -123,6 +123,7 @@
         <org.mapstruct.version>1.6.2</org.mapstruct.version>
         <jasypt-spring-boot-starter.version>3.0.5</jasypt-spring-boot-starter.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+        <bom.version>2.30.22</bom.version>
         <minio.version>8.5.17</minio.version>
         <!--数据库相关依赖-->
         <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
@@ -137,7 +138,7 @@
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.30.16</version>
+                <version>${bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -243,11 +244,6 @@
                 <artifactId>jasypt-spring-boot-starter</artifactId>
                 <version>${jasypt-spring-boot-starter.version}</version>
             </dependency>
-            <dependency>
-                <groupId>io.minio</groupId>
-                <artifactId>minio</artifactId>
-                <version>${minio.version}</version>
-            </dependency>
             <!--内部依赖-->
             <dependency>
                 <groupId>com.fuhouyu</groupId>
@@ -291,8 +287,13 @@
             </dependency>
             <dependency>
                 <groupId>com.fuhouyu</groupId>
-                <artifactId>base-framework-resource-starter</artifactId>
+                <artifactId>base-framework-s3-starter</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fuhouyu</groupId>

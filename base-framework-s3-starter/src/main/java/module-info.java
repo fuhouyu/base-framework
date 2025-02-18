@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2024 the original author or authors.
+ * Copyright 2024-2025 fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 资源组件
- */
-package com.fuhouyu.framework.resource;
+module base.framework.s3.starter {
+    requires transitive base.framework.common;
+    requires transitive com.fasterxml.jackson.core;
+    requires spring.beans;
+    requires spring.boot;
+    requires spring.boot.autoconfigure;
+    requires spring.context;
+    requires spring.core;
+    requires minio;
+
+    opens com.fuhouyu.framework.s3 to spring.core;
+    opens com.fuhouyu.framework.s3.properties to spring.beans;
+
+    exports com.fuhouyu.framework.s3;
+    exports com.fuhouyu.framework.s3.properties;
+
+}

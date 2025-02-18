@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.resource.properties;
+package com.fuhouyu.framework.s3.properties;
 
 import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
 import lombok.Getter;

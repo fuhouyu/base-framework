@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.resource;
+package com.fuhouyu.framework.s3;
 
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
@@ -47,7 +47,7 @@ import java.util.Objects;
  * @since 2025/2/9 15:23
  */
 @SpringBootTest(classes = {
-        ResourceAutoConfiguration.class
+        S3AutoConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @Testcontainers

@@ -18,7 +18,7 @@
 |          [base-framework-context](base-framework-context)          |       上下文组件，用户、请求定义       |
 |     [base-framework-dependencies](base-framework-dependencies)     |          内部模块组件           |
 |      [base-framework-log-starter](base-framework-log-starter)      |    日志组件，logback和业务日志切面    |
-| [base-framework-resource-starter](base-framework-resource-starter) |           资源组件            |
+|    [base-framework-s3-starter](base-framework-resource-starter)    |        s3 starter         |
 | [base-framework-security-starter](base-framework-security-starter) |     安全认证组件，security封装     |
 |      [base-framework-web-starter](base-framework-web-starter)      |        web组件，常用拦截器        |
 |      [base-framework-kms-starter](base-framework-kms-starter)      |        对称非对称加解密组件         |

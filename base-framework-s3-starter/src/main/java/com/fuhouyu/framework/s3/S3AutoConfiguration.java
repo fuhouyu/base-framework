@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.resource;
+package com.fuhouyu.framework.s3;
 
-import com.fuhouyu.framework.resource.properties.S3Properties;
+import com.fuhouyu.framework.s3.properties.S3Properties;
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
@@ -36,7 +36,7 @@ import org.springframework.util.Assert;
 @EnableConfigurationProperties(S3Properties.class)
 @Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
-public class ResourceAutoConfiguration implements InitializingBean {
+public class S3AutoConfiguration implements InitializingBean {
 
     private final S3Properties s3Properties;
 

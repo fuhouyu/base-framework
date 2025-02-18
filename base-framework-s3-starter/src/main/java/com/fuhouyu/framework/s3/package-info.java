@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module base.framework.resource.starter {
-    requires transitive base.framework.common;
-    requires transitive com.fasterxml.jackson.core;
-    requires spring.beans;
-    requires spring.boot;
-    requires spring.boot.autoconfigure;
-    requires spring.context;
-    requires spring.core;
-    requires minio;
-
-    opens com.fuhouyu.framework.resource to spring.core;
-    opens com.fuhouyu.framework.resource.properties to spring.beans;
-
-    exports com.fuhouyu.framework.resource;
-    exports com.fuhouyu.framework.resource.properties;
-
-}
+/**
+ * 资源组件
+ */
+package com.fuhouyu.framework.s3;

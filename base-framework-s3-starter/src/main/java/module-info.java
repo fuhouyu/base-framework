@@ -21,7 +21,9 @@ module base.framework.s3.starter {
     requires spring.boot.autoconfigure;
     requires spring.context;
     requires spring.core;
-    requires minio;
+    requires software.amazon.awssdk.services.s3;
+    requires software.amazon.awssdk.auth;
+    requires software.amazon.awssdk.regions;
 
     opens com.fuhouyu.framework.s3 to spring.core;
     opens com.fuhouyu.framework.s3.properties to spring.beans;

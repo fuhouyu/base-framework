@@ -15,10 +15,6 @@
  */
 package com.fuhouyu.framework.s3;
 
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.errors.*;
-import io.minio.messages.Bucket;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,11 +27,12 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.InternetProtocol;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
+import java.time.Duration;
 import java.util.Objects;
 
 /**
@@ -54,8 +51,11 @@ import java.util.Objects;
 class S3ClientTest {
 
     private static final String accessKey = "test_username";
+
     private static final String secretKey = "test_password";
+
     private static final Integer defaultPort = 9000;
+
     @Container
     private static final GenericContainer<?> MINIO_CONTAINER =
             new FixedHostPortGenericContainer<>("quay.io/minio/minio")
@@ -63,8 +63,12 @@ class S3ClientTest {
                     .withEnv("MINIO_ROOT_USER", accessKey)
                     .withEnv("MINIO_ROOT_PASSWORD", secretKey)
                     .withCommand("server", "/data");
+
     @Autowired
-    private MinioClient minioClient;
+    private S3Presigner s3Presigner;
+
+    @Autowired
+    private S3Client s3Client;
 
     @BeforeAll
     static void setup() {
@@ -77,10 +81,15 @@ class S3ClientTest {
     }
 
     @Test
-    void testClient() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    void testClient() {
         final String bucketName = "test-bucket";
-        this.minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-        List<Bucket> buckets = this.minioClient.listBuckets();
-        Assertions.assertTrue(buckets.stream().anyMatch(bucket -> Objects.equals(bucket.name(), bucketName)));
+        this.s3Client.createBucket(builder -> builder.bucket(bucketName).build());
+        PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest
+                .builder()
+                .putObjectRequest(builder -> builder.bucket(bucketName).key("test-object").build())
+                .signatureDuration(Duration.ofDays(1))
+                .build();
+        ListBucketsResponse listBucketsResponse = this.s3Client.listBuckets();
+        Assertions.assertTrue(listBucketsResponse.buckets().stream().anyMatch(bucket -> Objects.equals(bucket.name(), bucketName)));
     }
 }

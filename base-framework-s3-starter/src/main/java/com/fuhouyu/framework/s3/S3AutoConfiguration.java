@@ -17,13 +17,20 @@
 package com.fuhouyu.framework.s3;
 
 import com.fuhouyu.framework.s3.properties.S3Properties;
-import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
+import software.amazon.awssdk.auth.credentials.*;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+
+import java.net.URI;
+import java.util.Objects;
 
 /**
  * <p>
@@ -34,24 +41,63 @@ import org.springframework.util.Assert;
  * @since 2024/8/16 18:36
  */
 @EnableConfigurationProperties(S3Properties.class)
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @RequiredArgsConstructor
 public class S3AutoConfiguration implements InitializingBean {
 
     private final S3Properties s3Properties;
 
+
     /**
-     * minio 客户端初始化
+     * aws 证书提供者
      *
-     * @return minioClient
+     * @return awsCredentialsProvider
      */
     @Bean
-    public MinioClient minioClient() {
-        return
-                MinioClient.builder()
-                        .endpoint(s3Properties.getEndpoint())
-                        .credentials(s3Properties.getAccessKeyId(), s3Properties.getSecretKey())
-                        .build();
+    public AwsCredentialsProvider awsCredentialsProvider() {
+        AwsCredentials awsCredentials;
+        if (Objects.equals(s3Properties.getStsEnabled(), Boolean.TRUE)) {
+            awsCredentials = AwsSessionCredentials.create(s3Properties.getAccessKeyId(),
+                    s3Properties.getSecretKey(), s3Properties.getStsToken());
+        } else {
+            awsCredentials = AwsBasicCredentials.create(s3Properties.getAccessKeyId(), s3Properties.getSecretKey());
+        }
+        return StaticCredentialsProvider.create(awsCredentials);
+    }
+
+    /**
+     * s3 预签名初始化
+     * @param awsCredentialsProvider awsCredentialsProvider
+     * @return s3Presigner
+     */
+    @Bean
+    public S3Presigner s3Presigner(AwsCredentialsProvider awsCredentialsProvider) {
+        S3Configuration s3Configuration = S3Configuration.builder()
+                .pathStyleAccessEnabled(s3Properties.getPathStyleEnabled())
+                .build();
+        return S3Presigner.builder()
+                .region(Region.AWS_GLOBAL)
+                .endpointOverride(URI.create(s3Properties.getEndpoint()))
+                .credentialsProvider(awsCredentialsProvider)
+                .serviceConfiguration(s3Configuration)
+                .build();
+    }
+
+
+    /**
+     * s3 客户端初始化
+     *
+     * @param awsCredentialsProvider awsCredentialsProvider
+     * @return s3Client
+     */
+    @Bean
+    public S3Client s3Client(AwsCredentialsProvider awsCredentialsProvider) {
+        return S3Client.builder()
+                .region(Region.AWS_GLOBAL)
+                .endpointOverride(URI.create(s3Properties.getEndpoint()))
+                .credentialsProvider(awsCredentialsProvider)
+                .serviceConfiguration(builder -> builder.pathStyleAccessEnabled(s3Properties.getPathStyleEnabled()))
+                .build();
     }
 
     @Override

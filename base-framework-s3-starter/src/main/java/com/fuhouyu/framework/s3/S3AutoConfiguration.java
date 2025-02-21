@@ -70,7 +70,7 @@ public class S3AutoConfiguration implements InitializingBean {
      * @param awsCredentialsProvider awsCredentialsProvider
      * @return s3Presigner
      */
-    @Bean
+    @Bean(destroyMethod = "close")
     public S3Presigner s3Presigner(AwsCredentialsProvider awsCredentialsProvider) {
         S3Configuration s3Configuration = S3Configuration.builder()
                 .pathStyleAccessEnabled(s3Properties.getPathStyleEnabled())
@@ -90,7 +90,7 @@ public class S3AutoConfiguration implements InitializingBean {
      * @param awsCredentialsProvider awsCredentialsProvider
      * @return s3Client
      */
-    @Bean
+    @Bean(destroyMethod = "close")
     public S3Client s3Client(AwsCredentialsProvider awsCredentialsProvider) {
         return S3Client.builder()
                 .region(Region.AWS_GLOBAL)

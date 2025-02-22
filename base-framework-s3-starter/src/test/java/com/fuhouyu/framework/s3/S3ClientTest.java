@@ -37,6 +37,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.sts.model.Credentials;
 
@@ -100,10 +101,8 @@ class S3ClientTest {
         this.s3Client.createBucket(builder -> builder.bucket(bucketName).build());
         ListBucketsResponse listBucketsResponse = this.s3Client.listBuckets();
         Assertions.assertTrue(listBucketsResponse.buckets().stream().anyMatch(bucket -> Objects.equals(bucket.name(), bucketName)));
-        this.stsOperation.generateStsToken(bucketName, StsActionEnum.PutObject);
-
         // 获取临时 Token
-        Credentials credentials = this.stsOperation.generateStsToken(bucketName, StsActionEnum.PutObject).credentials();
+        Credentials credentials = this.stsOperation.generateStsToken(bucketName, "my-object-key", StsActionEnum.PutObject).credentials();
         LoggerUtil.info(log, "AccessKeyId: {} SecretKey: {] SessionToken: sessionToken ", credentials.accessKeyId(), credentials.secretAccessKey(), credentials.sessionToken());
 
 
@@ -118,12 +117,13 @@ class S3ClientTest {
 
         // 上传文件
         try (s3Client) {
-            s3Client.putObject(PutObjectRequest.builder()
+            PutObjectResponse putObjectResponse = s3Client.putObject(PutObjectRequest.builder()
                             .bucket(bucketName)
                             .key("my-object-key")
                             .build(),
                     RequestBody.fromBytes("Hello, MinIO!".getBytes(StandardCharsets.UTF_8)));
-            LoggerUtil.info(log, "Successfully uploaded file to bucket: {}", bucketName);
+
+            LoggerUtil.info(log, "Successfully uploaded file to bucket response: {} ", putObjectResponse);
         } catch (S3Exception e) {
             LoggerUtil.error(log, "Error uploading file: {}", e.getMessage());
             throw e;

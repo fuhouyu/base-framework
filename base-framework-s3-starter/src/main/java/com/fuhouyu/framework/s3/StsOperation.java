@@ -49,6 +49,21 @@ public class StsOperation {
 
     private final StsProperties stsProperties;
 
+    /**
+     * 生成临时的token
+     *
+     * @param bucket      桶名
+     * @param objectKey   对象key
+     * @param actionEnums 操作枚举
+     * @return 临时token响应
+     */
+    public AssumeRoleResponse generateStsToken(@NonNull String bucket,
+                                               @NonNull String objectKey,
+                                               @NonNull StsActionEnum... actionEnums) {
+        List<String> resource = List.of(stsProperties.getPolicyResourcePrefix() + bucket + "/" + objectKey);
+        Policy policy = this.generatePolicy(resource, actionEnums);
+        return this.doGenerateStsToken(policy);
+    }
 
     /**
      * 生成临时的token
@@ -59,15 +74,19 @@ public class StsOperation {
      */
     public AssumeRoleResponse generateStsToken(@NonNull String bucket,
                                                @NonNull StsActionEnum... actionEnums) {
-        Collection<Statement> statements = new ArrayList<>(actionEnums.length);
-        Collection<String> actions = new ArrayList<>(actionEnums.length);
-        for (StsActionEnum actionEnum : actionEnums) {
-            actions.add(stsProperties.getPolicyActionPrefix() + actionEnum.name());
-        }
         List<String> resource = List.of(stsProperties.getPolicyResourcePrefix() + bucket + "/*");
-        statements.add(Statement.builder().action(actions).resource(resource).build());
-        Policy policy = Policy.builder().statements(statements).build();
+        Policy policy = this.generatePolicy(resource, actionEnums);
+        return this.doGenerateStsToken(policy);
+    }
 
+    /**
+     * 生成临时的token
+     *
+     * @param policy policy
+     * @return 临时token响应
+     */
+
+    private AssumeRoleResponse doGenerateStsToken(Policy policy) {
         AssumeRoleRequest assumeRoleRequest = AssumeRoleRequest.builder()
                 .roleArn(stsProperties.getRoleArn())
                 .roleSessionName(UUID.randomUUID().toString().replace("-", "").substring(16))
@@ -77,6 +96,23 @@ public class StsOperation {
         return this.stsClient.assumeRole(assumeRoleRequest);
     }
 
+
+    /**
+     * policy
+     *
+     * @param resources   资源
+     * @param actionEnums 枚举
+     * @return policy
+     */
+    private Policy generatePolicy(List<String> resources, StsActionEnum... actionEnums) {
+        Collection<Statement> statements = new ArrayList<>(actionEnums.length);
+        Collection<String> actions = new ArrayList<>(actionEnums.length);
+        for (StsActionEnum actionEnum : actionEnums) {
+            actions.add(stsProperties.getPolicyActionPrefix() + actionEnum.name());
+        }
+        statements.add(Statement.builder().action(actions).resource(resources).build());
+        return Policy.builder().statements(statements).build();
+    }
 
 }
 

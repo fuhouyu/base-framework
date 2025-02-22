@@ -4,3 +4,8 @@ base:
       access-key-id: test_username
       secret-key: test_password
       endpoint: http://127.0.0.1:9000
+    s3s3:
+      sts:
+        duration-seconds: 3600
+
+

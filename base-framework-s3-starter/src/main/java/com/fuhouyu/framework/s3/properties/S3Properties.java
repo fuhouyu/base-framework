@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import software.amazon.awssdk.regions.Region;
 
 /**
  * <p>
@@ -75,10 +76,11 @@ public class S3Properties {
     /**
      * 区域
      */
-    private String region;
+    private Region region;
 
     public S3Properties() {
         this.pathStyleEnabled = false;
         this.stsEnabled = false;
+        this.region = Region.AWS_GLOBAL;
     }
 }

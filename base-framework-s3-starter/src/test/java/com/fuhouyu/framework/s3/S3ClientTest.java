@@ -15,6 +15,10 @@
  */
 package com.fuhouyu.framework.s3;
 
+import com.fuhouyu.framework.common.utils.LoggerUtil;
+import com.fuhouyu.framework.s3.enums.StsActionEnum;
+import com.fuhouyu.framework.s3.properties.S3Properties;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,12 +31,17 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.InternetProtocol;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.sts.model.Credentials;
 
-import java.time.Duration;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
@@ -48,6 +57,7 @@ import java.util.Objects;
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @Testcontainers
+@Slf4j
 class S3ClientTest {
 
     private static final String accessKey = "test_username";
@@ -64,11 +74,15 @@ class S3ClientTest {
                     .withEnv("MINIO_ROOT_PASSWORD", secretKey)
                     .withCommand("server", "/data");
 
-    @Autowired
-    private S3Presigner s3Presigner;
 
     @Autowired
     private S3Client s3Client;
+
+    @Autowired
+    private StsOperation stsOperation;
+
+    @Autowired
+    private S3Properties s3Properties;
 
     @BeforeAll
     static void setup() {
@@ -84,12 +98,35 @@ class S3ClientTest {
     void testClient() {
         final String bucketName = "test-bucket";
         this.s3Client.createBucket(builder -> builder.bucket(bucketName).build());
-        PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest
-                .builder()
-                .putObjectRequest(builder -> builder.bucket(bucketName).key("test-object").build())
-                .signatureDuration(Duration.ofDays(1))
-                .build();
         ListBucketsResponse listBucketsResponse = this.s3Client.listBuckets();
         Assertions.assertTrue(listBucketsResponse.buckets().stream().anyMatch(bucket -> Objects.equals(bucket.name(), bucketName)));
+        this.stsOperation.generateStsToken(bucketName, StsActionEnum.PutObject);
+
+        // 获取临时 Token
+        Credentials credentials = this.stsOperation.generateStsToken(bucketName, StsActionEnum.PutObject).credentials();
+        LoggerUtil.info(log, "AccessKeyId: {} SecretKey: {] SessionToken: sessionToken ", credentials.accessKeyId(), credentials.secretAccessKey(), credentials.sessionToken());
+
+
+        // 创建 S3 客户端
+        S3Client s3Client = S3Client.builder()
+                .endpointOverride(URI.create(s3Properties.getEndpoint()))
+                .region(s3Properties.getRegion())
+                .credentialsProvider(StaticCredentialsProvider.create(
+                        AwsSessionCredentials.create(credentials.accessKeyId(), credentials.secretAccessKey(), credentials.sessionToken())
+                ))
+                .build();
+
+        // 上传文件
+        try (s3Client) {
+            s3Client.putObject(PutObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key("my-object-key")
+                            .build(),
+                    RequestBody.fromBytes("Hello, MinIO!".getBytes(StandardCharsets.UTF_8)));
+            LoggerUtil.info(log, "Successfully uploaded file to bucket: {}", bucketName);
+        } catch (S3Exception e) {
+            LoggerUtil.error(log, "Error uploading file: {}", e.getMessage());
+            throw e;
+        }
     }
 }

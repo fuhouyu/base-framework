@@ -16,6 +16,7 @@
 module base.framework.s3.starter {
     requires transitive base.framework.common;
     requires transitive com.fasterxml.jackson.core;
+    requires transitive com.fasterxml.jackson.annotation;
     requires spring.beans;
     requires spring.boot;
     requires spring.boot.autoconfigure;
@@ -24,11 +25,13 @@ module base.framework.s3.starter {
     requires software.amazon.awssdk.services.s3;
     requires software.amazon.awssdk.auth;
     requires software.amazon.awssdk.regions;
+    requires software.amazon.awssdk.services.sts;
 
-    opens com.fuhouyu.framework.s3 to spring.core;
+    opens com.fuhouyu.framework.s3 to spring.core, com.fasterxml.jackson.databind;
     opens com.fuhouyu.framework.s3.properties to spring.beans;
 
     exports com.fuhouyu.framework.s3;
     exports com.fuhouyu.framework.s3.properties;
+    exports com.fuhouyu.framework.s3.enums;
 
 }

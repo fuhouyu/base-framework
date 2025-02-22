@@ -17,17 +17,19 @@
 package com.fuhouyu.framework.s3;
 
 import com.fuhouyu.framework.s3.properties.S3Properties;
+import com.fuhouyu.framework.s3.properties.StsProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.util.Assert;
 import software.amazon.awssdk.auth.credentials.*;
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.sts.StsClient;
 
 import java.net.URI;
 import java.util.Objects;
@@ -40,9 +42,10 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/8/16 18:36
  */
-@EnableConfigurationProperties(S3Properties.class)
+@EnableConfigurationProperties({S3Properties.class, StsProperties.class})
 @Configuration
 @RequiredArgsConstructor
+@Import(S3StsConfiguration.class)
 public class S3AutoConfiguration implements InitializingBean {
 
     private final S3Properties s3Properties;
@@ -67,6 +70,7 @@ public class S3AutoConfiguration implements InitializingBean {
 
     /**
      * s3 预签名初始化
+     *
      * @param awsCredentialsProvider awsCredentialsProvider
      * @return s3Presigner
      */
@@ -85,18 +89,17 @@ public class S3AutoConfiguration implements InitializingBean {
 
 
     /**
-     * s3 客户端初始化
+     * sts 客户端初始化
      *
      * @param awsCredentialsProvider awsCredentialsProvider
-     * @return s3Client
+     * @return stsClient
      */
     @Bean(destroyMethod = "close")
-    public S3Client s3Client(AwsCredentialsProvider awsCredentialsProvider) {
-        return S3Client.builder()
-                .region(Region.AWS_GLOBAL)
+    public StsClient stsClient(AwsCredentialsProvider awsCredentialsProvider) {
+        return StsClient.builder()
                 .endpointOverride(URI.create(s3Properties.getEndpoint()))
+                .region(s3Properties.getRegion())
                 .credentialsProvider(awsCredentialsProvider)
-                .serviceConfiguration(builder -> builder.pathStyleAccessEnabled(s3Properties.getPathStyleEnabled()))
                 .build();
     }
 

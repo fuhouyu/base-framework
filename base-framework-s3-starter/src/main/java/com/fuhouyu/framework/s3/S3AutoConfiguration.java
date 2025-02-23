@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.Assert;
 import software.amazon.awssdk.auth.credentials.*;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.sts.StsClient;
@@ -80,7 +79,7 @@ public class S3AutoConfiguration implements InitializingBean {
                 .pathStyleAccessEnabled(s3Properties.getPathStyleEnabled())
                 .build();
         return S3Presigner.builder()
-                .region(Region.AWS_GLOBAL)
+                .region(s3Properties.getRegion())
                 .endpointOverride(URI.create(s3Properties.getEndpoint()))
                 .credentialsProvider(awsCredentialsProvider)
                 .serviceConfiguration(s3Configuration)

@@ -49,6 +49,7 @@ public class StsOperation {
 
     private final StsProperties stsProperties;
 
+
     /**
      * 生成临时的token
      *
@@ -60,9 +61,7 @@ public class StsOperation {
     public AssumeRoleResponse generateStsToken(@NonNull String bucket,
                                                @NonNull String objectKey,
                                                @NonNull StsActionEnum... actionEnums) {
-        List<String> resource = List.of(stsProperties.getPolicyResourcePrefix() + bucket + "/" + objectKey);
-        Policy policy = this.generatePolicy(resource, actionEnums);
-        return this.doGenerateStsToken(policy);
+        return this.generateStsToken(bucket, List.of(objectKey), actionEnums);
     }
 
     /**
@@ -74,9 +73,7 @@ public class StsOperation {
      */
     public AssumeRoleResponse generateStsToken(@NonNull String bucket,
                                                @NonNull StsActionEnum... actionEnums) {
-        List<String> resource = List.of(stsProperties.getPolicyResourcePrefix() + bucket + "/*");
-        Policy policy = this.generatePolicy(resource, actionEnums);
-        return this.doGenerateStsToken(policy);
+        return this.generateStsToken(bucket, List.of(stsProperties.getPolicyResourcePrefix() + bucket + "/*"), actionEnums);
     }
 
     /**
@@ -96,6 +93,24 @@ public class StsOperation {
         return this.stsClient.assumeRole(assumeRoleRequest);
     }
 
+    /**
+     * 生成临时的token
+     *
+     * @param bucket      桶名
+     * @param objectKeys  对象key集合
+     * @param actionEnums 操作枚举
+     * @return 临时token响应
+     */
+    public AssumeRoleResponse generateStsToken(@NonNull String bucket,
+                                               @NonNull Collection<String> objectKeys,
+                                               @NonNull StsActionEnum... actionEnums) {
+        List<String> resources = new ArrayList<>(objectKeys.size());
+        for (String objectKey : objectKeys) {
+            resources.add(stsProperties.getPolicyResourcePrefix() + bucket + "/" + objectKey);
+        }
+        Policy policy = this.generatePolicy(resources, actionEnums);
+        return this.doGenerateStsToken(policy);
+    }
 
     /**
      * policy

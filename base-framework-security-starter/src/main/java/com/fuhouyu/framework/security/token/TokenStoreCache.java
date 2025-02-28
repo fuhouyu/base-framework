@@ -156,10 +156,12 @@ public class TokenStoreCache implements TokenStore {
         if (Objects.nonNull(auth2Token)) {
             OAuth2AccessToken existingAccessToken = auth2Token.getAccessToken();
             OAuth2RefreshToken auth2RefreshToken = auth2Token.getRefreshToken();
-            if (now.isAfter(Objects.requireNonNull(existingAccessToken.getExpiresAt()))) {
+            // 当accessToken不存在或者已过期，则删除该值关联的refreshToken
+            if (Objects.isNull(existingAccessToken) || Objects.isNull(existingAccessToken.getExpiresAt()) ||
+                    now.isAfter(existingAccessToken.getExpiresAt())) {
                 if (auth2RefreshToken != null) {
-                    // 当accessToken不存在时，则删除该值关联的refreshToken
                     this.removeRefreshToken(auth2RefreshToken);
+                    auth2RefreshToken = null;
                 }
                 this.removeAccessToken(existingAccessToken);
             }
@@ -318,7 +320,7 @@ public class TokenStoreCache implements TokenStore {
         if (Objects.isNull(bytes)) {
             return;
         }
-        this.removeAccessToken(serializationStrategy.deserializeString(bytes));
+        this.removeAccessToken(serializationStrategy.deserializeString(bytes).trim());
     }
 
     @Override

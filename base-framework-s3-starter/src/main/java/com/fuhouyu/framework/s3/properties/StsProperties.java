@@ -30,7 +30,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class StsProperties {
 
-    public static final String PREFIX = S3Properties.PREFIX + "s3.sts";
+    public static final String PREFIX = S3Properties.PREFIX + "sts";
 
     /**
      * 角色ARN

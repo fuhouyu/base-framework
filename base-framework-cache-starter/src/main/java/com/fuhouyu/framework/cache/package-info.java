@@ -16,6 +16,6 @@
 
 /**
  * 缓存组件，封装缓存相关的实现
- * 详情缓存类型:{@link org.springframework.boot.autoconfigure.cache.CacheType}
+ * 详情缓存类型:{@link com.fuhouyu.framework.cache.enums.CacheServiceTypeEnum}
  */
 package com.fuhouyu.framework.cache;

@@ -24,6 +24,8 @@ import com.fuhouyu.framework.cache.properties.CacheServiceProperties;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.cache.service.impl.RedisCacheService;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -44,15 +46,15 @@ import java.util.List;
  * @author fuhouyu
  * @since 2024/8/13 21:06
  */
-@ConditionalOnProperty(prefix = CacheServiceProperties.PREFIX,
-        name = "cache-service-type",
-        havingValue = "redis")
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 @Configuration
 public class RedisCacheConfiguration {
 
 
     @Bean
+    @ConditionalOnProperty(prefix = CacheServiceProperties.PREFIX,
+            name = "cache-service-type",
+            havingValue = "redis")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -74,6 +76,8 @@ public class RedisCacheConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(CacheService.class)
+    @ConditionalOnBean(RedisTemplate.class)
     public CacheService<String, Object> redisCacheService(RedisTemplate<String, Object> redisTemplate) {
         return new RedisCacheService<>(redisTemplate);
     }

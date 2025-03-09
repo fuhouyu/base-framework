@@ -23,10 +23,10 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import org.checkerframework.checker.index.qual.NonNegative;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 /**
  * <p>
@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Primary;
 public class CaffeineCacheConfiguration {
 
     @Bean
-    @Primary
+    @ConditionalOnMissingBean(CacheService.class)
     public CacheService<String, Object> cacheService() {
         Cache<String, Object> cache = Caffeine.newBuilder()
                 // 这里先行固定写死，永不过期

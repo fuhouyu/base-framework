@@ -38,11 +38,11 @@ public class Users {
 
     private LocalDateTime createAt;
 
-    private String createBy;
+    private String createdBy;
 
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
-    private String updateBy;
+    private String updatedBy;
 
     private Long ownerTenantId;
 

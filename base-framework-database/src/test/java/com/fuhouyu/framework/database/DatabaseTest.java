@@ -109,10 +109,10 @@ class DatabaseTest {
         users.setUsername(UUID.randomUUID().toString());
         users.setPassword(UUID.randomUUID().toString());
         users.setCreateAt(LocalDateTime.now());
-        users.setCreateBy("admin");
+        users.setCreatedBy("admin");
         users.setOwnerTenantId(ownerTenantId);
-        users.setUpdateAt(LocalDateTime.now());
-        users.setUpdateBy("admin");
+        users.setUpdatedAt(LocalDateTime.now());
+        users.setUpdatedBy("admin");
         return users;
     }
 }

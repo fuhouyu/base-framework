@@ -22,8 +22,8 @@ CREATE TABLE test_users
     username        VARCHAR(255)       NOT NULL,
     password        VARCHAR(255)       NOT NULL,
     owner_tenant_id BIGINT             NOT NULL,
-    create_at       TIMESTAMP          NOT NULL,
-    create_by       VARCHAR(255)       NOT NULL,
-    update_at       TIMESTAMP          NOT NULL,
-    update_by       VARCHAR(255)       NOT NULL
+    created_at TIMESTAMP    NOT NULL,
+    created_by VARCHAR(255) NOT NULL,
+    updated_at TIMESTAMP    NOT NULL,
+    updated_by VARCHAR(255) NOT NULL
 );

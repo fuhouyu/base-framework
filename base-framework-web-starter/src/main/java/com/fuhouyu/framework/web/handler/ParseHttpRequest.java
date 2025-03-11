@@ -53,9 +53,12 @@ public interface ParseHttpRequest {
      * @param request 请求
      * @return 请求实体
      */
-    default Request parseRequest(@NonNull HttpServletRequest request) {
+    default Request parseRequest(@NonNull HttpServletRequest request,
+                                 @NonNull HttpServletResponse response) {
         RequestEntity requestEntity = new RequestEntity();
         requestEntity.setAuthorization(request.getHeader(HttpHeaders.AUTHORIZATION));
+        requestEntity.setHttpServletRequest(request);
+        requestEntity.setResponse(response);
         requestEntity.setRequestHost(request.getServerName());
         requestEntity.setRequestIp(HttpRequestUtil.getRemoteIp(request));
         requestEntity.setUserAgent(HttpRequestUtil.getUserAgent(request));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2024 the original author or authors.
+ * Copyright 2024-2025 fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,48 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.fuhouyu.framework.log.enums;
 
 /**
  * <p>
- * 操作类型枚举
+ * 风险等级
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 09:26
+ * @since 2025/3/11 20:40
  */
-public enum OperationTypeEnum {
+public enum RiskTypeEnum {
 
     /**
-     * 登录
+     * 高等级
      */
-    LOGIN,
+    HIGH_LEVEL,
 
     /**
-     * 登出
+     * 中等级
      */
-    LOGOUT,
+    MIDDLE_LEVEL,
 
     /**
-     * 查询
+     * 低等级
      */
-    QUERY,
+    LOW_LEVEL,
 
-    /**
-     * 创建
-     */
-    CREATE,
-
-    /**
-     * 更新
-     */
-    UPDATE,
-
-    /**
-     * 删除
-     */
-    DELETE,
     ;
-
 }

@@ -49,7 +49,7 @@ import java.util.Map;
 @SpringBootApplication
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @EnableAspectJAutoProxy
-class LogRecordStoreTest {
+class LogRecordEntityStoreTest {
 
     @Autowired
     private WebController webController;

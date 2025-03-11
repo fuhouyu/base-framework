@@ -125,6 +125,7 @@
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <bom.version>2.30.22</bom.version>
         <docs-integration-sdk.version>1.4.0</docs-integration-sdk.version>
+        <ip2region.version>2.7.0</ip2region.version>
         <!--数据库相关依赖-->
         <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
         <pagehelper-spring-boot-starter.version>2.1.0</pagehelper-spring-boot-starter.version>
@@ -253,6 +254,11 @@
                 <groupId>com.onlyoffice</groupId>
                 <artifactId>docs-integration-sdk</artifactId>
                 <version>${docs-integration-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>${ip2region.version}</version>
             </dependency>
             <!--内部依赖-->
             <dependency>

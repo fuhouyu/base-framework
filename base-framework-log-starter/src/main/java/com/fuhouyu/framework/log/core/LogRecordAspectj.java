@@ -19,8 +19,13 @@ package com.fuhouyu.framework.log.core;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.request.Request;
+import com.fuhouyu.framework.log.annotaions.LogModule;
+import com.fuhouyu.framework.log.annotaions.LogRecord;
+import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.framework.log.exception.LogException;
-import com.fuhouyu.framework.log.model.LogRecord;
+import com.fuhouyu.framework.log.model.LogRecordEntity;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -104,20 +109,20 @@ public class LogRecordAspectj {
      * @param e         异常
      */
     @AfterThrowing(value = "@annotation(logRecord)", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, com.fuhouyu.framework.log.annotaions.LogRecord logRecord, Exception e) {
+    public void doAfterThrowing(JoinPoint joinPoint, LogRecord logRecord, Exception e) {
         handleLog(joinPoint, logRecord, e, null);
     }
 
-    protected void handleLog(final JoinPoint joinPoint, com.fuhouyu.framework.log.annotaions.LogRecord logRecord, final Exception e, Object objectResult) {
-        Signature signature = joinPoint.getSignature();
-        MethodSignature methodSignature = (MethodSignature) signature;
-        Method method = methodSignature.getMethod();
-        Object[] args = joinPoint.getArgs();
-        MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(joinPoint.getTarget(),
-                method,
-                args,
-                discoverer);
-        context.setBeanResolver(this.beanFactoryResolver);
+    /**
+     * 处理日志信息
+     *
+     * @param joinPoint    切入点
+     * @param logRecord    日志注解
+     * @param e            异常信息
+     * @param objectResult 返回结果
+     */
+    protected void handleLog(final JoinPoint joinPoint, LogRecord logRecord, final Exception e, Object objectResult) {
+        MethodBasedEvaluationContext context = getMethodBasedEvaluationContext(joinPoint);
         // 如果返回值存在，则设置返回值
         // 使SpEL表达式可以获取到结果中的值
         Optional.ofNullable(objectResult)
@@ -134,25 +139,69 @@ public class LogRecordAspectj {
             LoggerUtil.error(log, "log other error: {} ", content, ex);
             throw new LogException(ex);
         }
-        LogRecord logRecordEntity = new LogRecord();
-        logRecordEntity.setSystemName(systemName);
-        logRecordEntity.setModuleName(logRecord.moduleName());
-        logRecordEntity.setOperationType(logRecord.operationType().name());
 
-        logRecordEntity.setContent(result);
-        boolean isSuccess = true;
-        if (Objects.nonNull(e)) {
-            logRecordEntity.setErrorMessage(e.getMessage());
-            isSuccess = false;
-        }
-        logRecordEntity.setIsSuccess(isSuccess);
-        logRecordEntity.setOperationUser(ContextHolderStrategy.getContext().getUser().getUsername());
-        logRecordEntity.setOperationTime(LocalDateTime.now().format(DATE_TIME_FORMATTER));
-        logRecordEntity.setCategory(logRecordEntity.getCategory());
-
+        LogRecordEntity logRecordEntity = this.buildLogRecordEntity(logRecord, result, e, joinPoint);
         for (LogRecordStoreService logRecordStoreService : logRecordStoreServiceList) {
             logRecordStoreService.saveLogRecord(logRecordEntity);
         }
+    }
 
+    /**
+     * 获取方法评估上下文
+     *
+     * @param joinPoint 切入点
+     * @return 方法评估上下文
+     */
+    private MethodBasedEvaluationContext getMethodBasedEvaluationContext(JoinPoint joinPoint) {
+        Signature signature = joinPoint.getSignature();
+        MethodSignature methodSignature = (MethodSignature) signature;
+        Method method = methodSignature.getMethod();
+        Object[] args = joinPoint.getArgs();
+        MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(joinPoint.getTarget(),
+                method,
+                args,
+                discoverer);
+        context.setBeanResolver(this.beanFactoryResolver);
+        return context;
+    }
+
+    /**
+     * 构建日志实体
+     *
+     * @param logRecord 日志记录
+     * @param result    解析的结果
+     * @param e         异常
+     * @param joinPoint 切入点
+     * @return 日志记录实体
+     */
+    private LogRecordEntity buildLogRecordEntity(LogRecord logRecord,
+                                                 String result,
+                                                 Exception e,
+                                                 JoinPoint joinPoint) {
+        LogModule module = joinPoint.getClass().getAnnotation(LogModule.class);
+        LogRecordEntity logRecordEntity = new LogRecordEntity();
+        logRecordEntity.setModuleName(Objects.isNull(module) ? "" : module.value());
+        logRecordEntity.setOperationType(logRecord.operationType().name());
+        logRecordEntity.setRiskType(logRecord.riskType().name());
+        // 设置请求上下文
+        Request request = ContextHolderStrategy.getContext().getRequest();
+        if (Objects.nonNull(request)) {
+            HttpServletRequest httpServletRequest = request.getHttpServletRequest();
+            logRecordEntity.setRequestUri(httpServletRequest.getRequestURI());
+            logRecordEntity.setRequestMethod(httpServletRequest.getMethod());
+        }
+        logRecordEntity.setContent(result);
+        boolean isSuccess = true;
+        if (Objects.nonNull(e)) {
+            logRecordEntity.setContent(e.getMessage());
+            isSuccess = false;
+        }
+        logRecordEntity.setIsSuccess(isSuccess);
+        if (logRecord.operationType() != OperationTypeEnum.LOGIN) {
+            // 登录时，没有登录信息
+            logRecordEntity.setOperationUser(ContextHolderStrategy.getContext().getUser().getUsername());
+        }
+        logRecordEntity.setOperationTime(LocalDateTime.now().format(DATE_TIME_FORMATTER));
+        return logRecordEntity;
     }
 }

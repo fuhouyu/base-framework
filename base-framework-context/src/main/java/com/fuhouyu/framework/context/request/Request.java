@@ -17,6 +17,8 @@
 package com.fuhouyu.framework.context.request;
 
 import com.fuhouyu.framework.common.service.AdditionalInformationFunction;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.Serializable;
 
@@ -29,6 +31,20 @@ import java.io.Serializable;
  * @since 2024/8/18 14:51
  */
 public interface Request extends AdditionalInformationFunction, Serializable {
+
+    /**
+     * 当前请求
+     *
+     * @return 当前请求
+     */
+    HttpServletRequest getHttpServletRequest();
+
+    /**
+     * 当前响应
+     *
+     * @return 当前响应
+     */
+    HttpServletResponse getResponse();
 
     /**
      * 从请求头中获取认证信息

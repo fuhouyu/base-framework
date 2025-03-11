@@ -29,6 +29,7 @@ module base.framework.web.starter {
     requires spring.tx;
     requires spring.web;
     requires spring.webmvc;
+    requires ip2region;
 
     exports com.fuhouyu.framework.web;
     exports com.fuhouyu.framework.web.annotaions;

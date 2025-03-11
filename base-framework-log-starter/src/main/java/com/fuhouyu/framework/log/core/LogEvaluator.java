@@ -17,8 +17,6 @@
 package com.fuhouyu.framework.log.core;
 
 import org.springframework.context.expression.MethodBasedEvaluationContext;
-import org.springframework.core.DefaultParameterNameDiscoverer;
-import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.TemplateParserContext;
@@ -38,11 +36,6 @@ public class LogEvaluator {
      * SpEL解析器
      */
     private final SpelExpressionParser parser = new SpelExpressionParser();
-
-    /**
-     * 参数解析器
-     */
-    private final ParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
 
     /**
      * 表达式模板

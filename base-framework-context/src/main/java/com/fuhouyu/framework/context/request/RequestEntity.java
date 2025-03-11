@@ -16,6 +16,8 @@
 
 package com.fuhouyu.framework.context.request;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -45,6 +47,16 @@ public class RequestEntity implements Request {
     public RequestEntity() {
         this.additionalInformation = new HashMap<>(2);
     }
+
+    /**
+     * 请求
+     */
+    private HttpServletRequest httpServletRequest;
+
+    /**
+     * 响应
+     */
+    private HttpServletResponse response;
 
     /**
      * 认证信息

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2024 the original author or authors.
+ * Copyright 2024-2025 fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,48 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.framework.web.properties;
 
-package com.fuhouyu.framework.log.enums;
+import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * <p>
- * 操作类型枚举
+ * ip2region 配置文件
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 09:26
+ * @since 2025/3/11 22:13
  */
-public enum OperationTypeEnum {
+@ConfigurationProperties(Ip2RegionProperties.PREFIX)
+@Data
+public class Ip2RegionProperties {
 
-    /**
-     * 登录
-     */
-    LOGIN,
+    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "ip2region";
 
-    /**
-     * 登出
-     */
-    LOGOUT,
+    private Boolean enabled;
 
-    /**
-     * 查询
-     */
-    QUERY,
-
-    /**
-     * 创建
-     */
-    CREATE,
-
-    /**
-     * 更新
-     */
-    UPDATE,
-
-    /**
-     * 删除
-     */
-    DELETE,
-    ;
+    private String dbPath;
 
 }

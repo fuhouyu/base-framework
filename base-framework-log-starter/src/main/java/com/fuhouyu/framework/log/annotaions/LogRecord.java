@@ -17,6 +17,7 @@
 package com.fuhouyu.framework.log.annotaions;
 
 import com.fuhouyu.framework.log.enums.OperationTypeEnum;
+import com.fuhouyu.framework.log.enums.RiskTypeEnum;
 
 import java.lang.annotation.*;
 
@@ -42,13 +43,6 @@ public @interface LogRecord {
     String content();
 
     /**
-     * 日志分类:如用户管理/菜单管理
-     *
-     * @return 日志分类
-     */
-    String category() default "";
-
-    /**
      * 操作类型
      *
      * @return 操作类型
@@ -57,11 +51,10 @@ public @interface LogRecord {
     OperationTypeEnum operationType();
 
     /**
-     * 模块名称
-     *
-     * @return 模块名称
+     * 风险等级
+     * @see RiskTypeEnum
+     * @return 风险等级
      */
-    String moduleName() default "";
-
+    RiskTypeEnum riskType() default RiskTypeEnum.LOW_LEVEL;
 
 }

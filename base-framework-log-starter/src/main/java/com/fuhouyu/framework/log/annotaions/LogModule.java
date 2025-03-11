@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2024 the original author or authors.
+ * Copyright 2024-2025 fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,48 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.fuhouyu.framework.log.annotaions;
 
-package com.fuhouyu.framework.log.enums;
+import java.lang.annotation.*;
 
 /**
  * <p>
- * 操作类型枚举
+ * log 模块注解
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 09:26
+ * @since 2025/3/11 20:36
  */
-public enum OperationTypeEnum {
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface LogModule {
 
     /**
-     * 登录
+     * 模块名称
+     *
+     * @return 模块名称
      */
-    LOGIN,
-
-    /**
-     * 登出
-     */
-    LOGOUT,
-
-    /**
-     * 查询
-     */
-    QUERY,
-
-    /**
-     * 创建
-     */
-    CREATE,
-
-    /**
-     * 更新
-     */
-    UPDATE,
-
-    /**
-     * 删除
-     */
-    DELETE,
-    ;
-
+    String value();
 }

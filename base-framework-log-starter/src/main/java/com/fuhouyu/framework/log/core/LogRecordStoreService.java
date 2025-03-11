@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.log.core;
 
-import com.fuhouyu.framework.log.model.LogRecord;
+import com.fuhouyu.framework.log.model.LogRecordEntity;
 
 /**
  * <p>
@@ -31,8 +31,8 @@ public interface LogRecordStoreService {
     /**
      * 保存日志记录
      *
-     * @param logRecord 日志记录
+     * @param logRecordEntity 日志记录
      */
-    void saveLogRecord(LogRecord logRecord);
+    void saveLogRecord(LogRecordEntity logRecordEntity);
 
 }

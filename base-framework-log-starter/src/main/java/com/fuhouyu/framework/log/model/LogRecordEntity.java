@@ -32,17 +32,22 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-public class LogRecord {
-
-    /**
-     * 系统名称
-     */
-    private String systemName;
+public class LogRecordEntity {
 
     /**
      * 模块名称
      */
     private String moduleName;
+
+    /**
+     * 请求地址
+     */
+    private String requestUri;
+
+    /**
+     * 请求方法
+     */
+    private String requestMethod;
 
     /**
      * 操作类型
@@ -55,11 +60,6 @@ public class LogRecord {
     private String content;
 
     /**
-     * 错误信息，如果存在
-     */
-    private String errorMessage;
-
-    /**
      * 操作人
      */
     private String operationUser;
@@ -70,18 +70,13 @@ public class LogRecord {
     private String operationTime;
 
     /**
-     * 请求id
-     */
-    private String requestId;
-
-    /**
-     * 分类
-     */
-    private String category;
-
-    /**
      * 操作状态 true/false
      */
     private Boolean isSuccess;
+
+    /**
+     * 操作风险类型
+     */
+    private String riskType;
 
 }

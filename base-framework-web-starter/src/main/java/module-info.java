@@ -44,4 +44,5 @@ module base.framework.web.starter {
 
     opens com.fuhouyu.framework.web to spring.core;
     opens com.fuhouyu.framework.web.controller to spring.core;
+    opens com.fuhouyu.framework.web.properties to spring.beans;
 }

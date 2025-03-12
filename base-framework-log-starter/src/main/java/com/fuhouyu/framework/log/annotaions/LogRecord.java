@@ -40,7 +40,15 @@ public @interface LogRecord {
      *
      * @return 日志记录的内容
      */
-    String content();
+    String content() default "";
+
+
+    /**
+     * 日志记录英文
+     *
+     * @return 日志记录
+     */
+    String contentEn() default "";
 
     /**
      * 操作类型
@@ -52,8 +60,9 @@ public @interface LogRecord {
 
     /**
      * 风险等级
-     * @see RiskTypeEnum
+     *
      * @return 风险等级
+     * @see RiskTypeEnum
      */
     RiskTypeEnum riskType() default RiskTypeEnum.LOW_LEVEL;
 

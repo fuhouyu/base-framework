@@ -60,6 +60,11 @@ public class LogRecordEntity {
     private String content;
 
     /**
+     * 日志内容英文
+     */
+    private String contentEn;
+
+    /**
      * 操作人
      */
     private String operationUser;

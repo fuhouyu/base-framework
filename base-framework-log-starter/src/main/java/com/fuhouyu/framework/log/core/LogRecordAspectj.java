@@ -38,6 +38,7 @@ import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.ParseException;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
@@ -127,20 +128,17 @@ public class LogRecordAspectj {
         // 使SpEL表达式可以获取到结果中的值
         Optional.ofNullable(objectResult)
                 .ifPresent(o -> context.setVariable("result", o));
-        Object content = null;
-        String result;
-        try {
-            content = evaluator.parse(logRecord.content(), context);
-            result = JacksonUtil.writeValueAsString(content);
-        } catch (ParseException ex) {
-            LoggerUtil.error(log, "log content: {} parse failed", logRecord.content(), ex);
-            throw new LogException(ex);
-        } catch (Exception ex) {
-            LoggerUtil.error(log, "log other error: {} ", content, ex);
-            throw new LogException(ex);
+        String logContent = this.parseContent(logRecord.content(), context);
+        String logContentEn = this.parseContent(logRecord.contentEn(), context);
+        LogRecordEntity logRecordEntity = this.buildLogRecordEntity(e, joinPoint);
+        if (logRecord.operationType() != OperationTypeEnum.LOGIN) {
+            // 登录时，没有登录信息
+            logRecordEntity.setOperationUser(ContextHolderStrategy.getContext().getUser().getUsername());
         }
-
-        LogRecordEntity logRecordEntity = this.buildLogRecordEntity(logRecord, result, e, joinPoint);
+        logRecordEntity.setOperationType(logRecord.operationType().name());
+        logRecordEntity.setRiskType(logRecord.riskType().name());
+        logRecordEntity.setContent(logContent);
+        logRecordEntity.setContentEn(logContentEn);
         for (LogRecordStoreService logRecordStoreService : logRecordStoreServiceList) {
             logRecordStoreService.saveLogRecord(logRecordEntity);
         }
@@ -168,21 +166,15 @@ public class LogRecordAspectj {
     /**
      * 构建日志实体
      *
-     * @param logRecord 日志记录
-     * @param result    解析的结果
      * @param e         异常
      * @param joinPoint 切入点
      * @return 日志记录实体
      */
-    private LogRecordEntity buildLogRecordEntity(LogRecord logRecord,
-                                                 String result,
-                                                 Exception e,
+    private LogRecordEntity buildLogRecordEntity(Exception e,
                                                  JoinPoint joinPoint) {
         LogModule module = joinPoint.getClass().getAnnotation(LogModule.class);
         LogRecordEntity logRecordEntity = new LogRecordEntity();
         logRecordEntity.setModuleName(Objects.isNull(module) ? "" : module.value());
-        logRecordEntity.setOperationType(logRecord.operationType().name());
-        logRecordEntity.setRiskType(logRecord.riskType().name());
         // 设置请求上下文
         Request request = ContextHolderStrategy.getContext().getRequest();
         if (Objects.nonNull(request)) {
@@ -190,18 +182,36 @@ public class LogRecordAspectj {
             logRecordEntity.setRequestUri(httpServletRequest.getRequestURI());
             logRecordEntity.setRequestMethod(httpServletRequest.getMethod());
         }
-        logRecordEntity.setContent(result);
         boolean isSuccess = true;
         if (Objects.nonNull(e)) {
             logRecordEntity.setContent(e.getMessage());
             isSuccess = false;
         }
         logRecordEntity.setIsSuccess(isSuccess);
-        if (logRecord.operationType() != OperationTypeEnum.LOGIN) {
-            // 登录时，没有登录信息
-            logRecordEntity.setOperationUser(ContextHolderStrategy.getContext().getUser().getUsername());
-        }
         logRecordEntity.setOperationTime(LocalDateTime.now().format(DATE_TIME_FORMATTER));
         return logRecordEntity;
+    }
+
+    /**
+     * 解析日志具体内容
+     *
+     * @param content 日志内容
+     * @param context 上下文
+     * @return 解析后的信息
+     */
+    private String parseContent(String content,
+                                MethodBasedEvaluationContext context) {
+        if (!StringUtils.hasText(content)) {
+            return "";
+        }
+        try {
+            return JacksonUtil.writeValueAsString(evaluator.parse(content, context));
+        } catch (ParseException ex) {
+            LoggerUtil.error(log, "log content: {} parse failed", content, ex);
+            throw new LogException(ex);
+        } catch (Exception ex) {
+            LoggerUtil.error(log, "log other error: {} ", content, ex);
+            throw new LogException(ex);
+        }
     }
 }

@@ -40,7 +40,7 @@ module base.framework.web.starter {
     exports com.fuhouyu.framework.web.filter;
     exports com.fuhouyu.framework.web.handler;
     exports com.fuhouyu.framework.web.utils;
-
+    exports com.fuhouyu.framework.web.properties;
 
     opens com.fuhouyu.framework.web to spring.core;
     opens com.fuhouyu.framework.web.controller to spring.core;

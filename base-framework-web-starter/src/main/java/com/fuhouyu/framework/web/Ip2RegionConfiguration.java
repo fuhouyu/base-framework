@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
  * @author fuhouyu
  * @since 2025/3/11 21:57
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(Ip2RegionProperties.class)
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = Ip2RegionProperties.PREFIX,
@@ -40,7 +40,12 @@ public class Ip2RegionConfiguration {
     private final Ip2RegionProperties ip2RegionProperties;
 
 
-    @Bean
+    /**
+     * ip2region模板
+     *
+     * @return ip2regionTemplate
+     */
+    @Bean(destroyMethod = "close")
     public Ip2RegionTemplate ip2RegionTemplate() {
         return new Ip2RegionTemplate(ip2RegionProperties.getDbPath());
     }

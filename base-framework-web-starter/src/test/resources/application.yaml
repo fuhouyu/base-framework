@@ -9,3 +9,6 @@ base:
     kms-national:
       sm2:
         auto-generate: true
+    ip2region:
+      enabled: true
+      db-path: classpath:ip2region.xdb

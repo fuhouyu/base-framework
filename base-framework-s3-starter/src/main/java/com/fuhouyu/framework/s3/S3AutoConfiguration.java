@@ -25,13 +25,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.Assert;
-import software.amazon.awssdk.auth.credentials.*;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.sts.StsClient;
 
 import java.net.URI;
-import java.util.Objects;
 
 /**
  * <p>
@@ -57,13 +59,7 @@ public class S3AutoConfiguration implements InitializingBean {
      */
     @Bean
     public AwsCredentialsProvider awsCredentialsProvider() {
-        AwsCredentials awsCredentials;
-        if (Objects.equals(s3Properties.getStsEnabled(), Boolean.TRUE)) {
-            awsCredentials = AwsSessionCredentials.create(s3Properties.getAccessKeyId(),
-                    s3Properties.getSecretKey(), s3Properties.getStsToken());
-        } else {
-            awsCredentials = AwsBasicCredentials.create(s3Properties.getAccessKeyId(), s3Properties.getSecretKey());
-        }
+        AwsCredentials awsCredentials = AwsBasicCredentials.create(s3Properties.getAccessKeyId(), s3Properties.getSecretKey());
         return StaticCredentialsProvider.create(awsCredentials);
     }
 

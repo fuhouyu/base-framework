@@ -26,6 +26,7 @@ module base.framework.s3.starter {
     requires software.amazon.awssdk.auth;
     requires software.amazon.awssdk.regions;
     requires software.amazon.awssdk.services.sts;
+    requires aliyun.java.sdk.core;
 
     opens com.fuhouyu.framework.s3 to spring.core, com.fasterxml.jackson.databind;
     opens com.fuhouyu.framework.s3.properties to spring.beans;
@@ -33,5 +34,8 @@ module base.framework.s3.starter {
     exports com.fuhouyu.framework.s3;
     exports com.fuhouyu.framework.s3.properties;
     exports com.fuhouyu.framework.s3.enums;
+    exports com.fuhouyu.framework.s3.service.impl;
+    exports com.fuhouyu.framework.s3.model;
+    opens com.fuhouyu.framework.s3.service.impl to com.fasterxml.jackson.databind, spring.core;
 
 }

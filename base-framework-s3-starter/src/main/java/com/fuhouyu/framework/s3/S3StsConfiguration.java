@@ -15,9 +15,14 @@
  */
 package com.fuhouyu.framework.s3;
 
+import com.aliyuncs.IAcsClient;
 import com.fuhouyu.framework.s3.properties.S3Properties;
 import com.fuhouyu.framework.s3.properties.StsProperties;
+import com.fuhouyu.framework.s3.service.impl.AliOssStsOperationImpl;
+import com.fuhouyu.framework.s3.service.impl.S3StsOperationImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -63,12 +68,26 @@ public class S3StsConfiguration {
 
     /**
      * sts 客户端初始化
+     * 阿里云依赖不存在时加载该类
      *
      * @param stsClient stsClient
      * @return sts 操作类
      */
     @Bean
-    public StsOperation s3StsOperation(StsClient stsClient) {
-        return new StsOperation(stsClient, stsProperties);
+    @ConditionalOnMissingClass({"com.aliyuncs.IAcsClient"})
+    public S3StsOperationImpl s3StsOperation(StsClient stsClient) {
+        return new S3StsOperationImpl(stsClient, stsProperties, s3Properties);
+    }
+
+
+    /**
+     * 阿里云 oss 依赖
+     *
+     * @return 阿里oss
+     */
+    @Bean
+    @ConditionalOnClass(IAcsClient.class)
+    public AliOssStsOperationImpl aliStsOperation() {
+        return new AliOssStsOperationImpl(stsProperties, s3Properties);
     }
 }

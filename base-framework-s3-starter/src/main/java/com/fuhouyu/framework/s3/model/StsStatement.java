@@ -13,43 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.s3.properties;
+package com.fuhouyu.framework.s3.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.util.Collection;
 
 /**
  * <p>
- * sts配置
+ * statement
  * </p>
  *
  * @author fuhouyu
- * @since 2025/2/22 19:00
+ * @since 2025/3/18 21:40
  */
-@ConfigurationProperties(prefix = StsProperties.PREFIX)
+@Builder
 @Data
-public class StsProperties {
+public class StsStatement {
 
-    public static final String PREFIX = S3Properties.PREFIX + ".sts";
+    @JsonProperty("Effect")
+    private final String effect = "Allow";
 
-    /**
-     * 阿里oss需要
-     */
-    private String endpoint;
+    @JsonProperty("Action")
+    private Collection<String> action;
 
-    /**
-     * 阿里云 oss 这些需要
-     */
-    private String region;
-
-    /**
-     * 角色ARN
-     */
-    private String roleArn;
-
-    /**
-     * sts token 过期时间，默认3600
-     */
-    private Integer durationSeconds;
+    @JsonProperty("Resource")
+    private Collection<String> resource;
 
 }

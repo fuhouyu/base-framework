@@ -57,11 +57,6 @@ public class S3Properties {
     private String secretKey;
 
     /**
-     * 是否启用sts
-     */
-    private Boolean stsEnabled;
-
-    /**
      * 使用路径风格
      * 如： https://oss.s3.com?bucketName=xxx
      */
@@ -80,7 +75,6 @@ public class S3Properties {
 
     public S3Properties() {
         this.pathStyleEnabled = false;
-        this.stsEnabled = false;
         this.region = Region.AWS_GLOBAL;
     }
 }

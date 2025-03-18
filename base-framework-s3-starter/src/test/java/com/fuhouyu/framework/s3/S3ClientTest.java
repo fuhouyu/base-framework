@@ -17,7 +17,9 @@ package com.fuhouyu.framework.s3;
 
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.s3.enums.StsActionEnum;
+import com.fuhouyu.framework.s3.model.StsTokenResponse;
 import com.fuhouyu.framework.s3.properties.S3Properties;
+import com.fuhouyu.framework.s3.service.impl.S3StsOperationImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -39,7 +41,6 @@ import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
-import software.amazon.awssdk.services.sts.model.Credentials;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -80,7 +81,7 @@ class S3ClientTest {
     private S3Client s3Client;
 
     @Autowired
-    private StsOperation stsOperation;
+    private S3StsOperationImpl s3StsOperationImpl;
 
     @Autowired
     private S3Properties s3Properties;
@@ -102,8 +103,9 @@ class S3ClientTest {
         ListBucketsResponse listBucketsResponse = this.s3Client.listBuckets();
         Assertions.assertTrue(listBucketsResponse.buckets().stream().anyMatch(bucket -> Objects.equals(bucket.name(), bucketName)));
         // 获取临时 Token
-        Credentials credentials = this.stsOperation.generateStsToken(bucketName, "my-object-key", StsActionEnum.PutObject).credentials();
-        LoggerUtil.info(log, "AccessKeyId: {} SecretKey: {] SessionToken: sessionToken ", credentials.accessKeyId(), credentials.secretAccessKey(), credentials.sessionToken());
+        StsTokenResponse stsTokenResponse = this.s3StsOperationImpl.generateStsToken(bucketName, "my-object-key", StsActionEnum.PutObject);
+        LoggerUtil.info(log, "AccessKeyId: {} SecretKey: {] SessionToken: sessionToken ", stsTokenResponse.getAccessKey(),
+                stsTokenResponse.getSecretAccessKey(), stsTokenResponse.getSessionToken());
 
 
         // 创建 S3 客户端
@@ -111,7 +113,8 @@ class S3ClientTest {
                 .endpointOverride(URI.create(s3Properties.getEndpoint()))
                 .region(s3Properties.getRegion())
                 .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsSessionCredentials.create(credentials.accessKeyId(), credentials.secretAccessKey(), credentials.sessionToken())
+                        AwsSessionCredentials.create(stsTokenResponse.getAccessKey(),
+                                stsTokenResponse.getSecretAccessKey(), stsTokenResponse.getSessionToken())
                 ))
                 .build();
 

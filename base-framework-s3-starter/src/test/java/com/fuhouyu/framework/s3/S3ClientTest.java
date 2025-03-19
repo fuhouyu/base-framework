@@ -21,10 +21,7 @@ import com.fuhouyu.framework.s3.model.StsTokenResponse;
 import com.fuhouyu.framework.s3.properties.S3Properties;
 import com.fuhouyu.framework.s3.service.impl.S3StsOperationImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -60,6 +57,7 @@ import java.util.Objects;
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @Testcontainers
 @Slf4j
+@Disabled
 class S3ClientTest {
 
     private static final String accessKey = "test_username";

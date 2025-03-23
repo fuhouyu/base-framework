@@ -66,4 +66,10 @@ public @interface LogRecord {
      */
     RiskTypeEnum riskType() default RiskTypeEnum.LOW_LEVEL;
 
+    /**
+     * 获取操作人
+     *
+     * @return 操作人
+     */
+    String operationUser() default "#{T(com.fuhouyu.framework.context.ContextHolderStrategy).context.user.username}";
 }

@@ -16,13 +16,11 @@
 
 package com.fuhouyu.framework.log.core;
 
-import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.log.annotaions.LogModule;
 import com.fuhouyu.framework.log.annotaions.LogRecord;
-import com.fuhouyu.framework.log.enums.OperationTypeEnum;
 import com.fuhouyu.framework.log.exception.LogException;
 import com.fuhouyu.framework.log.model.LogRecordEntity;
 import jakarta.servlet.http.HttpServletRequest;
@@ -130,11 +128,9 @@ public class LogRecordAspectj {
                 .ifPresent(o -> context.setVariable("result", o));
         String logContent = this.parseContent(logRecord.content(), context);
         String logContentEn = this.parseContent(logRecord.contentEn(), context);
+        String operationUser = this.parseContent(logRecord.operationUser(), context);
         LogRecordEntity logRecordEntity = this.buildLogRecordEntity(e, joinPoint);
-        if (logRecord.operationType() != OperationTypeEnum.LOGIN) {
-            // 登录时，没有登录信息
-            logRecordEntity.setOperationUser(ContextHolderStrategy.getContext().getUser().getUsername());
-        }
+        logRecordEntity.setOperationUser(operationUser);
         logRecordEntity.setOperationType(logRecord.operationType().name());
         logRecordEntity.setRiskType(logRecord.riskType().name());
         logRecordEntity.setContent(logContent);
@@ -205,7 +201,7 @@ public class LogRecordAspectj {
             return "";
         }
         try {
-            return JacksonUtil.writeValueAsString(evaluator.parse(content, context));
+            return String.valueOf(evaluator.parse(content, context));
         } catch (ParseException ex) {
             LoggerUtil.error(log, "log content: {} parse failed", content, ex);
             throw new LogException(ex);

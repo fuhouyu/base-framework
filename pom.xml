@@ -130,7 +130,7 @@
         <!--数据库相关依赖-->
         <mybatis-spring-boot-starter.version>3.0.4</mybatis-spring-boot-starter.version>
         <pagehelper-spring-boot-starter.version>2.1.0</pagehelper-spring-boot-starter.version>
-        <druid-spring-boot-starter.version>1.2.23</druid-spring-boot-starter.version>
+        <druid-spring-boot-starter.version>1.2.24</druid-spring-boot-starter.version>
         <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
         <postgresql.version>42.7.5</postgresql.version>
     </properties>

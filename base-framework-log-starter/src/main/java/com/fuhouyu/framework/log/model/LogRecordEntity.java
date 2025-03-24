@@ -17,9 +17,16 @@
 package com.fuhouyu.framework.log.model;
 
 
+import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.request.Request;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * <p>
@@ -84,4 +91,37 @@ public class LogRecordEntity {
      */
     private String riskType;
 
+    /**
+     * 请求参数
+     */
+    private String requestParam;
+
+    /**
+     * 响应
+     */
+    private String responseData;
+
+    /**
+     * 系统名称
+     */
+    private String systemName;
+
+
+    public LogRecordEntity() {
+        this.isSuccess = true;
+        this.operationTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.initRequest();
+    }
+
+    /**
+     * 初始化请求
+     */
+    private void initRequest() {
+        Request request = ContextHolderStrategy.getContext().getRequest();
+        if (Objects.nonNull(request)) {
+            HttpServletRequest httpServletRequest = request.getHttpServletRequest();
+            this.requestUri = httpServletRequest.getRequestURI();
+            this.requestMethod = httpServletRequest.getMethod();
+        }
+    }
 }

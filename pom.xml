@@ -116,7 +116,7 @@
         <kryo5.version>5.6.0</kryo5.version>
         <jackson-bom.version>2.18.3</jackson-bom.version>
         <aliyun-sdk-oss.version>3.17.4</aliyun-sdk-oss.version>
-        <bcprov-jdk18on.version>1.78.1</bcprov-jdk18on.version>
+        <bcprov-jdk18on.version>1.80</bcprov-jdk18on.version>
         <hutool-crypto.version>5.8.36</hutool-crypto.version>
         <commons-lang3.version>3.16.0</commons-lang3.version>
         <lombok.version>1.18.34</lombok.version>

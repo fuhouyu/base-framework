@@ -16,14 +16,12 @@
 
 package com.fuhouyu.framework.log.core;
 
+import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
-import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.log.annotaions.LogModule;
 import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.exception.LogException;
 import com.fuhouyu.framework.log.model.LogRecordEntity;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -39,11 +37,7 @@ import org.springframework.expression.ParseException;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <p>
@@ -58,7 +52,6 @@ import java.util.Optional;
 @Slf4j
 public class LogRecordAspectj {
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final ParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
 
@@ -121,20 +114,8 @@ public class LogRecordAspectj {
      * @param objectResult 返回结果
      */
     protected void handleLog(final JoinPoint joinPoint, LogRecord logRecord, final Exception e, Object objectResult) {
-        MethodBasedEvaluationContext context = getMethodBasedEvaluationContext(joinPoint);
-        // 如果返回值存在，则设置返回值
-        // 使SpEL表达式可以获取到结果中的值
-        Optional.ofNullable(objectResult)
-                .ifPresent(o -> context.setVariable("result", o));
-        String logContent = this.parseContent(logRecord.content(), context);
-        String logContentEn = this.parseContent(logRecord.contentEn(), context);
-        String operationUser = this.parseContent(logRecord.operationUser(), context);
-        LogRecordEntity logRecordEntity = this.buildLogRecordEntity(e, joinPoint);
-        logRecordEntity.setOperationUser(operationUser);
-        logRecordEntity.setOperationType(logRecord.operationType().name());
-        logRecordEntity.setRiskType(logRecord.riskType().name());
-        logRecordEntity.setContent(logContent);
-        logRecordEntity.setContentEn(logContentEn);
+        LogRecordEntity logRecordEntity = this.buildLogRecordEntity(e,
+                joinPoint, logRecord, objectResult);
         for (LogRecordStoreService logRecordStoreService : logRecordStoreServiceList) {
             logRecordStoreService.saveLogRecord(logRecordEntity);
         }
@@ -162,29 +143,42 @@ public class LogRecordAspectj {
     /**
      * 构建日志实体
      *
-     * @param e         异常
+     * @param exception 异常
      * @param joinPoint 切入点
      * @return 日志记录实体
      */
-    private LogRecordEntity buildLogRecordEntity(Exception e,
-                                                 JoinPoint joinPoint) {
+    private LogRecordEntity buildLogRecordEntity(Exception exception,
+                                                 JoinPoint joinPoint,
+                                                 LogRecord logRecord,
+                                                 Object objectResult) {
         LogModule module = joinPoint.getClass().getAnnotation(LogModule.class);
         LogRecordEntity logRecordEntity = new LogRecordEntity();
         logRecordEntity.setModuleName(Objects.isNull(module) ? "" : module.value());
-        // 设置请求上下文
-        Request request = ContextHolderStrategy.getContext().getRequest();
-        if (Objects.nonNull(request)) {
-            HttpServletRequest httpServletRequest = request.getHttpServletRequest();
-            logRecordEntity.setRequestUri(httpServletRequest.getRequestURI());
-            logRecordEntity.setRequestMethod(httpServletRequest.getMethod());
-        }
-        boolean isSuccess = true;
-        if (Objects.nonNull(e)) {
-            logRecordEntity.setContent(e.getMessage());
-            isSuccess = false;
-        }
-        logRecordEntity.setIsSuccess(isSuccess);
-        logRecordEntity.setOperationTime(LocalDateTime.now().format(DATE_TIME_FORMATTER));
+
+        MethodBasedEvaluationContext context = getMethodBasedEvaluationContext(joinPoint);
+        // 如果返回值存在，则设置返回值
+        // 使SpEL表达式可以获取到结果中的值
+        Optional.ofNullable(objectResult)
+                .ifPresent(o -> {
+                    context.setVariable("result", o);
+                    logRecordEntity.setResponseData(JacksonUtil.writeValueAsString(o));
+                });
+        Optional.ofNullable(exception)
+                .ifPresent(e -> {
+                    logRecordEntity.setIsSuccess(false);
+                    logRecordEntity.setResponseData(exception.getMessage());
+                });
+        String logContent = this.parseContent(logRecord.content(), context);
+        String logContentEn = this.parseContent(logRecord.contentEn(), context);
+        String operationUser = this.parseContent(logRecord.operationUser(), context);
+        logRecordEntity.setOperationType(logRecord.operationType().name());
+        logRecordEntity.setContent(logContent);
+        logRecordEntity.setContentEn(logContentEn);
+        logRecordEntity.setRiskType(logRecord.riskType().name());
+        logRecordEntity.setSystemName(systemName);
+        logRecordEntity.setOperationUser(operationUser);
+        this.processMethodParameters(joinPoint, logRecordEntity);
+
         return logRecordEntity;
     }
 
@@ -209,5 +203,61 @@ public class LogRecordAspectj {
             LoggerUtil.error(log, "log other error: {} ", content, ex);
             throw new LogException(ex);
         }
+    }
+
+
+    /**
+     * 处理方法参数
+     *
+     * @param joinPoint       切入点
+     * @param logRecordEntity 日志记录
+     */
+    private void processMethodParameters(JoinPoint joinPoint, LogRecordEntity logRecordEntity) {
+        Object[] args = joinPoint.getArgs();
+        if (args.length == 0) {
+            logRecordEntity.setRequestParam("");
+            return;
+        }
+        // 获取方法签名
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        String[] parameterNames = signature.getParameterNames();
+        Class<?>[] parameterTypes = signature.getParameterTypes();
+
+        // 创建参数名-值映射
+        Map<String, Object> paramMap = new LinkedHashMap<>();
+
+        for (int i = 0; i < args.length; i++) {
+            String paramName = parameterNames != null && i < parameterNames.length
+                    ? parameterNames[i]
+                    : "arg" + i;
+
+            // 处理参数值为null的情况
+            Object paramValue = args[i] != null ? args[i] : "null";
+
+            // 对于简单类型直接存储，复杂类型转换为JSON字符串
+            if (isSimpleType(parameterTypes[i])) {
+                paramMap.put(paramName, paramValue);
+            } else {
+                paramMap.put(paramName, JacksonUtil.writeValueAsString(paramValue));
+            }
+        }
+        // 将参数Map转换为JSON字符串
+        logRecordEntity.setRequestParam(JacksonUtil.writeValueAsString(paramMap));
+    }
+
+    /**
+     * 判断是否为简单类型
+     *
+     * @param clazz class
+     * @return true / false
+     */
+    private boolean isSimpleType(Class<?> clazz) {
+        return clazz.isPrimitive() ||
+                clazz.equals(String.class) ||
+                Number.class.isAssignableFrom(clazz) ||
+                clazz.equals(Boolean.class) ||
+                clazz.equals(Character.class) ||
+                clazz.equals(java.util.Date.class) ||
+                clazz.equals(java.time.temporal.Temporal.class);
     }
 }

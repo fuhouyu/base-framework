@@ -119,7 +119,7 @@
         <bcprov-jdk18on.version>1.78.1</bcprov-jdk18on.version>
         <hutool-crypto.version>5.8.36</hutool-crypto.version>
         <commons-lang3.version>3.16.0</commons-lang3.version>
-        <lombok.version>1.18.34</lombok.version>
+        <lombok.version>1.18.36</lombok.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <jasypt-spring-boot-starter.version>3.0.5</jasypt-spring-boot-starter.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>

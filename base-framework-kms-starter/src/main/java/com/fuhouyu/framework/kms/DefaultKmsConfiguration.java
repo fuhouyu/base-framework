@@ -22,11 +22,14 @@ import cn.hutool.crypto.SmUtil;
 import cn.hutool.crypto.asymmetric.SM2;
 import cn.hutool.crypto.digest.SM3;
 import cn.hutool.crypto.symmetric.SM4;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.kms.exception.KmsException;
 import com.fuhouyu.framework.kms.properties.KmsDefaultProperties;
 import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.kms.service.impl.DefaultKmsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.engines.SM4Engine;
 import org.bouncycastle.crypto.macs.CMac;
@@ -39,6 +42,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -60,6 +64,7 @@ import java.util.Optional;
 @EnableConfigurationProperties(KmsDefaultProperties.class)
 @RequiredArgsConstructor
 @Configuration
+@Slf4j
 public class DefaultKmsConfiguration {
 
     private final KmsDefaultProperties properties;
@@ -163,10 +168,11 @@ public class DefaultKmsConfiguration {
     private SM2 generatorSm2() {
         KmsDefaultProperties.Sm2Properties sm2Properties = this.properties.getSm2();
         if (Boolean.FALSE.equals(sm2Properties.getAutoGenerate())) {
-            throw new KmsException("sm2 公私钥未设置，且未启用自动生成");
+            throw new KmsException("sm2 公私钥未设置");
         }
 
-        String parentPath = Optional.ofNullable(sm2Properties.getAutoGenerateLocalPath()).orElse("/tmp/keypair");
+        String parentPath = Optional.ofNullable(sm2Properties.getAutoGenerateLocalPath())
+                .orElse(SystemUtils.getJavaIoTmpDir().getAbsolutePath() + File.separator + "sm2");
         Path publicKeyPath = Path.of(parentPath, "publicKey");
         Path privateKeyPath = Path.of(parentPath, "privateKey");
         if (Files.exists(publicKeyPath) && Files.exists(privateKeyPath)) {
@@ -180,6 +186,8 @@ public class DefaultKmsConfiguration {
             SM2 sm2 = SmUtil.sm2();
             this.writeStrToPath(publicKeyPath, sm2.getPublicKeyBase64());
             this.writeStrToPath(privateKeyPath, sm2.getPrivateKeyBase64());
+            LoggerUtil.info(log, "sm2公钥地址:{}, sm2 私钥地址:{}",
+                    publicKeyPath, privateKeyPath);
             return sm2;
         } catch (IOException e) {
             throw new KmsException(e);
@@ -214,5 +222,4 @@ public class DefaultKmsConfiguration {
             throw new KmsException(e);
         }
     }
-
 }

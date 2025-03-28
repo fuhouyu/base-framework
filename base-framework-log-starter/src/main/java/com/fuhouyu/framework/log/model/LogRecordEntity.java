@@ -41,6 +41,8 @@ import java.util.Objects;
 @Setter
 public class LogRecordEntity {
 
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     /**
      * 模块名称
      */
@@ -55,6 +57,11 @@ public class LogRecordEntity {
      * 请求方法
      */
     private String requestMethod;
+
+    /**
+     * 请求ip
+     */
+    private String requestIp;
 
     /**
      * 操作类型
@@ -109,7 +116,7 @@ public class LogRecordEntity {
 
     public LogRecordEntity() {
         this.isSuccess = true;
-        this.operationTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.operationTime = LocalDateTime.now().format(DATE_TIME_FORMATTER);
         this.initRequest();
     }
 
@@ -122,6 +129,7 @@ public class LogRecordEntity {
             HttpServletRequest httpServletRequest = request.getHttpServletRequest();
             this.requestUri = httpServletRequest.getRequestURI();
             this.requestMethod = httpServletRequest.getMethod();
+            this.requestIp = request.getRequestIp();
         }
     }
 }

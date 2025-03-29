@@ -69,7 +69,7 @@ abstract class BaseTest {
 
                 @Override
                 public String getPassword() {
-                    return "{noop}admin";
+                    return "{sm3}$3mb29qZzcuSEhKSnU1LkpRbgQk6/3N6wriraK7V5V0SE74tuRB7TVNRiigXOiMu3JNE";
                 }
 
                 @Override

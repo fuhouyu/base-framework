@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.common.service;
+package com.fuhouyu.framework.common.function;
 
 import java.util.Map;
 

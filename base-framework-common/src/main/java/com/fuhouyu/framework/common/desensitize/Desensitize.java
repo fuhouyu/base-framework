@@ -13,44 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.database.annotaions;
+package com.fuhouyu.framework.common.desensitize;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.lang.annotation.*;
+
 
 /**
  * <p>
- * 字段加解密注解
+ * 脱敏注解
  * </p>
  *
  * @author fuhouyu
- * @since 2025/3/29 22:51
+ * @since 2025/3/30 19:18
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FieldCipher {
+@JacksonAnnotationsInside
+@JsonSerialize(using = ObjectDesensitizeSerializer.class)
+@Documented
+public @interface Desensitize {
 
     /**
-     * 加密算法
+     * 脱敏实现
      *
-     * @return 算法
+     * @return 脱敏具体的实现
      */
-    FieldCipher.Algorithm algorithm() default Algorithm.AES;
-
-
-    /**
-     * 算法枚举
-     */
-    enum Algorithm {
-        /**
-         * AES 对称算法
-         */
-        AES,
-        /**
-         * 非对称加密算法
-         */
-        RSA,
-    }
+    Class<? extends Desensitization<?>> desensitization();
 }

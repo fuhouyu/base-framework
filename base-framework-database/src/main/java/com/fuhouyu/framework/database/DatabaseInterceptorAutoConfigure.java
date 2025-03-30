@@ -18,8 +18,11 @@ package com.fuhouyu.framework.database;
 import com.fuhouyu.framework.database.handle.PrepareSqlHandle;
 import com.fuhouyu.framework.database.handle.SqlExpressionHandle;
 import com.fuhouyu.framework.database.handle.TenantExpressionHandle;
+import com.fuhouyu.framework.database.interceptor.FieldCipherInterceptor;
+import com.fuhouyu.framework.kms.service.KmsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.plugin.Interceptor;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -38,8 +41,9 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Configuration
-public class DatabaseInterceptorAutoConfigure {
+public class DatabaseInterceptorAutoConfigure implements InitializingBean {
 
+    private final KmsService kmsService;
 
     /**
      * 租户查询表达式处理
@@ -77,6 +81,19 @@ public class DatabaseInterceptorAutoConfigure {
     }
 
 
+    /**
+     * 字段加解密
+     *
+     * @return 字段加解密拦截器
+     */
+    @Bean
+    public Interceptor fieldCipher() {
+        return new FieldCipherInterceptor();
+    }
 
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        FieldCipherUtil.setKmsService(kmsService);
+    }
 }

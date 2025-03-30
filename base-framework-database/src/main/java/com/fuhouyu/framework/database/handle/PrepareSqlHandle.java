@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.framework.database.handle;
 
-import com.fuhouyu.framework.database.utils.MappedStatementUtil;
+import com.fuhouyu.framework.database.MappedStatementUtil;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.PlainSelect;

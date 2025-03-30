@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.framework.database;
 
+import com.fuhouyu.framework.database.annotaions.FieldCipher;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class Users {
 
     private Long id;
 
+    @FieldCipher
     private String username;
 
     private String password;

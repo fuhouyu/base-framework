@@ -47,18 +47,6 @@ import java.util.UUID;
  * @author fuhouyu
  * @since 2024/12/18 21:22
  */
-//@SpringBootTest(classes = {
-//        UserMapper.class,
-//        DataSourceAutoConfiguration.class,
-//        MybatisAutoConfiguration.class,
-//        DataSource.class,
-//        SqlSessionFactory.class,
-//        DatabaseInterceptorAutoConfigure.class,
-//        SqlInitializationAutoConfiguration.class,
-//})
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-//@TestPropertySource(locations = {"classpath:application.yaml"})
-//@MapperScan("com.fuhouyu.framework.database.mapper")
 @ExtendWith({SpringExtension.class})
 @SpringBootTest
 @SpringBootApplication
@@ -99,7 +87,7 @@ class DatabaseTest {
             List<Users> results = this.userMapper.queryList();
             Assertions.assertNotEquals(page.getTotal(), results.size() / 2);
         }
-        this.userMapper.queryById(123L);
+
     }
 
 

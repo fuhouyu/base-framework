@@ -29,11 +29,14 @@ module base.framework.database {
     requires pagehelper;
     requires java.desktop;
     requires spring.expression;
+    requires base.framework.kms.starter;
+    requires jakarta.annotation;
+    requires spring.beans;
 
+    opens com.fuhouyu.framework.database to spring.core, spring.context, org.mybatis, spring.beans;
     exports com.fuhouyu.framework.database.properties;
 
     exports com.fuhouyu.framework.database.interceptor;
     exports com.fuhouyu.framework.database.annotations;
-    opens com.fuhouyu.framework.database to spring.core, spring.context, org.mybatis;
     exports com.fuhouyu.framework.database.handle;
 }

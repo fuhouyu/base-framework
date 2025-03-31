@@ -29,7 +29,7 @@ module base.framework.common {
     exports com.fuhouyu.framework.common.exception;
     exports com.fuhouyu.framework.common.function;
     exports com.fuhouyu.framework.common.response;
-    exports com.fuhouyu.framework.common.service;
+    exports com.fuhouyu.framework.common.desensitize;
     exports com.fuhouyu.framework.common.utils;
     exports com.fuhouyu.framework.common.enums;
 

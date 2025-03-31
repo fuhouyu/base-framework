@@ -13,44 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.database.annotaions;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.fuhouyu.framework.common.desensitize;
 
 /**
  * <p>
- * 字段加解密注解
+ * 脱敏器接口
  * </p>
  *
  * @author fuhouyu
- * @since 2025/3/29 22:51
+ * @since 2025/3/30 18:02
  */
-@Target({ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface FieldCipher {
+public interface Desensitization<T> {
 
     /**
-     * 加密算法
+     * 数据脱敏
      *
-     * @return 算法
+     * @param target target
+     * @return 脱敏结果
      */
-    FieldCipher.Algorithm algorithm() default Algorithm.AES;
-
-
-    /**
-     * 算法枚举
-     */
-    enum Algorithm {
-        /**
-         * AES 对称算法
-         */
-        AES,
-        /**
-         * 非对称加密算法
-         */
-        RSA,
-    }
+    T desensitize(T target);
 }

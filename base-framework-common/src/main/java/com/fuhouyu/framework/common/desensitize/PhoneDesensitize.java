@@ -13,44 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.database.annotaions;
+package com.fuhouyu.framework.common.desensitize;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
+
+import java.lang.annotation.*;
 
 /**
  * <p>
- * 字段加解密注解
+ * 手机脱敏注解
  * </p>
  *
  * @author fuhouyu
- * @since 2025/3/29 22:51
+ * @since 2025/3/30 19:16
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FieldCipher {
-
-    /**
-     * 加密算法
-     *
-     * @return 算法
-     */
-    FieldCipher.Algorithm algorithm() default Algorithm.AES;
-
-
-    /**
-     * 算法枚举
-     */
-    enum Algorithm {
-        /**
-         * AES 对称算法
-         */
-        AES,
-        /**
-         * 非对称加密算法
-         */
-        RSA,
-    }
+@JacksonAnnotationsInside
+@Desensitize(desensitization = PhoneDesensitization.class)
+@Documented
+public @interface PhoneDesensitize {
 }

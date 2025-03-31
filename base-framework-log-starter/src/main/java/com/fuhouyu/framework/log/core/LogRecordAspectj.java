@@ -151,7 +151,7 @@ public class LogRecordAspectj {
                                                  JoinPoint joinPoint,
                                                  LogRecord logRecord,
                                                  Object objectResult) {
-        LogModule module = joinPoint.getClass().getAnnotation(LogModule.class);
+        LogModule module = joinPoint.getTarget().getClass().getAnnotation(LogModule.class);
         LogRecordEntity logRecordEntity = new LogRecordEntity();
         logRecordEntity.setModuleName(Objects.isNull(module) ? "" : module.value());
 

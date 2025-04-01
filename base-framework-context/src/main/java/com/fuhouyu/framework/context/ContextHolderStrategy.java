@@ -16,6 +16,7 @@
 
 package com.fuhouyu.framework.context;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +34,7 @@ public class ContextHolderStrategy {
     private static final ThreadLocal<ContextFactory> THREAD_LOCAL;
 
     static {
-        THREAD_LOCAL = new ThreadLocal<>();
+        THREAD_LOCAL = new TransmittableThreadLocal<>();
     }
 
     /**

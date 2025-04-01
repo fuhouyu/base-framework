@@ -113,6 +113,11 @@ public class LogRecordEntity {
      */
     private String systemName;
 
+    /**
+     * 错误信息
+     */
+    private String errorMessage;
+
 
     public LogRecordEntity() {
         this.isSuccess = true;

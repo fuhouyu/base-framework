@@ -166,7 +166,7 @@ public class LogRecordAspectj {
         Optional.ofNullable(exception)
                 .ifPresent(e -> {
                     logRecordEntity.setIsSuccess(false);
-                    logRecordEntity.setResponseData(exception.getMessage());
+                    logRecordEntity.setErrorMessage(exception.getMessage());
                 });
         String logContent = this.parseContent(logRecord.content(), context);
         String logContentEn = this.parseContent(logRecord.contentEn(), context);

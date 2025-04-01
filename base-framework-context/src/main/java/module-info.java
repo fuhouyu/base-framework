@@ -15,6 +15,7 @@
  */
 module base.framework.context {
     requires transitive base.framework.common;
+    requires transmittable.thread.local;
 
     exports com.fuhouyu.framework.context;
     exports com.fuhouyu.framework.context.exception;

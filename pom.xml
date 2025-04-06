@@ -128,6 +128,7 @@
         <ip2region.version>2.7.0</ip2region.version>
         <sts20150401.version>1.1.7</sts20150401.version>
         <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
+        <oshi-core.version>6.8.0</oshi-core.version>
         <!--数据库相关依赖-->
         <mybatis-spring-boot-starter.version>3.0.4</mybatis-spring-boot-starter.version>
         <pagehelper-spring-boot-starter.version>2.1.0</pagehelper-spring-boot-starter.version>
@@ -271,6 +272,11 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>transmittable-thread-local</artifactId>
                 <version>${transmittable-thread-local.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi-core.version}</version>
             </dependency>
             <!--内部依赖-->
             <dependency>

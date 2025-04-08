@@ -66,4 +66,12 @@ public class Ip2Region {
         this.city = split[3];
         this.isp = split[4];
     }
+
+    public Ip2Region() {
+        this.country = "0";
+        this.region = "0";
+        this.province = "0";
+        this.city = "0";
+        this.isp = "0";
+    }
 }

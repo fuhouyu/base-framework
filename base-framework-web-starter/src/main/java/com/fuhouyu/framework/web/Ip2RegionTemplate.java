@@ -15,12 +15,16 @@
  */
 package com.fuhouyu.framework.web;
 
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.web.model.Ip2Region;
+import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.util.Objects;
 
 /**
@@ -31,6 +35,7 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2025/3/11 22:22
  */
+@Slf4j
 public class Ip2RegionTemplate implements AutoCloseable {
 
     private static final String PATH_START = "classpath:";
@@ -72,6 +77,11 @@ public class Ip2RegionTemplate implements AutoCloseable {
      */
     public Ip2Region searchIp(String ip) {
         try {
+            InetAddress address = InetAddress.getByName(ip);
+            if (address instanceof Inet6Address) {
+                LoggerUtil.warn(log, "当前ip为ipv6: {}, 暂不支持解析为location", ip);
+                return new Ip2Region();
+            }
             return new Ip2Region(searcher.search(ip));
         } catch (Exception e) {
             throw new IllegalArgumentException(e);

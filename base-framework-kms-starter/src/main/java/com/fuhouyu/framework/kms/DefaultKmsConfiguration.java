@@ -23,13 +23,11 @@ import cn.hutool.crypto.asymmetric.SM2;
 import cn.hutool.crypto.digest.SM3;
 import cn.hutool.crypto.symmetric.SM4;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
-import com.fuhouyu.framework.kms.exception.KmsException;
 import com.fuhouyu.framework.kms.properties.KmsDefaultProperties;
 import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.kms.service.impl.DefaultKmsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SystemUtils;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.engines.SM4Engine;
 import org.bouncycastle.crypto.macs.CMac;
@@ -40,17 +38,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * <p>
@@ -63,7 +52,7 @@ import java.util.Optional;
 @ConditionalOnMissingBean(KmsService.class)
 @EnableConfigurationProperties(KmsDefaultProperties.class)
 @RequiredArgsConstructor
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Slf4j
 public class DefaultKmsConfiguration {
 
@@ -92,13 +81,14 @@ public class DefaultKmsConfiguration {
      */
     private SM2 initSm2() {
         KmsDefaultProperties.Sm2Properties sm2Properties = properties.getSm2();
-        String privateKey = sm2Properties.getPrivateKey();
-        String publicKey = sm2Properties.getPublicKey();
-        if (StringUtils.hasText(privateKey)
-                && StringUtils.hasText(publicKey)) {
-            return SmUtil.sm2(privateKey, publicKey);
+        byte[] publicKeyBytes = sm2Properties.getPublicKeyBytes();
+        byte[] privateKeyBytes = sm2Properties.getPrivateKeyBytes();
+        if (publicKeyBytes.length > 0 && privateKeyBytes.length > 0) {
+            return SmUtil.sm2(privateKeyBytes, publicKeyBytes);
         }
-        return this.generatorSm2();
+        // 生成sm2配置
+        LoggerUtil.warn(log, "sm2公私钥未设置，生成公私钥");
+        return sm2Properties.generateSm2();
     }
 
 
@@ -108,15 +98,13 @@ public class DefaultKmsConfiguration {
      * @return sm3
      */
     private SM3 initSm3() {
-        if (Objects.isNull(properties.getSm3())) {
+        KmsDefaultProperties.Sm3Properties sm3Properties = this.properties.getSm3();
+        byte[] saltBytes = sm3Properties.getSaltBytes();
+        if (saltBytes.length == 0) {
+            LoggerUtil.warn(log, "sm3盐值未设置，使用默认方法：SmUtil.sm3()");
             return SmUtil.sm3();
         }
-        KmsDefaultProperties.Sm3Properties sm3Properties = this.properties.getSm3();
-        String salt = sm3Properties.getSalt();
-        if (StringUtils.hasText(salt)) {
-            return SmUtil.sm3WithSalt(salt.getBytes(StandardCharsets.UTF_8));
-        }
-        return SmUtil.sm3();
+        return SmUtil.sm3WithSalt(saltBytes);
     }
 
     /**
@@ -126,21 +114,13 @@ public class DefaultKmsConfiguration {
      */
     private SM4 initSm4() {
         KmsDefaultProperties.Sm4Properties sm4 = properties.getSm4();
-        if (Objects.isNull(sm4)) {
-            return SmUtil.sm4();
-        }
-        String secretKey = sm4.getSecretKey();
+        byte[] secretKeyFileBytes = sm4.getSecretKeyBytes();
+        Assert.isTrue(secretKeyFileBytes.length == 16, "sm4密码位数不正确，必须为128位");
         Mode mode = sm4.getMode();
         Padding padding = sm4.getPadding();
-        if (Objects.nonNull(mode) && Objects.nonNull(padding)) {
-            if (StringUtils.hasText(secretKey)) {
-                Assert.isTrue(secretKey.length() == 16, "sm4密码位数不正确，必须为16长度的字符串");
-                return new SM4(mode.name(), padding.name(), secretKey.getBytes(StandardCharsets.UTF_8));
-            } else {
-                return new SM4(mode.name(), padding.name());
-            }
-        }
-        return StringUtils.hasText(secretKey) ? SmUtil.sm4(secretKey.getBytes(StandardCharsets.UTF_8)) : SmUtil.sm4();
+        return Objects.nonNull(mode) && Objects.nonNull(padding) ?
+                new SM4(mode.name(), padding.name(), secretKeyFileBytes) :
+                SmUtil.sm4(secretKeyFileBytes);
     }
 
 
@@ -159,67 +139,4 @@ public class DefaultKmsConfiguration {
         return cmac;
     }
 
-
-    /**
-     * 生成一个sm2配置
-     *
-     * @return sm2
-     */
-    private SM2 generatorSm2() {
-        KmsDefaultProperties.Sm2Properties sm2Properties = this.properties.getSm2();
-        if (Boolean.FALSE.equals(sm2Properties.getAutoGenerate())) {
-            throw new KmsException("sm2 公私钥未设置");
-        }
-
-        String parentPath = Optional.ofNullable(sm2Properties.getAutoGenerateLocalPath())
-                .orElse(SystemUtils.getJavaIoTmpDir().getAbsolutePath() + File.separator + "sm2");
-        Path publicKeyPath = Path.of(parentPath, "publicKey");
-        Path privateKeyPath = Path.of(parentPath, "privateKey");
-        if (Files.exists(publicKeyPath) && Files.exists(privateKeyPath)) {
-            return SmUtil.sm2(this.readFileAllString(privateKeyPath.toString()), this.readFileAllString(publicKeyPath.toString()));
-        }
-        try {
-            Path path = Path.of(parentPath);
-            Files.deleteIfExists(path);
-            Files.createDirectory(path);
-
-            SM2 sm2 = SmUtil.sm2();
-            this.writeStrToPath(publicKeyPath, sm2.getPublicKeyBase64());
-            this.writeStrToPath(privateKeyPath, sm2.getPrivateKeyBase64());
-            LoggerUtil.info(log, "sm2公钥地址:{}, sm2 私钥地址:{}",
-                    publicKeyPath, privateKeyPath);
-            return sm2;
-        } catch (IOException e) {
-            throw new KmsException(e);
-        }
-    }
-
-    /**
-     * 读取文件中的所有字符串
-     *
-     * @param filePath 文件路径
-     * @return 字符串信息
-     */
-    private String readFileAllString(String filePath) {
-        try {
-            return Files.readString(Paths.get(filePath));
-        } catch (IOException e) {
-            throw new KmsException(e);
-        }
-    }
-
-    /**
-     * 写入文本数据
-     *
-     * @param path 路径
-     * @param data 需要写入的数据
-     */
-    private void writeStrToPath(Path path, String data) {
-        try {
-            Files.writeString(path, data, StandardCharsets.UTF_8, StandardOpenOption.WRITE,
-                    StandardOpenOption.CREATE);
-        } catch (IOException e) {
-            throw new KmsException(e);
-        }
-    }
 }

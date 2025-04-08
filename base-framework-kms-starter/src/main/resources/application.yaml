@@ -1,5 +1,6 @@
-base:
-  framework:
-    kms-national:
-      sm2:
-        auto-generate: true
+#base:
+#  framework:
+#    kms-national:
+#      sm2:
+#        public-key-path: /Users/fuhouyu/Develop/IdeaProjects/base-framework/base-framework-kms-starter/sm2/publicKey
+#        private-key-path: /Users/fuhouyu/Develop/IdeaProjects/base-framework/base-framework-kms-starter/sm2/privateKey

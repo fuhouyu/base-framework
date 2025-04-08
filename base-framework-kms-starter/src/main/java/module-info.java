@@ -22,6 +22,7 @@ module base.framework.kms.starter {
     requires spring.boot.autoconfigure;
     requires spring.context;
     requires spring.core;
+    requires cn.hutool.core;
 
     exports com.fuhouyu.framework.kms;
     exports com.fuhouyu.framework.kms.exception;

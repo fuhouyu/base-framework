@@ -16,13 +16,27 @@
 
 package com.fuhouyu.framework.kms.properties;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.PathUtil;
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;
+import cn.hutool.crypto.SmUtil;
+import cn.hutool.crypto.asymmetric.SM2;
 import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.SecureRandom;
+import java.util.Objects;
 
 /**
  * <p>
@@ -36,6 +50,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ToString
 @Getter
 @Setter
+@Slf4j
 public class KmsDefaultProperties {
 
     /**
@@ -51,12 +66,12 @@ public class KmsDefaultProperties {
     /**
      * sm4配置
      */
-    private Sm3Properties sm3;
+    private Sm3Properties sm3 = new Sm3Properties();
 
     /**
      * sm4配置
      */
-    private Sm4Properties sm4;
+    private Sm4Properties sm4 = new Sm4Properties();
 
 
     /**
@@ -68,25 +83,71 @@ public class KmsDefaultProperties {
     public static class Sm2Properties {
 
         /**
-         * 未设置时，是否自动进行生成
-         */
-        private Boolean autoGenerate;
-
-        /**
-         * 自动生成后存储的路径
-         */
-        private String autoGenerateLocalPath;
-
-        /**
          * 公钥key
          */
         private String publicKey;
+
+        /**
+         * 公钥key路径
+         */
+        private String publicKeyPath;
 
         /**
          * 私钥key
          */
         private String privateKey;
 
+        /**
+         * 私钥key 路径
+         */
+        private String privateKeyPath;
+
+
+        /**
+         * 生成一个sm2
+         *
+         * @return sm2
+         */
+        public SM2 generateSm2() {
+            Path parentPath = Paths.get(SystemUtils.getUserHome().getAbsolutePath(), "sm2");
+            LoggerUtil.info(log, "自动生成的sm2密钥的文件证书路径:{}", parentPath);
+            Path publicPath = parentPath.resolve("publicKey");
+            Path privatePath = parentPath.resolve("privateKey");
+            if (Files.exists(publicPath) && Files.exists(privatePath)) {
+                return SmUtil.sm2(PathUtil.readBytes(privatePath), PathUtil.readBytes(publicPath));
+            }
+            return SmUtil.sm2();
+        }
+
+        /**
+         * 读取公钥
+         *
+         * @return 公钥字节
+         */
+        public byte[] getPublicKeyBytes() {
+            if (Objects.nonNull(publicKeyPath)) {
+                return FileUtil.readBytes(publicKeyPath);
+            }
+            if (Objects.nonNull(publicKey)) {
+                return publicKey.getBytes(StandardCharsets.UTF_8);
+            }
+            return new byte[0];
+        }
+
+        /**
+         * 读取私钥
+         *
+         * @return 私钥字节
+         */
+        public byte[] getPrivateKeyBytes() {
+            if (Objects.nonNull(privateKeyPath)) {
+                return FileUtil.readBytes(privateKeyPath);
+            }
+            if (Objects.nonNull(privateKey)) {
+                return privateKey.getBytes(StandardCharsets.UTF_8);
+            }
+            return new byte[0];
+        }
     }
 
 
@@ -103,6 +164,25 @@ public class KmsDefaultProperties {
          */
         private String salt;
 
+        /**
+         * 盐值路径
+         */
+        private String saltFilePath;
+
+
+        /**
+         * 获取盐值
+         *
+         * @return 盐值字节数组
+         */
+        public byte[] getSaltBytes() {
+            if (Objects.nonNull(saltFilePath)) {
+                return FileUtil.readBytes(saltFilePath);
+            }
+            return new byte[0];
+        }
+
+
     }
 
 
@@ -115,9 +195,14 @@ public class KmsDefaultProperties {
     public static class Sm4Properties {
 
         /**
-         * Sm4密钥，应用为16字符， 128位
+         * Sm4密钥字符串 128位
          */
         private String secretKey;
+
+        /**
+         * key 文件路径，优先取该值
+         */
+        private String keyFilePath;
 
         /**
          * 模式
@@ -129,5 +214,34 @@ public class KmsDefaultProperties {
          */
         private Padding padding;
 
+
+        /**
+         * 获取secretKey 字节
+         *
+         * @return 密钥字节数组
+         */
+        public byte[] getSecretKeyBytes() {
+            if (Objects.isNull(keyFilePath)) {
+                if (Objects.isNull(secretKey)) {
+                    LoggerUtil.warn(log, "未设置secret Key，生成默认值");
+                    return generateKey();
+                }
+                return secretKey.getBytes(StandardCharsets.UTF_8);
+            }
+            return FileUtil.readBytes(keyFilePath);
+        }
+
+        /**
+         * 生成key
+         *
+         * @return secretKey
+         */
+        private byte[] generateKey() {
+            SecureRandom secureRandom = new SecureRandom();
+            byte[] bytes = new byte[16];
+            secureRandom.nextBytes(bytes);
+            return bytes;
+        }
     }
+
 }

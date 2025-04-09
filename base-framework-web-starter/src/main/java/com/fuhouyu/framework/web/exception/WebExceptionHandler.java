@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.web.exception;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fuhouyu.framework.common.annotations.ParamErrorCode;
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
@@ -149,12 +149,12 @@ public class WebExceptionHandler {
             String errorLevel = ErrorLevelEnum.ERROR.name();
             Field declaredField = ReflectionUtils.findField(target.getClass(), field);
             if (Objects.nonNull(declaredField)) {
-                ParamErrorCode paramErrorCode = AnnotationUtils.findAnnotation(declaredField, ParamErrorCode.class);
-                if (Objects.isNull(paramErrorCode)) {
+                ParamErrorResponse paramErrorResponse = AnnotationUtils.findAnnotation(declaredField, ParamErrorResponse.class);
+                if (Objects.isNull(paramErrorResponse)) {
                     continue;
                 }
-                Class<? extends BaseResponseStatus> responseStatus = paramErrorCode.using();
-                Field fieldEnum = ReflectionUtils.findField(responseStatus, paramErrorCode.value());
+                Class<? extends BaseResponseStatus> responseStatus = paramErrorResponse.using();
+                Field fieldEnum = ReflectionUtils.findField(responseStatus, paramErrorResponse.value());
                 if (Objects.nonNull(fieldEnum)) {
                     BaseResponseStatus responseStatusEnum = (BaseResponseStatus) ReflectionUtils.getField(fieldEnum, responseStatus);
                     if (Objects.nonNull(responseStatusEnum)) {

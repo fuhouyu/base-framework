@@ -31,7 +31,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ParamErrorCode {
+public @interface ParamErrorResponse {
 
     /**
      * 需要使用的响应枚举

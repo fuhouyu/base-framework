@@ -16,6 +16,8 @@
 
 package com.fuhouyu.framework.common.response;
 
+import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
+
 /**
  * <p>
  * 响应状态
@@ -39,4 +41,13 @@ public interface BaseResponseStatus {
      * @return 响应信息
      */
     String getMessage();
+
+    /**
+     * 获取错误级别
+     *
+     * @return 错误级别
+     */
+    default ErrorLevelEnum getErrorLevel() {
+        return ErrorLevelEnum.ERROR;
+    }
 }

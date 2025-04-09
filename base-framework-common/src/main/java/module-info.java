@@ -23,6 +23,7 @@ module base.framework.common {
     requires transitive org.slf4j;
     requires transitive com.fasterxml.jackson.databind;
     requires io.swagger.v3.oas.annotations;
+    requires spring.core;
 
     exports com.fuhouyu.framework.common;
     exports com.fuhouyu.framework.common.constants;
@@ -30,6 +31,7 @@ module base.framework.common {
     exports com.fuhouyu.framework.common.function;
     exports com.fuhouyu.framework.common.response;
     exports com.fuhouyu.framework.common.desensitize;
+    exports com.fuhouyu.framework.common.annotations;
     exports com.fuhouyu.framework.common.utils;
     exports com.fuhouyu.framework.common.enums;
 

@@ -17,18 +17,23 @@
 package com.fuhouyu.framework.web.exception;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.common.response.BaseResponse;
+import com.fuhouyu.framework.common.response.BaseResponseStatus;
 import com.fuhouyu.framework.common.response.ResponseHelper;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
+import com.fuhouyu.framework.web.model.MethodArgumentErrorField;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -41,10 +46,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * <p>
@@ -127,17 +130,43 @@ public class WebExceptionHandler {
     /**
      * valid controller 入参验证时的异常拦截器
      *
-     * @param request 请求
-     * @param e       请求参数异常
      * @return 包装后的异常信息
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public BaseResponse<ErrorLevelEnum> methodArgumentNotValidExceptionHandler(ServletWebRequest request, MethodArgumentNotValidException e) {
-        Map<String, String> errorMessageMap = new TreeMap<>(String::compareToIgnoreCase);
-        for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
-            errorMessageMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+    public BaseResponse<List<MethodArgumentErrorField>> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        Object target = ex.getBindingResult().getTarget();
+        if (Objects.isNull(target)) {
+            return ResponseHelper.failed(ResponseStatusEnum.INVALID_PARAM);
         }
-        return ResponseHelper.failed(ResponseStatusEnum.INVALID_PARAM, JacksonUtil.writeValueAsString(errorMessageMap));
+
+        List<MethodArgumentErrorField> details = new ArrayList<>();
+
+        for (FieldError fieldError : fieldErrors) {
+            String field = fieldError.getField();
+            int code = ResponseStatusEnum.INVALID_PARAM.getCode();
+            String message = fieldError.getDefaultMessage();
+            String errorLevel = ErrorLevelEnum.ERROR.name();
+            Field declaredField = ReflectionUtils.findField(target.getClass(), field);
+            if (Objects.nonNull(declaredField)) {
+                ParamErrorResponse paramErrorResponse = AnnotationUtils.findAnnotation(declaredField, ParamErrorResponse.class);
+                if (Objects.isNull(paramErrorResponse)) {
+                    continue;
+                }
+                Class<? extends BaseResponseStatus> responseStatus = paramErrorResponse.using();
+                Field fieldEnum = ReflectionUtils.findField(responseStatus, paramErrorResponse.value());
+                if (Objects.nonNull(fieldEnum)) {
+                    BaseResponseStatus responseStatusEnum = (BaseResponseStatus) ReflectionUtils.getField(fieldEnum, responseStatus);
+                    if (Objects.nonNull(responseStatusEnum)) {
+                        code = responseStatusEnum.getCode();
+                        message = responseStatusEnum.getMessage();
+                        errorLevel = responseStatusEnum.getErrorLevel().name();
+                    }
+                }
+            }
+            details.add(new MethodArgumentErrorField(code, field, message, errorLevel));
+        }
+        return ResponseHelper.failed(ResponseStatusEnum.INVALID_PARAM, details);
     }
 
 
@@ -157,7 +186,7 @@ public class WebExceptionHandler {
             HttpMessageConversionException.class
     })
     public BaseResponse<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request,
-                                                           Exception e) {
+                                                                     Exception e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         return ResponseHelper.failed(ResponseStatusEnum.INVALID_PARAM, e.getMessage());
     }

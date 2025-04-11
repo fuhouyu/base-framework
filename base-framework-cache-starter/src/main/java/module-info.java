@@ -16,7 +16,7 @@
 module base.framework.cache.starter {
     // 透传
     requires transitive base.framework.common;
-    requires transitive com.github.benmanes.caffeine;
+    requires com.github.benmanes.caffeine;
     requires transitive com.fasterxml.jackson.annotation;
     requires transitive com.fasterxml.jackson.databind;
     requires org.checkerframework.checker.qual;

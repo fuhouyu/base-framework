@@ -26,12 +26,12 @@ module base.framework.log.starter {
 
     exports com.fuhouyu.framework.log;
     exports com.fuhouyu.framework.log.annotaions;
-
     exports com.fuhouyu.framework.log.enums;
     exports com.fuhouyu.framework.log.exception;
     exports com.fuhouyu.framework.log.model;
     exports com.fuhouyu.framework.log.properties;
     exports com.fuhouyu.framework.log.core;
+    exports com.fuhouyu.framework.log.serializer;
 
     opens com.fuhouyu.framework.log to spring.core;
 }

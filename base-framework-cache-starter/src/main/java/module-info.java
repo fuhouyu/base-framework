@@ -15,8 +15,9 @@
  */
 module base.framework.cache.starter {
     // 透传
+    requires static com.github.benmanes.caffeine;
+    requires static spring.data.redis;
     requires transitive base.framework.common;
-    requires com.github.benmanes.caffeine;
     requires transitive com.fasterxml.jackson.annotation;
     requires transitive com.fasterxml.jackson.databind;
     requires org.checkerframework.checker.qual;
@@ -24,7 +25,6 @@ module base.framework.cache.starter {
     requires spring.boot.autoconfigure;
     requires spring.context;
     requires spring.tx;
-    requires spring.data.redis;
 
     // 需要导出的类
     exports com.fuhouyu.framework.cache;

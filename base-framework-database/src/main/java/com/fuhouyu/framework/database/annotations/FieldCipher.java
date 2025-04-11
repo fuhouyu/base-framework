@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2020 the original author or authors.
+ * Copyright 2024-2025 fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.fuhouyu.framework.database.annotations;
 
 import java.lang.annotation.ElementType;
@@ -27,18 +26,18 @@ import java.lang.annotation.Target;
  * </p>
  *
  * @author fuhouyu
- * @since 2024/9/17 22:11
+ * @since 2025/3/29 22:51
  */
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CipherField {
+public @interface FieldCipher {
 
     /**
      * 加密算法
      *
      * @return 算法
      */
-    Algorithm algorithm() default Algorithm.AES;
+    FieldCipher.Algorithm algorithm() default Algorithm.AES;
 
 
     /**
@@ -53,13 +52,5 @@ public @interface CipherField {
          * 非对称加密算法
          */
         RSA,
-        /**
-         * HMAC
-         */
-        HMAC,
-        /**
-         * 摘要算法
-         */
-        DIGEST,
     }
 }

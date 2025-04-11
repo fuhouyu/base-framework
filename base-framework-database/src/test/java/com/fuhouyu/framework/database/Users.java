@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.framework.database;
 
-import com.fuhouyu.framework.database.annotaions.FieldCipher;
+import com.fuhouyu.framework.database.annotations.FieldCipher;
 import lombok.Data;
 
 import java.time.LocalDateTime;

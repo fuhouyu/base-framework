@@ -13,7 +13,17 @@ permissions: read-all
 jobs:
   ci:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
+      - name: "Cache Maven Repos"
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: "Set up JDK 21"
         uses: actions/setup-java@v4
         with:
@@ -22,16 +32,6 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-      - name: "Cache Maven Repos"
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       # 发布到中央仓库
       - name: Test And Publish Maven Repository
         run: mvn --batch-mode clean deploy

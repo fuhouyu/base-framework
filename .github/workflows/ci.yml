@@ -35,8 +35,8 @@ jobs:
           server-username: ${{ secrets.OSSRH_USERNAME }}
           server-password: ${{ secrets.OSSRH_TOKEN }}
       # 发布到中央仓库
-      - name: Test And Publish Maven Repository
-        run: mvn --batch-mode clean deploy
+      - name: Tests
+        run: mvn --batch-mode clean test
       - name: "Upload test results to Codecov"
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v4.2.0

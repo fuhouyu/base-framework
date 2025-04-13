@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2024 the original author or authors.
+ * Copyright 2024-2025 fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,6 +117,11 @@ public class LogRecordEntity {
      * 错误信息
      */
     private String errorMessage;
+
+    /**
+     * 消耗时间
+     */
+    private Long costTime;
 
 
     public LogRecordEntity() {

@@ -37,3 +37,9 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./*/target/site/jacoco/jacoco.xml
+      # 发布到中央仓库
+      - name: Publish to the Maven Central Repository
+        run: mvn deploy Central Repository
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}

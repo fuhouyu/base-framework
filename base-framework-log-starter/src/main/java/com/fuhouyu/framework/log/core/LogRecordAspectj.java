@@ -24,9 +24,9 @@ import com.fuhouyu.framework.log.exception.LogException;
 import com.fuhouyu.framework.log.model.LogRecordEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.expression.BeanFactoryResolver;
@@ -34,6 +34,7 @@ import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.ParseException;
+import org.springframework.util.StopWatch;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -81,28 +82,24 @@ public class LogRecordAspectj {
         this.beanFactoryResolver = beanFactoryResolver;
     }
 
-    /**
-     * 处理完请求后执行
-     *
-     * @param joinPoint  切点
-     * @param logRecord  log注解
-     * @param jsonResult 返回参数
-     */
-    @AfterReturning(pointcut = "@annotation(logRecord)", returning = "jsonResult")
-    public void doAfterReturning(JoinPoint joinPoint, com.fuhouyu.framework.log.annotaions.LogRecord logRecord, Object jsonResult) {
-        handleLog(joinPoint, logRecord, null, jsonResult);
-    }
+    @Around("@annotation(logRecord)")
+    public Object logAround(ProceedingJoinPoint joinPoint, LogRecord logRecord) throws Throwable {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
-    /**
-     * 拦截异常操作
-     *
-     * @param joinPoint 切点
-     * @param logRecord log注解
-     * @param e         异常
-     */
-    @AfterThrowing(value = "@annotation(logRecord)", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, LogRecord logRecord, Exception e) {
-        handleLog(joinPoint, logRecord, e, null);
+        Object result = null;
+        Throwable throwable = null;
+        try {
+            result = joinPoint.proceed();
+            return result;
+        } catch (Throwable e) {
+            throwable = e;
+            throw e;
+        } finally {
+            stopWatch.stop();
+            long cost = stopWatch.getTotalTimeMillis();
+            this.handleLog(joinPoint, logRecord, throwable, result, cost);
+        }
     }
 
     /**
@@ -113,9 +110,14 @@ public class LogRecordAspectj {
      * @param e            异常信息
      * @param objectResult 返回结果
      */
-    protected void handleLog(final JoinPoint joinPoint, LogRecord logRecord, final Exception e, Object objectResult) {
+    protected void handleLog(final JoinPoint joinPoint,
+                             LogRecord logRecord,
+                             final Throwable e,
+                             Object objectResult,
+                             long costTime) {
         LogRecordEntity logRecordEntity = this.buildLogRecordEntity(e,
                 joinPoint, logRecord, objectResult);
+        logRecordEntity.setCostTime(costTime);
         for (LogRecordStoreService logRecordStoreService : logRecordStoreServiceList) {
             logRecordStoreService.saveLogRecord(logRecordEntity);
         }
@@ -147,7 +149,7 @@ public class LogRecordAspectj {
      * @param joinPoint 切入点
      * @return 日志记录实体
      */
-    private LogRecordEntity buildLogRecordEntity(Exception exception,
+    private LogRecordEntity buildLogRecordEntity(Throwable exception,
                                                  JoinPoint joinPoint,
                                                  LogRecord logRecord,
                                                  Object objectResult) {

@@ -118,6 +118,11 @@ public class LogRecordEntity {
      */
     private String errorMessage;
 
+    /**
+     * 消耗时间
+     */
+    private Long costTime;
+
 
     public LogRecordEntity() {
         this.isSuccess = true;

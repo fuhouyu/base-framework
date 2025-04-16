@@ -149,7 +149,7 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
     @Override
     public V popFromList(K key) {
         List<V> v = this.getListByCache(key);
-        return v.remove(0);
+        return v.removeFirst();
     }
 
     @Override

@@ -15,9 +15,10 @@
  */
 package com.fuhouyu.framework.web.model;
 
-import lombok.Data;
+import lombok.Getter;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -27,51 +28,104 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2025/3/12 21:38
  */
-@Data
 public class Ip2Region {
 
     /**
-     * 国家
+     * location
+     * country | region | province | city | isp
      */
-    private String country;
+    @Getter
+    private final String location;
 
     /**
-     * 地区
+     * locations
      */
-    private String region;
+    private final String[] locations;
 
-    /**
-     * 省
-     */
-    private String province;
-
-    /**
-     * 市
-     */
-    private String city;
-
-    /**
-     * 运营商
-     */
-    private String isp;
 
     public Ip2Region(String location) {
-        if (Objects.isNull(location)) {
-            return;
-        }
-        String[] split = location.split("\\|");
-        this.country = split[0];
-        this.region = split[1];
-        this.province = split[2];
-        this.city = split[3];
-        this.isp = split[4];
+        this.location = location;
+        this.locations = location.split("\\|");
     }
 
     public Ip2Region() {
-        this.country = "0";
-        this.region = "0";
-        this.province = "0";
-        this.city = "0";
-        this.isp = "0";
+        this.location = null;
+        this.locations = null;
     }
+
+    @Override
+    public String toString() {
+        return location;
+    }
+
+    public String getCountry() {
+        if (this.location == null) {
+            return null;
+        }
+        return this.locations[0];
+    }
+
+    public String getRegion() {
+        if (this.location == null) {
+            return null;
+        }
+        return this.locations[1];
+    }
+
+    public String getProvince() {
+        if (this.location == null) {
+            return null;
+        }
+        return this.locations[2];
+    }
+
+    public String getCity() {
+        if (this.location == null) {
+            return null;
+        }
+        return this.locations[3];
+    }
+
+    public String getIsp() {
+        if (this.location == null) {
+            return null;
+        }
+        return this.locations[4];
+    }
+
+    /**
+     * 将非空的字段拼接成字符串
+     *
+     * @return 拼接后的字符串
+     */
+    public String toNotNullString() {
+        return this.toNotNullString("/");
+    }
+
+    /**
+     * 将非空的字段拼接成字符串
+     *
+     * @param delimiter 分隔符
+     * @return 拼接后的字符串
+     */
+    public String toNotNullString(String delimiter) {
+        List<String> parts = new ArrayList<>();
+        if (this.getCountry() != null) {
+            parts.add(this.getCountry());
+        }
+        if (this.getRegion() != null) {
+            parts.add(this.getRegion());
+        }
+        if (this.getProvince() != null) {
+            parts.add(this.getProvince());
+        }
+        if (this.getCity() != null) {
+            parts.add(this.getCity());
+        }
+        if (this.getIsp() != null) {
+            parts.add(this.getIsp());
+        }
+        return String.join(delimiter, parts);
+    }
+
 }

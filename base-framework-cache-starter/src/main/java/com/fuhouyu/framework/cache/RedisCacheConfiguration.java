@@ -48,13 +48,13 @@ import java.util.List;
  */
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 @Configuration
+@ConditionalOnProperty(prefix = CacheServiceProperties.PREFIX,
+        name = "cache-service-type",
+        havingValue = "redis")
 public class RedisCacheConfiguration {
 
 
     @Bean
-    @ConditionalOnProperty(prefix = CacheServiceProperties.PREFIX,
-            name = "cache-service-type",
-            havingValue = "redis")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();

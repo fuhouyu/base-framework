@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 module base.framework.security.starter {
+    requires static com.github.benmanes.caffeine;
+    requires static spring.data.redis;
     requires transitive base.framework.cache.starter;
     requires transitive base.framework.context;
     requires transitive com.fasterxml.jackson.annotation;
@@ -27,7 +29,6 @@ module base.framework.security.starter {
     requires spring.security.core;
     requires spring.security.crypto;
     requires spring.security.oauth2.core;
-    requires spring.data.redis;
     requires spring.web;
     requires spring.security.oauth2.client;
     requires spring.security.oauth2.jose;

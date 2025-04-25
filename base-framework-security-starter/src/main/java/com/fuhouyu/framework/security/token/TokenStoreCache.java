@@ -28,13 +28,17 @@ import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
+import org.springframework.util.CollectionUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -356,6 +360,18 @@ public class TokenStoreCache implements TokenStore {
             storeAuth2Token(auth2Token, authentication);
         }
         return auth2Token;
+    }
+
+    @Override
+    public Set<String> getTokens() {
+        Set<byte[]> keysBytes = this.cacheService.keys(serializeKey(AUTH + "*"));
+        if (CollectionUtils.isEmpty(keysBytes)) {
+            return Collections.emptySet();
+        }
+        return keysBytes.stream().map(keyBytes -> {
+            String key = new String(keyBytes, StandardCharsets.UTF_8);
+            return key.substring(key.lastIndexOf(SEPARATE) + 1);
+        }).collect(Collectors.toSet());
     }
 
     /**

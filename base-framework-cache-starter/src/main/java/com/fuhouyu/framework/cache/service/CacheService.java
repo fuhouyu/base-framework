@@ -276,4 +276,21 @@ public interface CacheService<K, V> {
      * @param keys 要删除的缓存键集合
      */
     void deleteMultiple(Set<K> keys);
+
+
+    /**
+     * 根据 key 的前缀模糊查询所有匹配的值。
+     *
+     * @param keyPrefix 键的前缀
+     * @return 匹配到的所有值集合
+     */
+    Set<K> keys(K keyPrefix);
+
+    /**
+     * 根据 key 的前缀模糊查询所有匹配的值。
+     *
+     * @param keyPrefix 键的前缀
+     * @return 匹配到的所有值集合
+     */
+    Set<byte[]> keys(byte[] keyPrefix);
 }

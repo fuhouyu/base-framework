@@ -22,6 +22,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -256,6 +257,21 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
         return (Set<V>) v;
     }
 
+    @Override
+    public Set<K> keys(K keyPrefix) {
+        return cache.asMap().keySet().stream()
+                .filter(k -> ((String) k).startsWith((String) keyPrefix))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Set<byte[]> keys(byte[] keyPrefix) {
+        return (Set<byte[]>) cache.asMap().keySet().stream()
+                .filter(key -> startsWith((byte[]) key, keyPrefix))
+                .collect(Collectors.toSet());
+    }
+
     /**
      * 添加键值过期时间
      *
@@ -269,5 +285,20 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
                 .ifPresent(e ->
                         e.put(key, value, timeout, unit)
                 );
+    }
+
+    /**
+     * 判断一个 byte[] 是否以另一个 byte[] 为前缀
+     */
+    private boolean startsWith(byte[] full, byte[] prefix) {
+        if (full == null || prefix == null || full.length < prefix.length) {
+            return false;
+        }
+        for (int i = 0; i < prefix.length; i++) {
+            if (full[i] != prefix[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

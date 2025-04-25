@@ -221,6 +221,19 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
         redisTemplate.delete(keys);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public Set<K> keys(K keyPrefix) {
+        return redisTemplate.keys((K) (keyPrefix.toString()));
+    }
+
+    @Override
+    public Set<byte[]> keys(byte[] keyPrefix) {
+        return redisTemplate.opsForValue().getOperations()
+                .execute((RedisCallback<Set<byte[]>>) connection ->
+                        connection.keyCommands().keys(keyPrefix));
+    }
+
     private byte[] doExecute(Function<RedisConnection, byte[]> redisConnectionFunction) {
         return redisTemplate.opsForValue().getOperations()
                 .execute((RedisCallback<byte[]>) connection -> {

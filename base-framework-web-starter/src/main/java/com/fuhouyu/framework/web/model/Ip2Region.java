@@ -19,6 +19,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -29,6 +30,8 @@ import java.util.List;
  * @since 2025/3/12 21:38
  */
 public class Ip2Region {
+
+    private static final String DEFAULT_LOCATION_STR = "0";
 
     /**
      * location
@@ -110,19 +113,19 @@ public class Ip2Region {
      */
     public String toNotNullString(String delimiter) {
         List<String> parts = new ArrayList<>();
-        if (this.getCountry() != null) {
+        if (!Objects.equals(this.getCountry(), DEFAULT_LOCATION_STR)) {
             parts.add(this.getCountry());
         }
-        if (this.getRegion() != null) {
+        if (!Objects.equals(this.getRegion(), DEFAULT_LOCATION_STR)) {
             parts.add(this.getRegion());
         }
-        if (this.getProvince() != null) {
+        if (!Objects.equals(this.getProvince(), DEFAULT_LOCATION_STR)) {
             parts.add(this.getProvince());
         }
-        if (this.getCity() != null) {
+        if (!Objects.equals(this.getCity(), DEFAULT_LOCATION_STR)) {
             parts.add(this.getCity());
         }
-        if (this.getIsp() != null) {
+        if (!Objects.equals(this.getIsp(), DEFAULT_LOCATION_STR)) {
             parts.add(this.getIsp());
         }
         return String.join(delimiter, parts);

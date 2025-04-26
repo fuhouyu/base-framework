@@ -38,6 +38,13 @@ public interface User extends Serializable, AdditionalInformationFunction {
     Long getId();
 
     /**
+     * 会话id
+     *
+     * @return 会话id
+     */
+    String getSessionId();
+
+    /**
      * 租户id
      *
      * @return 租户id

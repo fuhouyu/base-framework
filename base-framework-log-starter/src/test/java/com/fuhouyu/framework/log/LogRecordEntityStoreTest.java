@@ -64,6 +64,11 @@ class LogRecordEntityStoreTest {
             }
 
             @Override
+            public String getSessionId() {
+                return "";
+            }
+
+            @Override
             public Long getTenantId() {
                 return 0L;
             }

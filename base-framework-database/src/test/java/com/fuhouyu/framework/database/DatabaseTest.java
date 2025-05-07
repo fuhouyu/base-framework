@@ -15,12 +15,12 @@
  */
 package com.fuhouyu.framework.database;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
 import com.fuhouyu.framework.context.DefaultListableContextFactory;
 import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.database.mapper.UserMapper;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.page.PageMethod;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -82,11 +82,10 @@ class DatabaseTest {
             list.add(users);
         }
         this.userMapper.insert(list);
-        // 分页查询
-        try (Page<Object> page = PageMethod.startPage(1, 1)) {
-            List<Users> results = this.userMapper.queryList();
-            Assertions.assertNotEquals(page.getTotal(), results.size() / 2);
-        }
+        Page<Users> page = new Page<>(1, 10);
+        IPage<Users> results = this.userMapper.queryList(page);
+        Assertions.assertEquals(results.getTotal(), list.size() / 2);
+
 
     }
 

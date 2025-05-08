@@ -15,21 +15,18 @@
  */
 package com.fuhouyu.framework.database;
 
-import com.fuhouyu.framework.database.handle.PrepareSqlHandle;
-import com.fuhouyu.framework.database.handle.SqlExpressionHandle;
-import com.fuhouyu.framework.database.handle.TenantExpressionHandle;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.fuhouyu.framework.database.handler.CustomTenantLineHandler;
 import com.fuhouyu.framework.database.interceptor.FieldCipherInterceptor;
 import com.fuhouyu.framework.kms.service.KmsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.plugin.Interceptor;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-
-import java.util.List;
 
 /**
  * <p>
@@ -45,39 +42,24 @@ public class DatabaseInterceptorAutoConfigure implements InitializingBean {
 
     private final KmsService kmsService;
 
-    /**
-     * 租户查询表达式处理
-     *
-     * @return 租户查询表达式处理
-     */
-    @Bean
-    public SqlExpressionHandle tenantExpressionHandle() {
-        return new TenantExpressionHandle();
-    }
 
     /**
-     * sql处理
-     *
-     * @param sqlExpressionHandles sql表达式处理器
-     * @return sql处理拦截器
+     * mybatis plus 相关拦截器
+     * @return mybatis plus 拦截器
      */
     @Bean
-    @ConditionalOnBean(SqlExpressionHandle.class)
-    @ConditionalOnMissingBean(PrepareSqlHandle.class)
-    public Interceptor prepareHandleWithExpressions(List<SqlExpressionHandle> sqlExpressionHandles) {
-        return new PrepareSqlHandle(sqlExpressionHandles);
-    }
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        // 租户拦载器
+        TenantLineInnerInterceptor tenantInterceptor = new TenantLineInnerInterceptor();
+        tenantInterceptor.setTenantLineHandler(new CustomTenantLineHandler());
 
-    /**
-     * sql处理
-     *
-     * @return sql处理拦截器
-     */
-    @Bean
-    @Primary
-    @ConditionalOnMissingBean({SqlExpressionHandle.class, PrepareSqlHandle.class})
-    public Interceptor prepareHandleWithoutExpressions() {
-        return new PrepareSqlHandle();
+        interceptor.addInnerInterceptor(tenantInterceptor);
+        // 分页插件
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+        // 防止全表更新和删除
+        interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
+        return interceptor;
     }
 
 

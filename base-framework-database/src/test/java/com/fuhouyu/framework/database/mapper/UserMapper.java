@@ -15,8 +15,8 @@
  */
 package com.fuhouyu.framework.database.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fuhouyu.framework.database.Users;
-import com.fuhouyu.framework.database.annotations.TenantQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,9 +37,7 @@ public interface UserMapper {
 
     void delete(Long id);
 
-    @TenantQuery
     Users queryById(Long id);
 
-    @TenantQuery
-    List<Users> queryList();
+    IPage<Users> queryList(IPage<Users> page);
 }

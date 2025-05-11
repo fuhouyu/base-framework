@@ -2,12 +2,11 @@ name: ci
 on:
   workflow_dispatch:
   pull_request:
+    branches:
+      - develop
   push:
     branches:
-      - feature/1.0.0
-  pull_request_target:
-    branches: [ develop ]
-
+      - develop
 permissions: read-all
 
 jobs:

@@ -21,6 +21,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * <p>
  * 数据库配置类
@@ -43,5 +46,30 @@ public class DatabaseProperties {
      */
     private String transactionExpression;
 
+    /**
+     * 租户配置
+     */
+    private TenantProperties tenant = new TenantProperties();
 
+
+    @Getter
+    @Setter
+    @ToString
+    public static class TenantProperties {
+
+        /**
+         * 启用租户过滤
+         */
+        private boolean enabled;
+
+        /**
+         * 租户字段
+         */
+        private String column = "owner_tenant_id";
+
+        /**
+         * 忽略的表
+         */
+        private List<String> ignoreTables = Collections.emptyList();
+    }
 }

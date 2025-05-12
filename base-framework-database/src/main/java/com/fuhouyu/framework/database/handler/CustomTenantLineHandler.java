@@ -17,8 +17,14 @@ package com.fuhouyu.framework.database.handler;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.user.User;
+import com.fuhouyu.framework.database.properties.DatabaseProperties;
+import lombok.RequiredArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -28,20 +34,26 @@ import net.sf.jsqlparser.expression.LongValue;
  * @author fuhouyu
  * @since 2025/5/7 19:00
  */
+@RequiredArgsConstructor
 public class CustomTenantLineHandler implements TenantLineHandler {
+
+    private final DatabaseProperties.TenantProperties tenantProperties;
+
     @Override
     public Expression getTenantId() {
-        Long tenantId = ContextHolderStrategy.getContext().getUser().getTenantId();
+        User user = ContextHolderStrategy.getContext().getUser();
+        Long tenantId = user.getTenantId();
         return new LongValue(tenantId);
     }
 
     @Override
     public String getTenantIdColumn() {
-        return "owner_tenant_id";
+        return tenantProperties.getColumn();
     }
 
     @Override
     public boolean ignoreTable(String tableName) {
-        return TenantLineHandler.super.ignoreTable(tableName);
+        List<String> ignoreTables = tenantProperties.getIgnoreTables();
+        return ignoreTables.contains(tableName) || Objects.isNull(ContextHolderStrategy.getContext().getUser());
     }
 }

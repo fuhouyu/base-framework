@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.fuhouyu.framework.database.handler.CustomTenantLineHandler;
 import com.fuhouyu.framework.database.interceptor.FieldCipherInterceptor;
+import com.fuhouyu.framework.database.properties.DatabaseProperties;
 import com.fuhouyu.framework.kms.service.KmsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.plugin.Interceptor;
@@ -30,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>
- * database 拦截器自动装配类
+ * database 自动装配类
  * </p>
  *
  * @author fuhouyu
@@ -38,10 +39,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @RequiredArgsConstructor
 @Configuration
-public class DatabaseInterceptorAutoConfigure implements InitializingBean {
+public class DatabaseAutoConfigure implements InitializingBean {
 
     private final KmsService kmsService;
 
+    private final DatabaseProperties databaseProperties;
 
     /**
      * mybatis plus 相关拦截器
@@ -51,10 +53,12 @@ public class DatabaseInterceptorAutoConfigure implements InitializingBean {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 租户拦载器
-        TenantLineInnerInterceptor tenantInterceptor = new TenantLineInnerInterceptor();
-        tenantInterceptor.setTenantLineHandler(new CustomTenantLineHandler());
+        if (databaseProperties.getTenant().isEnabled()) {
+            TenantLineInnerInterceptor tenantInterceptor = new TenantLineInnerInterceptor();
+            tenantInterceptor.setTenantLineHandler(new CustomTenantLineHandler(databaseProperties.getTenant()));
+            interceptor.addInnerInterceptor(tenantInterceptor);
+        }
 
-        interceptor.addInnerInterceptor(tenantInterceptor);
         // 分页插件
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         // 防止全表更新和删除

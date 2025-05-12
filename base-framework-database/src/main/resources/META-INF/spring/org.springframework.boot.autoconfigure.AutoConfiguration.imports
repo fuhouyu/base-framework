@@ -1,2 +1,2 @@
 com.fuhouyu.framework.database.TransactionAutoConfigure
-com.fuhouyu.framework.database.DatabaseInterceptorAutoConfigure
+com.fuhouyu.framework.database.DatabaseAutoConfigure

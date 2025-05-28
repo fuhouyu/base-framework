@@ -20,11 +20,11 @@ module base.framework.cache.starter {
     requires transitive base.framework.common;
     requires transitive com.fasterxml.jackson.annotation;
     requires transitive com.fasterxml.jackson.databind;
-    requires org.checkerframework.checker.qual;
     requires spring.boot;
     requires spring.boot.autoconfigure;
     requires spring.context;
     requires spring.tx;
+    requires org.jspecify;
 
     // 需要导出的类
     exports com.fuhouyu.framework.cache;

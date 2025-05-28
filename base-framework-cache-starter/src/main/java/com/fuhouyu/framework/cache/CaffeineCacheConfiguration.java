@@ -22,7 +22,7 @@ import com.fuhouyu.framework.cache.service.impl.CaffeineCacheServiceImpl;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
-import org.checkerframework.checker.index.qual.NonNegative;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -54,12 +54,14 @@ public class CaffeineCacheConfiguration {
                     }
 
                     @Override
-                    public long expireAfterUpdate(String key, Object value, long currentTime, @NonNegative long currentDuration) {
+                    @NullMarked
+                    public long expireAfterUpdate(String key, Object value, long currentTime, long currentDuration) {
                         return currentDuration;
                     }
 
                     @Override
-                    public long expireAfterRead(String key, Object value, long currentTime, @NonNegative long currentDuration) {
+                    @NullMarked
+                    public long expireAfterRead(String key, Object value, long currentTime, long currentDuration) {
                         return currentDuration;
                     }
                 })

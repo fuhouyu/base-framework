@@ -112,7 +112,7 @@
         <spring-cloud-dependencies.version>2025.0.0</spring-cloud-dependencies.version>
         <spring-cloud-alibaba-dependencies.version>2023.0.3.3</spring-cloud-alibaba-dependencies.version>
         <springdoc-openapi-starter-webmvc-api.version>2.8.9</springdoc-openapi-starter-webmvc-api.version>
-        <spring-boot-starter-data-redis.version>3.5.0</spring-boot-starter-data-redis.version>
+        <spring-boot-starter-data-redis.version>3.5.1</spring-boot-starter-data-redis.version>
         <kryo5.version>5.6.0</kryo5.version>
         <jackson-bom.version>2.18.3</jackson-bom.version>
         <aliyun-sdk-oss.version>3.18.2</aliyun-sdk-oss.version>

@@ -87,6 +87,7 @@
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+        <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
 
         <spring-boot-maven-plugin.version>3.5.1</spring-boot-maven-plugin.version>
         <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
@@ -345,6 +346,20 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!--lombok 依赖-->
+                <plugin>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok-maven-plugin</artifactId>
+                    <version>${lombok-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>delombok</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -658,6 +673,20 @@
         </pluginManagement>
         <!--所有项目都依赖的 plugin-->
         <plugins>
+            <!--lombok 依赖-->
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>${lombok-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>

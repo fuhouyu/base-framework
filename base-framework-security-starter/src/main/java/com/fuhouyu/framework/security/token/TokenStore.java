@@ -205,7 +205,7 @@ public interface TokenStore {
      * @param authentication 认证信息
      * @return token实体
      */
-    OAuth2Token getTokenEntity(Authentication authentication);
+    OAuth2Token getAuth2Token(Authentication authentication);
 
     /**
      * 获取所有的token

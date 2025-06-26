@@ -153,7 +153,7 @@ public class TokenStoreCache implements TokenStore {
     public OAuth2Token createToken(Authentication authentication,
                                    long accessTokenExpireSeconds,
                                    long refreshTokenExpireSeconds) {
-        OAuth2Token auth2Token = this.getTokenEntity(
+        OAuth2Token auth2Token = this.getAuth2Token(
                 authentication);
         Instant now = Instant.now().atZone(zoneId).toInstant();
         // 如果存在则验证这个token是否过期，过期则进去删除。
@@ -343,7 +343,7 @@ public class TokenStoreCache implements TokenStore {
     }
 
     @Override
-    public OAuth2Token getTokenEntity(Authentication authentication) {
+    public OAuth2Token getAuth2Token(Authentication authentication) {
         String key = authenticationKeyGenerator.extractKey(authentication);
         byte[] serializedKey = this.serializeKey(AUTH_TO_ACCESS + key);
         byte[] bytes = cacheService.get(serializedKey);

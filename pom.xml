@@ -131,7 +131,7 @@
         <oshi-core.version>6.8.2</oshi-core.version>
         <fastexcel.version>1.2.0</fastexcel.version>
         <!--数据库相关依赖-->
-        <mybatis-spring-boot-starter.version>3.0.4</mybatis-spring-boot-starter.version>
+        <mybatis-spring-boot-starter.version>3.0.5</mybatis-spring-boot-starter.version>
         <pagehelper-spring-boot-starter.version>2.1.1</pagehelper-spring-boot-starter.version>
         <druid-spring-boot-starter.version>1.2.25</druid-spring-boot-starter.version>
         <mysql-connector-j.version>9.3.0</mysql-connector-j.version>

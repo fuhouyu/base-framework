@@ -17,7 +17,7 @@ package ${package.Assembler};
 
 import com.fuhouyu.framework.database.base.BaseAssembler;
 import ${package.Entity}.${entity};
-import ${package.VO}.${entity}VO;
+import ${package.DTO}.${entity}DTO;
 import org.mapstruct.Mapper;
 
 /**
@@ -29,6 +29,6 @@ import org.mapstruct.Mapper;
 * @since ${date}
 */
 @Mapper(componentModel = "spring")
-public interface ${entity}Assembler extends BaseAssembler<${entity}, ${entity}VO> {
+public interface ${entity}Assembler extends BaseAssembler<${entity}, ${entity}DTO> {
 
 }

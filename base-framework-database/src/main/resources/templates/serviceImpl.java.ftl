@@ -24,7 +24,6 @@ import ${package.DTO}.${entity}DTO;
 import ${package.Mapper}.${table.mapperName};
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
 
 <#if generateService>
 import ${package.Service}.${table.serviceName};
@@ -72,7 +71,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     @Override
     public PageResultDTO<${entity}DTO> page(${entity}PageQueryDTO pageQuery){
         LambdaQueryWrapper<${entity}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        return PageResultDTO.of(this.baseMapper.selectPage(pageQuery, lambdaQueryWrapper), ${entity}Assembler::toDTO);
+        return PageResultDTO.buildPageResult(this.baseMapper.selectPage(pageQuery, lambdaQueryWrapper), ${entity}Assembler::toDTO);
     }
 }
 </#if>

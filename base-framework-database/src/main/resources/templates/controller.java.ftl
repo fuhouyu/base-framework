@@ -84,7 +84,7 @@ public class ${table.controllerName} {
     */
     @PostMapping
     @Operation(summary = "保存${table.comment!}")
-    @LogRecord(operator = OperatorEnum.INSERT, riskType = RiskTypeEnum.HIGH_LEVEL)
+    @LogRecord(operationType = OperationTypeEnum.CREATE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Long> save${entity}(@RequestBody @Valid ${entity}DTO vo){
         return ResponseHelper.success(this.${table.serviceName?uncap_first}.save${entity}(vo));
     }
@@ -98,7 +98,7 @@ public class ${table.controllerName} {
     */
     @PutMapping("/{id}")
     @Operation(summary = "修改${table.comment!}")
-    @LogRecord(operator = OperatorEnum.UPDATE, riskType = RiskTypeEnum.HIGH_LEVEL)
+    @LogRecord(operationType = OperationTypeEnum.UPDATE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Boolean> update(
         @PathVariable("id") Long id, @RequestBody @Valid ${entity}DTO vo) {
         vo.setId(id);
@@ -137,7 +137,7 @@ public class ${table.controllerName} {
     */
     @DeleteMapping
     @Operation(summary = "批量删除${table.comment!}")
-    @LogRecord(operator = OperatorEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
+    @LogRecord(operationType = OperationTypeEnum.DELETE, riskType = RiskTypeEnum.HIGH_LEVEL)
     public BaseResponse<Void> deleteByIds(@RequestBody
     @NotEmpty(message = "请选择需要删除的${table.comment!}") List<Long> idsList) {
         this.${table.serviceName?uncap_first}.removeBatchByIds(idsList);

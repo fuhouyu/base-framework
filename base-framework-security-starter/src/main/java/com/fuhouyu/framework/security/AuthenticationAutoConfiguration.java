@@ -19,13 +19,11 @@ import com.fuhouyu.framework.security.core.ExtensionUserDetailsService;
 import com.fuhouyu.framework.security.core.passwordencoder.PasswordEncoderFactory;
 import com.fuhouyu.framework.security.core.provider.oidc.OidcAuthenticationProvider;
 import com.fuhouyu.framework.security.core.provider.refreshtoken.RefreshAuthenticationProvider;
-import com.fuhouyu.framework.security.properties.OpenPlatformProperties;
 import com.fuhouyu.framework.security.token.TokenStore;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -53,7 +51,6 @@ import java.util.List;
         SecurityAutoConfiguration.class,
         OAuth2ClientAutoConfiguration.class
 })
-@EnableConfigurationProperties(OpenPlatformProperties.class)
 public class AuthenticationAutoConfiguration {
 
     /**

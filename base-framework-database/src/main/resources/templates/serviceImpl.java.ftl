@@ -1,0 +1,63 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import ${package.Assembler}.${entity}Assembler;
+import com.fuhouyu.framework.database.base.PageResultDTO;
+import ${package.DTO}.${entity}PageQueryDTO;
+import ${package.DTO}.${entity}DTO;
+import ${package.Mapper}.${table.mapperName};
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
+
+<#if generateService>
+import ${package.Service}.${table.serviceName};
+</#if>
+import ${superServiceImplClassPackage};
+import org.springframework.stereotype.Service;
+
+/**
+ * <p>
+ * ${table.comment!} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+<#if kotlin>
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>()<#if generateService>, ${table.serviceName}</#if> {
+
+}
+<#else>
+@Slf4j
+@RequiredArgsConstructor
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}><#if generateService> implements ${table.serviceName}</#if> {
+
+    private final ${entity}Assembler ${entity}Assembler;
+
+    @Override
+    public Long save${entity}(${entity}DTO dto){
+        ${entity} entity = ${entity}Assembler.toEntity(dto);
+        this.baseMapper.insert(entity);
+        return entity.getId();
+    }
+
+    @Override
+    public Boolean update${entity}(${entity}DTO dto){
+        return this.baseMapper.updateById(${entity}Assembler.toEntity(dto)) > 0;
+    }
+
+    @Override
+    public ${entity}DTO getById(Long id){
+        return ${entity}Assembler.toDTO(this.baseMapper.selectById(id));
+    }
+
+    @Override
+    public PageResultDTO<${entity}DTO> page(${entity}PageQueryDTO pageQuery){
+        LambdaQueryWrapper<${entity}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        return PageResultDTO.of(this.baseMapper.selectPage(pageQuery, lambdaQueryWrapper), ${entity}Assembler::toDTO);
+    }
+}
+</#if>

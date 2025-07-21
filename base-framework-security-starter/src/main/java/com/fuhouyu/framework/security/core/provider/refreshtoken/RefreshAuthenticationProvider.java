@@ -42,8 +42,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class RefreshAuthenticationProvider implements AuthenticationProvider {
 
-    public static final String ACCOUNT_TYPE = "REFRESH_TOKEN";
-
     private final TokenStore tokenStore;
 
     @Override

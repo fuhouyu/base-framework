@@ -63,6 +63,11 @@
             <groupId>com.fuhouyu</groupId>
             <artifactId>base-framework-context</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <optional>true</optional>
+        </dependency>
 
     </dependencies>
 

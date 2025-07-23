@@ -15,10 +15,12 @@
  */
 package com.fuhouyu.framework.database;
 
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.fuhouyu.framework.database.handler.BaseEntityHandle;
 import com.fuhouyu.framework.database.handler.CustomTenantLineHandler;
 import com.fuhouyu.framework.database.interceptor.FieldCipherInterceptor;
 import com.fuhouyu.framework.database.properties.DatabaseProperties;
@@ -77,6 +79,14 @@ public class DatabaseAutoConfigure implements InitializingBean {
         return new FieldCipherInterceptor();
     }
 
+    /**
+     * baseEntity 处理器
+     * @return MetaObjectHandler
+     */
+    @Bean
+    public MetaObjectHandler baseEntityHandle() {
+        return new BaseEntityHandle();
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {

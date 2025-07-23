@@ -31,7 +31,6 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/9/24 18:25
  */
-@Component
 public class BaseEntityHandle implements MetaObjectHandler {
 
 

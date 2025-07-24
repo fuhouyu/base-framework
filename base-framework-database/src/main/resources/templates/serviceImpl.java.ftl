@@ -17,7 +17,7 @@ package ${package.ServiceImpl};
 
 import ${package.Entity}.${entity};
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import ${package.Assembler}.${entity}Assembler;
+import ${package.Assembler}.${entity?uncap_first}ssembler;
 import com.fuhouyu.framework.database.base.PageResultDTO;
 import ${package.DTO}.${entity}PageQueryDTO;
 import ${package.DTO}.${entity}DTO;
@@ -49,29 +49,29 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 @RequiredArgsConstructor
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}><#if generateService> implements ${table.serviceName}</#if> {
 
-    private final ${entity}Assembler ${entity}Assembler;
+    private final ${entity?uncap_first}ssembler ${entity?uncap_first}ssembler;
 
     @Override
     public Long save${entity}(${entity}DTO dto){
-        ${entity} entity = ${entity}Assembler.toEntity(dto);
+        ${entity} entity = ${entity?uncap_first}ssembler.toEntity(dto);
         this.baseMapper.insert(entity);
         return entity.getId();
     }
 
     @Override
     public Boolean update${entity}(${entity}DTO dto){
-        return this.baseMapper.updateById(${entity}Assembler.toEntity(dto)) > 0;
+        return this.baseMapper.updateById(${entity?uncap_first}ssembler.toEntity(dto)) > 0;
     }
 
     @Override
     public ${entity}DTO getById(Long id){
-        return ${entity}Assembler.toDTO(this.baseMapper.selectById(id));
+        return ${entity?uncap_first}ssembler.toDTO(this.baseMapper.selectById(id));
     }
 
     @Override
     public PageResultDTO<${entity}DTO> page(${entity}PageQueryDTO pageQuery){
         LambdaQueryWrapper<${entity}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        return PageResultDTO.buildPageResult(this.baseMapper.selectPage(pageQuery, lambdaQueryWrapper), ${entity}Assembler::toDTO);
+        return PageResultDTO.buildPageResult(this.baseMapper.selectPage(pageQuery, lambdaQueryWrapper), ${entity?uncap_first}ssembler::toDTO);
     }
 }
 </#if>

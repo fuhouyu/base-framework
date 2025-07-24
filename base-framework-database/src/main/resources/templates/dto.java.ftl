@@ -15,7 +15,7 @@
  */
 package ${package.DTO};
 
-import com.liwucheng.framework.common.vo.BaseDTO;
+import com.fuhouyu.framework.database.base.BaseDTO;
 import java.io.Serial;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;

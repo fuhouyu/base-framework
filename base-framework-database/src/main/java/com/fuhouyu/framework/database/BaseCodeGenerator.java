@@ -74,7 +74,7 @@ public abstract class BaseCodeGenerator {
                         .addInclude(this.getIncludeTableList())
                         .entityBuilder()
                         .enableLombok()
-                        .addIgnoreColumns("create_by", "update_by", "create_at", "update_at", "is_deleted")
+                        .addIgnoreColumns("created_by", "updated_by", "created_at", "updated_at", "is_deleted")
                         .superClass(BaseEntity.class)
                         .idType(IdType.ASSIGN_ID)
                         .enableSerialAnnotation()

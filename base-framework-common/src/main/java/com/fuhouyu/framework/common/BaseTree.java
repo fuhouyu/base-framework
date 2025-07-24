@@ -13,22 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ${package.Assembler};
+package com.fuhouyu.framework.common;
 
-import com.fuhouyu.framework.database.base.BaseAssembler;
-import ${package.Entity}.${entity};
-import ${package.DTO}.${entity}DTO;
-import org.mapstruct.Mapper;
+import java.util.List;
 
 /**
-* <p>
-* ${table.comment!} 转换器
-* </p>
-*
-* @author ${author}
-* @since ${date}
-*/
-@Mapper(componentModel = "spring")
-public interface ${entity}Assembler extends BaseAssembler<${entity}, ${entity}DTO> {
+ * <p>
+ * 树接口基类
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/10/9 17:35
+ */
+public interface BaseTree<T extends BaseTree<T>> {
+
+    /**
+     * 主键id
+     *
+     * @return id
+     */
+    Long getId();
+
+    /**
+     * 父类id
+     *
+     * @return 父级id
+     */
+    Long getParentId();
+
+    /**
+     * 获取子集
+     *
+     * @return 子集
+     */
+    List<T> getChildren();
+
+    /**
+     * 设置子集
+     *
+     * @param children 子集
+     */
+    void setChildren(List<T> children);
 
 }
+

@@ -23,6 +23,7 @@ import cn.hutool.crypto.digest.SM3;
 import cn.hutool.crypto.symmetric.SM4;
 import com.fuhouyu.framework.kms.exception.KmsException;
 import com.fuhouyu.framework.kms.service.KmsService;
+import lombok.RequiredArgsConstructor;
 import org.bouncycastle.crypto.macs.CMac;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -40,6 +41,7 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/8/17 16:14
  */
+@RequiredArgsConstructor
 public class DefaultKmsServiceImpl implements KmsService {
 
     /**
@@ -56,18 +58,6 @@ public class DefaultKmsServiceImpl implements KmsService {
      * 对称加密
      */
     private final SM4 sm4;
-
-    /**
-     * 用于计算完整性
-     */
-    private final CMac cmac;
-
-    public DefaultKmsServiceImpl(SM2 sm2, SM3 sm3, SM4 sm4, CMac cmac) {
-        this.sm2 = sm2;
-        this.sm3 = sm3;
-        this.sm4 = sm4;
-        this.cmac = cmac;
-    }
 
     @Override
     public String getAsymmetricPublicKey() {
@@ -95,7 +85,7 @@ public class DefaultKmsServiceImpl implements KmsService {
     }
 
     @Override
-    public boolean verifyDigest(byte[] signatureData, byte[] originData) {
+    public boolean verifySignature(byte[] signatureData, byte[] originData) {
         return Arrays.equals(this.sm3.digest(originData), signatureData);
     }
 
@@ -106,54 +96,11 @@ public class DefaultKmsServiceImpl implements KmsService {
     }
 
 
-
     @Override
     public byte[] symmetryDecrypt(byte[] encryptData) {
         return this.sm4.decrypt(encryptData);
     }
 
-    @Override
-    public String calculateMac(String... fields) {
-        return this.doCmac(fields);
-    }
-
-    @Override
-    public boolean verifyMac(String mac, String... fields) {
-        return Objects.equals(this.doCmac(fields), mac);
-    }
-
-    /**
-     * 计算mac值
-     *
-     * @param fields 列名
-     * @return base64加密后的字符串
-     */
-    private String doCmac(String... fields) {
-        byte[] byteArrays = this.combineByteArrays(fields);
-        cmac.update(byteArrays, 0, byteArrays.length);
-        // 计算最终的MAC值
-        byte[] mac = new byte[cmac.getMacSize()];
-        this.cmac.doFinal(mac, 0);
-        return Base64.getEncoder().encodeToString(mac);
-    }
-
-
-    /**
-     * 合并数组
-     *
-     * @param fields 列
-     * @return 合并后的数组
-     */
-    private byte[] combineByteArrays(String... fields) {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            for (String field : fields) {
-                outputStream.write(field.getBytes(StandardCharsets.UTF_8));
-            }
-            return outputStream.toByteArray();
-        } catch (Exception e) {
-            throw new KmsException(e);
-        }
-    }
 }
 
 

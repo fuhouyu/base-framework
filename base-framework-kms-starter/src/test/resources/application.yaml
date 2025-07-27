@@ -1,0 +1,29 @@
+base:
+  framework:
+    kms:
+      key-provider: db
+      key-ids:
+        asymmetric: 70784B1AB6D54DA599FC5D90E48CF929
+        symmetric: 90EC4F0D567D4A83879678E437DD581A
+        digest: E72BCFAA4A114A16BE2F2A3F0D77B1D5
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:kms_db;DB_CLOSE_DELAY=-1
+    username: username
+    password: password
+    type: com.alibaba.druid.pool.DruidDataSource
+  sql:
+    init:
+      mode: EMBEDDED
+      schema-locations: db/crypt_init.sql
+      username: username
+      password: password
+      data-locations: db/key_provider_test_data.sql
+  h2:
+    console:
+      enabled: true
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

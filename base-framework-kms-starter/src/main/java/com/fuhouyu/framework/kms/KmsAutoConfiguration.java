@@ -16,8 +16,18 @@
 
 package com.fuhouyu.framework.kms;
 
+import com.fuhouyu.framework.kms.enums.KeyTypeEnum;
+import com.fuhouyu.framework.kms.exception.KmsException;
+import com.fuhouyu.framework.kms.properties.KeyProperties;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Map;
 
 /**
  * <p>
@@ -27,9 +37,24 @@ import org.springframework.context.annotation.Import;
  * @author fuhouyu
  * @since 2024/8/17 17:27
  */
-@Import(DefaultKmsConfiguration.class)
-@Configuration
-public class KmsAutoConfiguration {
+@Import({
+        DbKmsProviderConfiguration.class,
+        DefaultKmsConfiguration.class
+})
+@EnableConfigurationProperties(KeyProperties.class)
+@RequiredArgsConstructor
+public class KmsAutoConfiguration implements InitializingBean {
+
+    private final KeyProperties keyProperties;
 
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Map<KeyTypeEnum, String> keyIds = keyProperties.getKeyIds();
+        for (KeyTypeEnum value : KeyTypeEnum.values()) {
+            if (!keyIds.containsKey(value)) {
+                throw new KmsException(String.format("%s 的keyId未配置", value));
+            }
+        }
+    }
 }

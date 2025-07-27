@@ -16,14 +16,29 @@
 
 package com.fuhouyu.framework.kms;
 
+import com.fuhouyu.framework.kms.provider.DbKeyProvider;
+import com.fuhouyu.framework.kms.provider.KeyProvider;
 import com.fuhouyu.framework.kms.service.KmsService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.Assert;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -34,9 +49,9 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/8/17 17:55
  */
-@SpringBootTest(classes = {
-        KmsAutoConfiguration.class
-})
+@SpringBootTest
+@SpringBootApplication
+@ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class KmsServiceTest {
 
@@ -46,7 +61,7 @@ class KmsServiceTest {
     private KmsService kmsService;
 
     @Test
-    void testKmsService() {
+    void testKmsService() throws IOException {
         // 非对称加密
         byte[] asymmetricEncrypt = kmsService.asymmetricEncrypt(ORIGIN_DATA.getBytes(StandardCharsets.UTF_8));
         Assert.isTrue(Objects.equals(ORIGIN_DATA,
@@ -54,14 +69,13 @@ class KmsServiceTest {
 
         // 签名
         byte[] signature = kmsService.signature(ORIGIN_DATA.getBytes(StandardCharsets.UTF_8));
-        Assert.isTrue(kmsService.verifyDigest(signature, ORIGIN_DATA.getBytes(StandardCharsets.UTF_8)),
+        Assert.isTrue(kmsService.verifySignature(signature, ORIGIN_DATA.getBytes(StandardCharsets.UTF_8)),
                 "摘要签名结果不一致");
 
         // 对称加解密
         byte[] symmetryEncrypt = kmsService.symmetryEncrypt(ORIGIN_DATA.getBytes(StandardCharsets.UTF_8));
         Assert.isTrue(Objects.equals(ORIGIN_DATA,
                 new String(kmsService.symmetryDecrypt(symmetryEncrypt))), "对称解密结果不一致");
-
-
     }
+
 }

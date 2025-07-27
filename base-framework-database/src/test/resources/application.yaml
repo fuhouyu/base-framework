@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:/tmp/h2/tenant_admin
+    url: jdbc:h2:mem:database_test
     username: username
     password: password
     type: com.alibaba.druid.pool.DruidDataSource
@@ -11,9 +11,6 @@ spring:
       schema-locations: db/migrate/test.sql
       username: username
       password: password
-  h2:
-    console:
-      enabled: true
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 logging:

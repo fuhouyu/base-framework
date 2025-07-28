@@ -15,16 +15,14 @@
  */
 package com.fuhouyu.framework.kms;
 
-import com.fuhouyu.framework.kms.mapper.AsymmetricKeyMapper;
-import com.fuhouyu.framework.kms.mapper.DigestKeyMapper;
-import com.fuhouyu.framework.kms.mapper.SymmetricKeyMapper;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
+import com.fuhouyu.framework.kms.exception.KmsException;
 import com.fuhouyu.framework.kms.properties.KeyProperties;
 import com.fuhouyu.framework.kms.provider.DbKeyProvider;
 import com.fuhouyu.framework.kms.provider.KeyProvider;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -33,8 +31,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -44,32 +44,43 @@ import java.nio.charset.StandardCharsets;
  * @author fuhouyu
  * @since 2025/7/27 10:30
  */
+@Slf4j
 @ConditionalOnProperty(prefix = KeyProperties.PREFIX,
         name = "key-provider", havingValue = "db")
-@MapperScan("com.fuhouyu.framework.kms.mapper")
 @Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
 public class DbKmsProviderConfiguration {
-
-    private final AsymmetricKeyMapper asymmetricKeyMapper;
-
-    private final DigestKeyMapper digestKeyMapper;
-
-    private final SymmetricKeyMapper symmetricKeyMapper;
 
     private final ResourceLoader resourceLoader;
 
     private final JdbcTemplate jdbcTemplate;
 
+    private final KeyProperties keyProperties;
 
     @PostConstruct
-    public void init() throws Exception {
-        Resource resource = resourceLoader.getResource("classpath:db/crypt_init.sql");
+    public void init() {
+        KeyProperties.DbKeyProperties db = this.keyProperties.getDb();
+        this.doInitSql(db.getSchemaInitPath());
+        this.doInitSql(db.getDataInitPath());
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean(KeyProvider.class)
+    public KeyProvider keyProvider() {
+        return new DbKeyProvider(jdbcTemplate);
+    }
+
+    private void doInitSql(String path) {
+        Resource resource = resourceLoader.getResource(path);
         if (!resource.exists()) {
-            throw new IllegalStateException("初始化 SQL 文件不存在: classpath:crypt_init.sql");
+            throw new IllegalStateException("初始化 SQL 文件不存在: " + path);
         }
         try (InputStream is = resource.getInputStream()) {
             String sql = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            Pattern multiLineComment = Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL);
+            sql = multiLineComment.matcher(sql).replaceAll("");
+            sql = sql.replaceAll("--.*?\\n", "");
             String[] sqlStatements = sql.split(";");
 
             for (String statement : sqlStatements) {
@@ -79,12 +90,9 @@ public class DbKmsProviderConfiguration {
                 }
             }
             // 执行sql
+        } catch (Exception e) {
+            LoggerUtil.error(log, "sql 初始化文件: [{}] 执行失败:  [{}]", path, e.getMessage(), e);
+            throw new KmsException(e);
         }
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(KeyProvider.class)
-    public KeyProvider keyProvider() {
-        return new DbKeyProvider(symmetricKeyMapper, asymmetricKeyMapper, digestKeyMapper);
     }
 }

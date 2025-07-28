@@ -18,13 +18,9 @@ package com.fuhouyu.framework.kms.provider;
 import com.fuhouyu.framework.kms.entity.AsymmetricKey;
 import com.fuhouyu.framework.kms.entity.DigestKey;
 import com.fuhouyu.framework.kms.entity.SymmetricKey;
-import com.fuhouyu.framework.kms.exception.KeyNotFoundException;
-import com.fuhouyu.framework.kms.mapper.AsymmetricKeyMapper;
-import com.fuhouyu.framework.kms.mapper.DigestKeyMapper;
-import com.fuhouyu.framework.kms.mapper.SymmetricKeyMapper;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Objects;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * <p>
@@ -37,38 +33,28 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class DbKeyProvider implements KeyProvider {
 
-    private final SymmetricKeyMapper symmetricKeyMapper;
+    private final JdbcTemplate jdbcTemplate;
 
-    private final AsymmetricKeyMapper asymmetricKeyMapper;
+    private static final String SYMMETRIC_KEY_SQL = "SELECT * FROM symmetric_key WHERE key_id = ?";
 
-    private final DigestKeyMapper digestKeyMapper;
+    private static final String ASYMMETRIC_KEY_SQL = "SELECT * FROM asymmetric_key WHERE key_id = ?";
+
+    private static final String DIGEST_KEY_SQL = "SELECT * FROM digest_key WHERE key_id = ?";
 
 
     @Override
     public SymmetricKey getSymmetricKey(String keyId) {
-        SymmetricKey key = symmetricKeyMapper.selectById(keyId);
-        if (Objects.isNull(key)) {
-            throw new KeyNotFoundException("对称密钥不存在，keyId: " + keyId);
-        }
-        return key;
+        return jdbcTemplate.queryForObject(SYMMETRIC_KEY_SQL,  new BeanPropertyRowMapper<>(SymmetricKey.class), keyId);
     }
 
     @Override
     public AsymmetricKey getAsymmetricKey(String keyId) {
-        AsymmetricKey key = asymmetricKeyMapper.selectById(keyId);
-        if (Objects.isNull(key)) {
-            throw new KeyNotFoundException("非对称密钥不存在，keyId: " + keyId);
-        }
-        return key;
+        return jdbcTemplate.queryForObject(ASYMMETRIC_KEY_SQL,  new BeanPropertyRowMapper<>(AsymmetricKey.class), keyId);
     }
 
     @Override
     public DigestKey getDigestKey(String keyId) {
-        DigestKey key = digestKeyMapper.selectById(keyId);
-        if (Objects.isNull(key)) {
-            throw new KeyNotFoundException("签名密钥不存在，keyId: " + keyId);
-        }
-        return key;
+        return jdbcTemplate.queryForObject(DIGEST_KEY_SQL,  new BeanPropertyRowMapper<>(DigestKey.class), keyId);
     }
 
 }

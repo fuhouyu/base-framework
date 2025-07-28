@@ -16,7 +16,7 @@
 module base.framework.web.starter {
     requires transitive base.framework.cache.starter;
     requires transitive base.framework.context;
-    requires transitive base.framework.kms.starter;
+    requires  base.framework.kms.starter;
     requires transitive jakarta.servlet;
     requires transitive jakarta.validation;
     requires io.swagger.v3.oas.annotations;

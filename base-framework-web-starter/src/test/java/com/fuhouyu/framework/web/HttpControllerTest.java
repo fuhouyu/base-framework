@@ -28,9 +28,13 @@ import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,13 +58,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2024/8/21 23:15
  */
 @SpringBootTest(classes = {
+        DataSourceAutoConfiguration.class,
+        JdbcTemplateAutoConfiguration.class,
         KmsAutoConfiguration.class,
         WebAutoConfiguration.class,
         CacheAutoConfiguration.class
 })
-@ExtendWith(SpringExtension.class)
-@TestPropertySource(locations = {"classpath:application.yaml"})
 @AutoConfigureMockMvc
+@TestPropertySource(locations = "classpath:application.yaml")
 @EnableWebMvc
 class HttpControllerTest {
 

@@ -22,11 +22,8 @@ import com.fuhouyu.framework.kms.properties.KeyProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 
 /**

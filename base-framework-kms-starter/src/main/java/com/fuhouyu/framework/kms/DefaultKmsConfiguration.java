@@ -72,11 +72,11 @@ public class DefaultKmsConfiguration {
     @Bean
     @Primary
     @ConditionalOnMissingBean(KmsService.class)
-    public KmsService kmsService() throws IOException {
+    public KmsService kmsService() {
         return new DefaultKmsServiceImpl(this.sm2(), this.sm3(), this.sm4());
     }
 
-    private SM2 sm2() throws IOException {
+    private SM2 sm2() {
         Map<KeyTypeEnum, String> keyIds = keyProperties.getKeyIds();
         String asymmetricKeyId = keyIds.get(KeyTypeEnum.ASYMMETRIC);
         AsymmetricKey asymmetricKey = this.keyProvider.getAsymmetricKey(asymmetricKeyId);

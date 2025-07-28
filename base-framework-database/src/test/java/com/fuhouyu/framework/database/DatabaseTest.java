@@ -50,7 +50,6 @@ import java.util.UUID;
 @ExtendWith({SpringExtension.class})
 @SpringBootTest
 @SpringBootApplication
-@MapperScan("com.fuhouyu.framework.database.mapper")
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @Disabled
 class DatabaseTest {

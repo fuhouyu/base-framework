@@ -50,4 +50,25 @@ public class KeyProperties {
      * Key id
      */
     private Map<KeyTypeEnum, String> keyIds = Collections.emptyMap();
+
+    /**
+     * db配置
+     */
+    private DbKeyProperties db = new DbKeyProperties();
+
+    @Getter
+    @Setter
+    @ToString
+    public static class DbKeyProperties {
+
+        /**
+         * 数据库初始化sql路径
+         */
+        private String schemaInitPath = "classpath:db/key_db_init.sql";
+
+        /**
+         * db初始化sql路径
+         */
+        private String dataInitPath = "classpath:db/key_db_data.sql";
+    }
 }

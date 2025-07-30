@@ -134,7 +134,7 @@
         <mybatis-spring-boot-starter.version>3.0.5</mybatis-spring-boot-starter.version>
         <pagehelper-spring-boot-starter.version>2.1.1</pagehelper-spring-boot-starter.version>
         <druid-spring-boot-starter.version>1.2.27</druid-spring-boot-starter.version>
-        <mysql-connector-j.version>9.3.0</mysql-connector-j.version>
+        <mysql-connector-j.version>9.4.0</mysql-connector-j.version>
         <postgresql.version>42.7.7</postgresql.version>
         <mybatis-plus-bom.version>3.5.12</mybatis-plus-bom.version>
     </properties>

@@ -19,10 +19,12 @@ package com.fuhouyu.framework.web;
 import com.fuhouyu.framework.common.constants.HttpRequestHeaderConstant;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.context.user.UserEntity;
+import com.fuhouyu.framework.kms.KmsAutoConfiguration;
 import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.web.filter.DefaultHttpBodyFilter;
 import com.fuhouyu.framework.web.filter.HttpBodyFilter;
 import com.fuhouyu.framework.web.handler.ParseHttpRequest;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -45,6 +47,7 @@ import java.util.Objects;
 @Import({WebMvcConfiguration.class, FormConfiguration.class, Ip2RegionConfiguration.class})
 @ComponentScan(basePackageClasses = WebAutoConfiguration.class)
 @ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.web.properties")
+@AutoConfigureAfter({KmsAutoConfiguration.class})
 public class WebAutoConfiguration {
 
 

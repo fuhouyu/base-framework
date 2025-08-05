@@ -24,10 +24,12 @@ import com.fuhouyu.framework.database.handler.BaseEntityHandle;
 import com.fuhouyu.framework.database.handler.CustomTenantLineHandler;
 import com.fuhouyu.framework.database.interceptor.FieldCipherInterceptor;
 import com.fuhouyu.framework.database.properties.DatabaseProperties;
+import com.fuhouyu.framework.kms.KmsAutoConfiguration;
 import com.fuhouyu.framework.kms.service.KmsService;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.plugin.Interceptor;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -41,6 +43,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @RequiredArgsConstructor
 @Configuration
+@AutoConfigureBefore({KmsAutoConfiguration.class})
 public class DatabaseAutoConfigure implements InitializingBean {
 
     private final KmsService kmsService;

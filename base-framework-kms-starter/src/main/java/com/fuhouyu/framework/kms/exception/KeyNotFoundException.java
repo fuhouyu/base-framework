@@ -13,37 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.kms.properties;
-
-import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+package com.fuhouyu.framework.kms.exception;
 
 /**
  * <p>
- * sm3 配置
+ * key 找不到异常
  * </p>
  *
  * @author fuhouyu
- * @since 2025/4/8 19:08
+ * @since 2025/7/26 22:24
  */
-@ToString
-@Getter
-@Setter
-@ConfigurationProperties(prefix = SM3Properties.PREFIX)
-public class SM3Properties {
-
-    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "kms.sm3";
-
-    /**
-     * 盐值
-     */
-    private String salt;
-
-    /**
-     * 盐值路径
-     */
-    private String saltFilePath;
+public class KeyNotFoundException extends RuntimeException {
+    public KeyNotFoundException(String message) {
+        super(message);
+    }
 }

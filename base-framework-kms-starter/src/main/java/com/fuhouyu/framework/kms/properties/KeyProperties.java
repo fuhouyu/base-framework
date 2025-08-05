@@ -16,44 +16,59 @@
 package com.fuhouyu.framework.kms.properties;
 
 import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
+import com.fuhouyu.framework.kms.enums.KeyTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * <p>
- * sm2配置
+ * 密钥配置
  * </p>
  *
  * @author fuhouyu
- * @since 2025/4/8 19:00
+ * @since 2025/7/26 22:41
  */
 @ToString
 @Getter
 @Setter
-@ConfigurationProperties(prefix = SM2Properties.PREFIX)
-public class SM2Properties {
+@ConfigurationProperties(prefix = KeyProperties.PREFIX)
+public class KeyProperties {
 
-    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "kms.sm2";
-
-    /**
-     * 公钥key
-     */
-    private String publicKey;
+    public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "kms";
 
     /**
-     * 公钥key路径
+     * 密钥提供者
      */
-    private String publicKeyPath;
+    private String keyProvider = "db";
 
     /**
-     * 私钥key
+     * Key id
      */
-    private String privateKey;
+    private Map<KeyTypeEnum, String> keyIds = Collections.emptyMap();
 
     /**
-     * 私钥key 路径
+     * db配置
      */
-    private String privateKeyPath;
+    private DbKeyProperties db = new DbKeyProperties();
+
+    @Getter
+    @Setter
+    @ToString
+    public static class DbKeyProperties {
+
+        /**
+         * 数据库初始化sql路径
+         */
+        private String schemaInitPath = "classpath:db/key_db_init.sql";
+
+        /**
+         * db初始化sql路径
+         */
+        private String dataInitPath = "classpath:db/key_db_data.sql";
+    }
 }

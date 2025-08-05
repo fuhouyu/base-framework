@@ -16,19 +16,26 @@
 
 package com.fuhouyu.framework.kms;
 
+import cn.hutool.crypto.SmUtil;
 import cn.hutool.crypto.asymmetric.SM2;
 import cn.hutool.crypto.digest.SM3;
 import cn.hutool.crypto.symmetric.SM4;
+import com.fuhouyu.framework.kms.entity.AsymmetricKey;
+import com.fuhouyu.framework.kms.entity.DigestKey;
+import com.fuhouyu.framework.kms.entity.SymmetricKey;
+import com.fuhouyu.framework.kms.enums.KeyTypeEnum;
+import com.fuhouyu.framework.kms.properties.KeyProperties;
+import com.fuhouyu.framework.kms.provider.KeyProvider;
 import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.kms.service.impl.DefaultKmsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.crypto.macs.CMac;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -40,14 +47,14 @@ import org.springframework.context.annotation.Primary;
  */
 @ConditionalOnMissingBean(KmsService.class)
 @RequiredArgsConstructor
-@Import({
-        SM2Configuration.class,
-        SM3Configuration.class,
-        SM4Configuration.class
-})
 @Configuration(proxyBeanMethods = false)
 @Slf4j
 public class DefaultKmsConfiguration {
+
+    private final KeyProvider keyProvider;
+
+    private final KeyProperties keyProperties;
+
 
     /**
      * 返回默认的bean
@@ -57,12 +64,30 @@ public class DefaultKmsConfiguration {
     @Bean
     @Primary
     @ConditionalOnMissingBean(KmsService.class)
-    public KmsService kmsService(SM2 sm2,
-                                 SM3 sm3,
-                                 SM4 sm4,
-                                 CMac cMac) {
-        return new DefaultKmsServiceImpl(sm2, sm3, sm4, cMac);
+    public KmsService kmsService() {
+        return new DefaultKmsServiceImpl(this.sm2(), this.sm3(), this.sm4());
     }
 
+    private SM2 sm2() {
+        Map<KeyTypeEnum, String> keyIds = keyProperties.getKeyIds();
+        String asymmetricKeyId = keyIds.get(KeyTypeEnum.ASYMMETRIC);
+        AsymmetricKey asymmetricKey = this.keyProvider.getAsymmetricKey(asymmetricKeyId);
+        return SmUtil.sm2(asymmetricKey.getPrivateKey(), asymmetricKey.getPublicKey());
+    }
+
+    private SM3 sm3() {
+        Map<KeyTypeEnum, String> keyIds = keyProperties.getKeyIds();
+        String digestKeyId = keyIds.get(KeyTypeEnum.DIGEST);
+        DigestKey digestKey = this.keyProvider.getDigestKey(digestKeyId);
+        return SmUtil.sm3WithSalt(digestKey.getSalt());
+    }
+
+
+    private SM4 sm4() {
+        Map<KeyTypeEnum, String> keyIds = keyProperties.getKeyIds();
+        String symmetricKeyId = keyIds.get(KeyTypeEnum.SYMMETRIC);
+        SymmetricKey symmetricKey = this.keyProvider.getSymmetricKey(symmetricKeyId);
+        return SmUtil.sm4(symmetricKey.getSecret());
+    }
 
 }

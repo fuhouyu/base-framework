@@ -1,7 +1,5 @@
 base:
   framework:
-    database:
-      transaction-expression: '*'
     kms:
       key-provider: db
       key-ids:
@@ -13,16 +11,7 @@ base:
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:database_test;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:kms_db;DB_CLOSE_DELAY=-1
     username: username
     password: password
     type: com.alibaba.druid.pool.DruidDataSource
-  sql:
-    init:
-      schema-locations: db/test.sql
-mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
-logging:
-  level:
-    org.springframework.jdbc.datasource.init: DEBUG
-    com.fuhouyu.framework.database.mapper: DEBUG

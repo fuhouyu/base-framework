@@ -71,7 +71,7 @@ public interface KmsService {
      * @param originData    原始数据
      * @return true/false
      */
-    boolean verifyDigest(byte[] signatureData,
+    boolean verifySignature(byte[] signatureData,
                          byte[] originData);
 
 
@@ -94,22 +94,5 @@ public interface KmsService {
      */
     byte[] symmetryDecrypt(byte[] encryptData);
 
-
-    /**
-     * 根据传入的filed值，计算mac值
-     *
-     * @param fields field列
-     * @return mac值
-     */
-    String calculateMac(String... fields);
-
-    /**
-     * 验证mac值
-     *
-     * @param mac    mac值
-     * @param fields field列
-     * @return true 验证成功
-     */
-    boolean verifyMac(String mac, String... fields);
 
 }

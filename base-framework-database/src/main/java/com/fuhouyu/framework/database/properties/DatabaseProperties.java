@@ -60,7 +60,7 @@ public class DatabaseProperties {
         /**
          * 启用租户过滤
          */
-        private boolean enabled;
+        private boolean enabled = true;
 
         /**
          * 租户字段

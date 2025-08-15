@@ -123,7 +123,7 @@
         <mapstruct-processor.version>1.6.3</mapstruct-processor.version>
         <jasypt-spring-boot-starter.version>3.0.5</jasypt-spring-boot-starter.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <bom.version>2.32.18</bom.version>
+        <bom.version>2.32.22</bom.version>
         <docs-integration-sdk.version>1.6.0</docs-integration-sdk.version>
         <ip2region.version>2.7.0</ip2region.version>
         <sts20150401.version>1.1.8</sts20150401.version>

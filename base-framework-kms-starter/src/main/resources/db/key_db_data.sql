@@ -26,7 +26,14 @@ VALUES ('90EC4F0D567D4A83879678E437DD581A',
         now(),
         now(),
         'admin',
-        'admin');
+        'admin')
+ON CONFLICT (key_id) DO UPDATE SET key_name   = EXCLUDED.key_name,
+                                   secret     = EXCLUDED.secret,
+                                   mode       = EXCLUDED.mode,
+                                   padding    = EXCLUDED.padding,
+                                   key_length = EXCLUDED.key_length,
+                                   updated_at = now(),
+                                   updated_by = EXCLUDED.updated_by;
 
 -- 插入示例：非对称密钥
 INSERT INTO asymmetric_key (key_id, key_name, public_key, private_key, key_length, created_at, updated_at, created_by,
@@ -39,7 +46,13 @@ VALUES ('70784B1AB6D54DA599FC5D90E48CF929',
         now(),
         now(),
         'admin',
-        'admin');
+        'admin')
+ON CONFLICT (key_id) DO UPDATE SET key_name    = EXCLUDED.key_name,
+                                   public_key  = EXCLUDED.public_key,
+                                   private_key = EXCLUDED.private_key,
+                                   key_length  = EXCLUDED.key_length,
+                                   updated_at  = now(),
+                                   updated_by  = EXCLUDED.updated_by;
 
 -- 插入示例：摘要密钥（盐值）
 INSERT INTO digest_key (key_id, key_name, salt, created_at, updated_at, created_by, updated_by)
@@ -49,6 +62,10 @@ VALUES ('E72BCFAA4A114A16BE2F2A3F0D77B1D5',
         now(),
         now(),
         'admin',
-        'admin');
+        'admin')
+ON CONFLICT (key_id) DO UPDATE SET key_name   = EXCLUDED.key_name,
+                                   salt       = EXCLUDED.salt,
+                                   updated_at = now(),
+                                   updated_by = EXCLUDED.updated_by;
 
 

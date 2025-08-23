@@ -120,13 +120,13 @@ public class ${table.controllerName} {
     /**
     * 分页查询${table.comment!}
     *
-    * @param pageQueryVo 分页信息
+    * @param pageQueryDTO 分页信息
     * @return 分页的${table.comment!}
     */
     @GetMapping("/list")
     @Operation(summary = "分页查询${table.comment!}")
-    public BaseResponse<PageResultDTO<${entity}DTO>> page(${entity}PageQueryDTO pageQueryVo) {
-        return ResponseHelper.success(this.${table.serviceName?uncap_first}.page(pageQueryVo));
+    public BaseResponse<PageResultDTO<${entity}DTO>> page(${entity}PageQueryDTO pageQueryDTO) {
+        return ResponseHelper.success(this.${table.serviceName?uncap_first}.page(pageQueryDTO));
     }
 
     /**

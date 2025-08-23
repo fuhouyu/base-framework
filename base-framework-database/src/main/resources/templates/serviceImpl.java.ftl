@@ -17,7 +17,7 @@ package ${package.ServiceImpl};
 
 import ${package.Entity}.${entity};
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import ${package.Assembler}.${entity?uncap_first}ssembler;
+import ${package.Assembler}.${entity}Assembler;
 import com.fuhouyu.framework.database.base.PageResultDTO;
 import ${package.DTO}.${entity}PageQueryDTO;
 import ${package.DTO}.${entity}DTO;
@@ -49,7 +49,7 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 @RequiredArgsConstructor
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}><#if generateService> implements ${table.serviceName}</#if> {
 
-    private final ${entity?uncap_first}ssembler ${entity?uncap_first}ssembler;
+    private final ${entity}Assembler ${entity?uncap_first}assembler;
 
     @Override
     public Long save${entity}(${entity}DTO dto){

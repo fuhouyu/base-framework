@@ -18,7 +18,6 @@ package ${package.DTO};
 import com.fuhouyu.framework.database.base.BaseDTO;
 import java.io.Serial;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -34,8 +33,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Schema(name = "${entity}DTO", description = "${table.comment!}DTO对象")
-@EqualsAndHashCode(callSuper = false)
+@Schema(description = "${table.comment!}DTO对象")
 public class ${entity}DTO extends BaseDTO {
 
 <#if entitySerialVersionUID>

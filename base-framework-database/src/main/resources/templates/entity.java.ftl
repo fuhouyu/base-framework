@@ -38,7 +38,6 @@ import lombok.EqualsAndHashCode;
 ${an.displayName}
 </#list>
 <#if superEntityClass??>
-@EqualsAndHashCode(callSuper = false)
 public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}></#if> {
 <#elseif activeRecord>
 public class ${entity} extends Model<${entity}> {

@@ -50,59 +50,85 @@ public abstract class BaseCodeGenerator {
             "src/main/java");
 
 
-    public boolean initCodeGenerator() {
-        String currentPackage = this.getClass().getPackage().getName();
+    public boolean doCodeGenerator() {
 
         FastAutoGenerator.create(url, username, password)
                 .globalConfig(builder -> builder
-                        .author("code generator")
+                        .author(this.getAuthor())
                         .outputDir(PARENT_PATH)
                         .commentDate("yyyy-MM-dd")
                         .dateType(DateType.TIME_PACK)
                         .disableOpenDir()
                 )
                 .packageConfig(builder -> builder
-                        .entity("domain")
-                        .mapper("mapper")
-                        .service("service")
-                        .parent(currentPackage)
-                        .serviceImpl("service.impl")
-                        .xml("mapper.xml")
-                        .pathInfo(Collections.singletonMap(OutputFile.xml, System.getProperty("user.dir") + "/src/main/resources/mapper"))
+                        .entity(this.getDomainPath())
+                        .mapper(this.getMapperPath())
+                        .service(this.getServicePath())
+                        .parent(this.getBasePackagePath())
+                        .serviceImpl(this.getServiceImplPath())
+                        .pathInfo(Collections.singletonMap(OutputFile.xml, this.getXmlPath()))
                 )
-                .strategyConfig(builder -> builder
-                        .addInclude(this.getIncludeTableList())
-                        .entityBuilder()
-                        .enableLombok()
-                        .addIgnoreColumns("created_by", "updated_by", "created_at", "updated_at", "is_deleted")
-                        .superClass(BaseEntity.class)
-                        .idType(IdType.ASSIGN_ID)
-                        .enableSerialAnnotation()
-                        // mapper
-                        .mapperBuilder()
-                        .enableBaseResultMap()
-                        .enableBaseColumnList()
-                        // controller 层
-                        .controllerBuilder()
-                        .enableRestStyle()
+                .strategyConfig(builder -> {
+                            builder
+                                    .addInclude(this.getIncludeTableList())
+                                    .entityBuilder()
+                                    .enableLombok()
+                                    .addIgnoreColumns(this.getIgnoreColumns())
+                                    .superClass(BaseEntity.class)
+                                    .idType(IdType.ASSIGN_ID)
+                                    .enableSerialAnnotation()
+                                    // mapper
+                                    .mapperBuilder()
+                                    .enableBaseResultMap()
+                                    .enableBaseColumnList()
+                                    // controller 层
+                                    .controllerBuilder()
+                                    .enableRestStyle();
+                            if (this.enabledFileOverride()) {
+                                builder.mapperBuilder()
+                                        .enableFileOverride()
+                                        .controllerBuilder()
+                                        .enableFileOverride()
+                                        .serviceBuilder()
+                                        .enableFileOverride()
+                                        .entityBuilder()
+                                        .enableFileOverride();
+                            }
+
+                        }
                 ).injectionConfig(cfg -> {
 
                     // vo
-                    cfg.customFile(fileBuilder -> fileBuilder
-                            .fileName("DTO.java")
-                            .packageName("dto")
-                            .templatePath("/templates/dto.java.ftl"));
+                    cfg.customFile(fileBuilder -> {
+                        fileBuilder
+                                .fileName("VO.java")
+                                .packageName(this.getVoPath())
+                                .templatePath("/templates/vo.java.ftl");
+                        if (this.enabledFileOverride()) {
+                            fileBuilder.enableFileOverride();
+                        }
+                    });
                     // assembler
-                    cfg.customFile(fileBuilder -> fileBuilder
-                            .fileName("Assembler.java")
-                            .packageName("assembler")
-                            .templatePath("/templates/assembler.java.ftl"));
+                    cfg.customFile(fileBuilder -> {
+                        fileBuilder
+                                .fileName("Assembler.java")
+                                .packageName(this.getAssemblerPath())
+                                .templatePath("/templates/assembler.java.ftl");
+                        if (this.enabledFileOverride()) {
+                            fileBuilder.enableFileOverride();
+                        }
+                    });
 
                     // pageQueryVO
-                    cfg.customFile(fileBuilder -> fileBuilder
-                            .fileName("PageQueryDTO.java")
-                            .packageName("dto")
-                            .templatePath("/templates/pageQueryDTO.java.ftl"));
+                    cfg.customFile(fileBuilder -> {
+                        fileBuilder
+                                .fileName("PageQueryVO.java")
+                                .packageName(this.getVoPath())
+                                .templatePath("/templates/pageQueryVO.java.ftl");
+                        if (this.enabledFileOverride()) {
+                            fileBuilder.enableFileOverride();
+                        }
+                    });
 
                 })
                 .templateEngine(new FreemarkerTemplateEngine())
@@ -116,4 +142,48 @@ public abstract class BaseCodeGenerator {
      * @return 表集合
      */
     public abstract List<String> getIncludeTableList();
+
+    public String getBasePackagePath() {
+        return this.getClass().getPackage().getName();
+    }
+
+    public String getDomainPath() {
+        return "domain";
+    }
+
+    public String getMapperPath() {
+        return "mapper";
+    }
+
+    public String getServicePath() {
+        return "service";
+    }
+
+    public String getServiceImplPath() {
+        return "service.impl";
+    }
+
+    public String getXmlPath() {
+        return System.getProperty("user.dir") + "/src/main/resources/mapper";
+    }
+
+    public String getVoPath() {
+        return "vo";
+    }
+
+    public String getAssemblerPath() {
+        return "assembler";
+    }
+
+    public String getAuthor() {
+        return "code generator";
+    }
+
+    public List<String> getIgnoreColumns() {
+        return List.of("created_by", "updated_by", "created_at", "updated_at", "is_deleted");
+    }
+
+    public boolean enabledFileOverride() {
+        return false;
+    }
 }

@@ -49,18 +49,18 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 @RequiredArgsConstructor
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}><#if generateService> implements ${table.serviceName}</#if> {
 
-    private final ${entity}Assembler ${entity?uncap_first}assembler;
+    private final ${entity}Assembler ${entity?uncap_first}Assembler;
 
     @Override
     public Long save${entity}(${entity}DTO dto){
-        ${entity} entity = ${entity?uncap_first}assembler.toEntity(dto);
+        ${entity} entity = ${entity?uncap_first}Assembler.toEntity(dto);
         this.baseMapper.insert(entity);
         return entity.getId();
     }
 
     @Override
     public Boolean update${entity}(${entity}DTO dto){
-        return this.baseMapper.updateById(${entity?uncap_first}assembler.toEntity(dto)) > 0;
+        return this.baseMapper.updateById(${entity?uncap_first}Assembler.toEntity(dto)) > 0;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     @Override
     public PageResultDTO<${entity}DTO> page(${entity}PageQueryDTO pageQuery){
         LambdaQueryWrapper<${entity}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        return PageResultDTO.buildPageResult(this.baseMapper.selectPage(pageQuery, lambdaQueryWrapper), ${entity?uncap_first}assembler::toDTO);
+        return PageResultDTO.buildPageResult(this.baseMapper.selectPage(pageQuery, lambdaQueryWrapper), ${entity?uncap_first}Assembler::toDTO);
     }
 }
 </#if>

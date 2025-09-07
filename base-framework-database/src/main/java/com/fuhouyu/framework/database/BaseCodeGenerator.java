@@ -98,12 +98,12 @@ public abstract class BaseCodeGenerator {
                         }
                 ).injectionConfig(cfg -> {
 
-                    // vo
+                    // dto
                     cfg.customFile(fileBuilder -> {
                         fileBuilder
-                                .fileName("VO.java")
+                                .fileName("DTO.java")
                                 .packageName(this.getVoPath())
-                                .templatePath("/templates/vo.java.ftl");
+                                .templatePath("/templates/dto.java.ftl");
                         if (this.enabledFileOverride()) {
                             fileBuilder.enableFileOverride();
                         }
@@ -119,12 +119,12 @@ public abstract class BaseCodeGenerator {
                         }
                     });
 
-                    // pageQueryVO
+                    // pageQueryDTO
                     cfg.customFile(fileBuilder -> {
                         fileBuilder
-                                .fileName("PageQueryVO.java")
+                                .fileName("PageQueryDTO.java")
                                 .packageName(this.getVoPath())
-                                .templatePath("/templates/pageQueryVO.java.ftl");
+                                .templatePath("/templates/pageQueryDTO.java.ftl");
                         if (this.enabledFileOverride()) {
                             fileBuilder.enableFileOverride();
                         }
@@ -168,7 +168,7 @@ public abstract class BaseCodeGenerator {
     }
 
     public String getVoPath() {
-        return "vo";
+        return "dto";
     }
 
     public String getAssemblerPath() {

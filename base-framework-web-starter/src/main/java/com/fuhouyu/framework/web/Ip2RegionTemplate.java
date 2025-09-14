@@ -18,7 +18,9 @@ package com.fuhouyu.framework.web;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.web.model.Ip2Region;
 import lombok.extern.slf4j.Slf4j;
+import org.lionsoul.ip2region.xdb.LongByteArray;
 import org.lionsoul.ip2region.xdb.Searcher;
+import org.lionsoul.ip2region.xdb.Version;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -65,7 +67,7 @@ public class Ip2RegionTemplate implements AutoCloseable {
             // 从宿主机文件系统加载
             dbBuffer = Searcher.loadVectorIndexFromFile(dbPath);
         }
-        return Searcher.newWithBuffer(dbBuffer);
+        return Searcher.newWithBuffer(Version.IPv4, new LongByteArray(dbBuffer));
     }
 
 

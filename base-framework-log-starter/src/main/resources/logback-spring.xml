@@ -16,29 +16,32 @@
 -->
 <configuration debug="false">
 
-    <logger name="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" level="INFO"/>
-    <!-- 彩色日志格式 -->
+    <!-- 彩色日志转换器 -->
     <conversionRule conversionWord="clr" class="org.springframework.boot.logging.logback.ColorConverter"/>
     <conversionRule conversionWord="wEx"
                     class="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
 
-    <contextName>logback</contextName>
-    <!--日志路径-->
+    <!-- 应用名称 -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="unknow"/>
+    <springProperty scope="context" name="LOG_LEVEL_ROOT" source="logging.level.root" defaultValue="INFO"/>
+
+    <!-- 日志路径 -->
     <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="log"/>
-    <!--应用名称-->
-    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
-    <!--控制面板日志输出-->
+    <!-- 控制台日志格式 -->
     <springProperty scope="context" name="LOG_CONSOLE_PATTERN" source="logging.pattern.console"
-                    defaultValue="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr([${APP_NAME}]){cyan} %clr([%X{traceId:-}]) %clr([%X{spanId:-}]) %clr([%thread]){faint} %clr(%logger{36}){blue} - %msg %n"/>
-    <!--日志输出-->
+                    defaultValue="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr([${APP_NAME}]){cyan} %clr([%X{traceId:-}]) %clr([%X{spanId:-}]) %clr([%thread]){faint} %clr(%logger{36}){blue} - %msg %wEx%n"/>
+    <!-- 文件日志格式 -->
     <springProperty scope="context" name="LOG_FILE_PATTERN" source="logging.pattern.file"
-                    defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [${APP_NAME}] [%thread] [%X{traceId}] [%X{spanId}] %logger{50} - %msg%n"/>
-    <!--文件最大历史记录-->
+                    defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [${APP_NAME}] [%thread] [%X{traceId}] [%X{spanId}] %logger{50} - %msg %wEx%n"/>
+    <!-- 日志保留天数 -->
     <springProperty scope="context" name="LOG_FILE_MAX_HISTORY" source="logging.logback.rollingpolicy.max-history"
                     defaultValue="7"/>
-    <!--日志文件最大存储大小 按照文件大小拆分，日志文件不能超过10M(默认)，若超过10M，日志文件会以索引0开始-->
+    <!-- 单个日志文件最大大小 -->
     <springProperty scope="context" name="LOG_FILE_MAX_SIZE" source="logging.logback.rollingpolicy.max-file-size"
                     defaultValue="10MB"/>
+
+    <property name="LOG_HOME" value="${LOG_PATH}/${APP_NAME}"/>
+
     <!-- 控制台输出 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -47,33 +50,48 @@
         </encoder>
     </appender>
 
-
-    <!-- Info日志文件输出 -->
+    <!-- INFO 日志文件 -->
     <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/${APP_NAME}/info.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/${APP_NAME}/info-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+        <file>${LOG_HOME}/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/info.%d{yyyy-MM-dd}.zip</fileNamePattern>
             <maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
-            <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
         </rollingPolicy>
-        <encoder>
-            <pattern>${LOG_FILE_PATTERN}</pattern>
-            <charset>UTF-8</charset>
-        </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
+        <encoder>
+            <pattern>${LOG_FILE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
     </appender>
 
-    <!-- Warn 日志输出 -->
-    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/${APP_NAME}/warn.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/${APP_NAME}/warn.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+    <!-- DEBUG 日志文件 -->
+    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/debug.%d{yyyy-MM-dd}.zip</fileNamePattern>
             <maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
-            <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>${LOG_FILE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- WARN 日志文件 -->
+    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/warn.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/warn.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>WARN</level>
@@ -86,14 +104,12 @@
         </encoder>
     </appender>
 
-
-    <!-- Error 日志输出 -->
+    <!-- ERROR 日志文件 -->
     <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/${APP_NAME}/error.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/${APP_NAME}/error.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+        <file>${LOG_HOME}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/error.%d{yyyy-MM-dd}.zip</fileNamePattern>
             <maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
-            <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
@@ -106,8 +122,10 @@
         </encoder>
     </appender>
 
-    <root level="DEBUG">
+    <!-- 根日志只输出到控制台，避免多文件冗余写入 -->
+    <root level="${LOG_LEVEL_ROOT}">
         <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="DEBUG_FILE"/>
         <appender-ref ref="INFO_FILE"/>
         <appender-ref ref="WARN_FILE"/>
         <appender-ref ref="ERROR_FILE"/>

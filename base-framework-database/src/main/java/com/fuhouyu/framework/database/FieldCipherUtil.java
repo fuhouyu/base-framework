@@ -15,12 +15,15 @@
  */
 package com.fuhouyu.framework.database;
 
+import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.database.annotations.FieldCipher;
 import com.fuhouyu.framework.kms.service.KmsService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -35,6 +38,7 @@ import java.util.*;
  * @author fuhouyu
  * @since 2025/3/29 23:08
  */
+@Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class FieldCipherUtil {
 
@@ -178,13 +182,22 @@ public class FieldCipherUtil {
      * @return 解密后的数据
      */
     private static String decrypt(String data, FieldCipher.Algorithm algorithm) {
-        byte[] decryptData;
-        if (Objects.requireNonNull(algorithm) == FieldCipher.Algorithm.RSA) {
-            decryptData = kmsService.asymmetricDecrypt(Base64.getDecoder().decode(data.getBytes(StandardCharsets.UTF_8)));
-        } else {
-            decryptData = kmsService.symmetryDecrypt(Base64.getDecoder().decode(data.getBytes(StandardCharsets.UTF_8)));
+        if (!StringUtils.hasText(data)) {
+            return data;
         }
-        return new String(decryptData);
+        byte[] decryptData;
+        try {
+            if (Objects.requireNonNull(algorithm) == FieldCipher.Algorithm.RSA) {
+                decryptData = kmsService.asymmetricDecrypt(Base64.getDecoder().decode(data.getBytes(StandardCharsets.UTF_8)));
+            } else {
+                decryptData = kmsService.symmetryDecrypt(Base64.getDecoder().decode(data.getBytes(StandardCharsets.UTF_8)));
+            }
+            return new String(decryptData);
+        } catch (Exception e) {
+            LoggerUtil.error(log, "[{}]数据解密失败:[{}],返回原始数据", data, e.getMessage());
+            return data;
+        }
+
     }
 
 

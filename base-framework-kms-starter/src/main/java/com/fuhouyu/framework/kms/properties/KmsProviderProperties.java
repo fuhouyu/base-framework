@@ -16,14 +16,10 @@
 package com.fuhouyu.framework.kms.properties;
 
 import com.fuhouyu.framework.common.constants.ConfigPropertiesConstant;
-import com.fuhouyu.framework.kms.enums.KeyTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * <p>
@@ -36,39 +32,21 @@ import java.util.Map;
 @ToString
 @Getter
 @Setter
-@ConfigurationProperties(prefix = KeyProperties.PREFIX)
-public class KeyProperties {
+@ConfigurationProperties(prefix = KmsProviderProperties.PREFIX)
+public class KmsProviderProperties {
 
     public static final String PREFIX = ConfigPropertiesConstant.PROPERTIES_PREFIX + "kms";
 
     /**
      * 密钥提供者
+     * local 本地的国密加解密
+     * wst 密码服务平台
      */
-    private String keyProvider = "db";
+    private String provider = "local";
 
     /**
-     * Key id
+     * 本地配置
      */
-    private Map<KeyTypeEnum, String> keyIds = Collections.emptyMap();
+    private LocalKmsProviderProperties local = new LocalKmsProviderProperties();
 
-    /**
-     * db配置
-     */
-    private DbKeyProperties db = new DbKeyProperties();
-
-    @Getter
-    @Setter
-    @ToString
-    public static class DbKeyProperties {
-
-        /**
-         * 数据库初始化sql路径
-         */
-        private String schemaInitPath = "classpath:db/key_db_init.sql";
-
-        /**
-         * db初始化sql路径
-         */
-        private String dataInitPath = "classpath:db/key_db_data.sql";
-    }
 }

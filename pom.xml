@@ -93,7 +93,7 @@
         <versions-maven-plugin.version>2.19.1</versions-maven-plugin.version>
         <clirr-maven-plugin.version>2.8</clirr-maven-plugin.version>
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
-        <extra-enforcer-rules.version>1.10.0</extra-enforcer-rules.version>
+        <extra-enforcer-rules.version>1.11.0</extra-enforcer-rules.version>
         <maven-javadoc-plugin.version>3.11.3</maven-javadoc-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
@@ -102,7 +102,7 @@
         <apache-rat-plugin.version>0.16.1</apache-rat-plugin.version>
         <easyj-maven-plugin.version>1.1.5</easyj-maven-plugin.version>
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
-        <native-maven-plugin.version>0.11.0</native-maven-plugin.version>
+        <native-maven-plugin.version>0.11.2</native-maven-plugin.version>
         <exec-maven-plugin.version>3.5.1</exec-maven-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
         <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
@@ -123,7 +123,7 @@
         <mapstruct-processor.version>1.6.3</mapstruct-processor.version>
         <jasypt-spring-boot-starter.version>3.0.5</jasypt-spring-boot-starter.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <bom.version>2.34.5</bom.version>
+        <bom.version>2.36.2</bom.version>
         <docs-integration-sdk.version>1.6.0</docs-integration-sdk.version>
         <ip2region.version>3.1.0</ip2region.version>
         <sts20150401.version>1.1.8</sts20150401.version>

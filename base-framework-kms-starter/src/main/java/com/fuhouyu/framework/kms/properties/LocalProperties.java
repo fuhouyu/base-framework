@@ -20,15 +20,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * <p>
- * 本地配置
+ * kms 本地配置
  * </p>
  *
  * @author fuhouyu
- * @since 2025/9/22 19:21
+ * @since 2026/1/28 19:52
  */
 @Data
 @ConfigurationProperties(prefix = KmsProviderProperties.PREFIX + ".local")
-public class LocalKmsProviderProperties {
+public class LocalProperties {
 
     /**
      * SM2 公钥/私钥

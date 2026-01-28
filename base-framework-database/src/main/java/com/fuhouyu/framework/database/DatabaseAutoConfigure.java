@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.plugin.Interceptor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,6 +45,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 @Configuration
 @AutoConfigureBefore({KmsAutoConfiguration.class})
+@EnableConfigurationProperties({DatabaseProperties.class})
 public class DatabaseAutoConfigure implements InitializingBean {
 
     private final KmsService kmsService;

@@ -20,7 +20,7 @@ import com.fuhouyu.framework.cache.service.CacheService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest(classes = {
         CacheAutoConfiguration.class,
-        RedisAutoConfiguration.class
+        DataRedisAutoConfiguration.class
 })
 @TestPropertySource(locations = {"classpath:application.yaml"})
 class CacheServiceTest {

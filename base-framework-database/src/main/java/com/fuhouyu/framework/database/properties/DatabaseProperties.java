@@ -42,11 +42,6 @@ public class DatabaseProperties {
 
 
     /**
-     * 事务表达式切面
-     */
-    private String transactionExpression;
-
-    /**
      * 租户配置
      */
     private TenantProperties tenant = new TenantProperties();

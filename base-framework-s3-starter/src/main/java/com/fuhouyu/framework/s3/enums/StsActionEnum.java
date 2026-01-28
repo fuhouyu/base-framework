@@ -42,7 +42,7 @@ public enum StsActionEnum {
     DeleteObject,
 
     /**
-     * 列出对象
+     * 列出桶里的对象
      */
-    ListObjects,
+    ListBucket,
 }

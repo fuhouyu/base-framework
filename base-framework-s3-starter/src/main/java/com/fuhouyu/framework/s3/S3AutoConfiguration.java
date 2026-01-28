@@ -51,7 +51,6 @@ public class S3AutoConfiguration implements InitializingBean {
 
     private final S3Properties s3Properties;
 
-
     /**
      * aws 证书提供者
      *

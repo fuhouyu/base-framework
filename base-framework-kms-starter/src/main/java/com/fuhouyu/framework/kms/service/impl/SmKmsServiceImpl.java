@@ -21,17 +21,11 @@ import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.SM2;
 import cn.hutool.crypto.digest.SM3;
 import cn.hutool.crypto.symmetric.SM4;
-import com.fuhouyu.framework.kms.exception.KmsException;
 import com.fuhouyu.framework.kms.service.KmsService;
 import lombok.RequiredArgsConstructor;
-import org.bouncycastle.crypto.macs.CMac;
 import org.bouncycastle.util.encoders.Hex;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Objects;
 
 /**
  * <p>
@@ -42,7 +36,7 @@ import java.util.Objects;
  * @since 2024/8/17 16:14
  */
 @RequiredArgsConstructor
-public class DefaultKmsServiceImpl implements KmsService {
+public class SmKmsServiceImpl implements KmsService {
 
     /**
      * 非对称加密

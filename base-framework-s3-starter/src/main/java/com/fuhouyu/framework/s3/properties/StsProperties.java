@@ -17,6 +17,7 @@ package com.fuhouyu.framework.s3.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import software.amazon.awssdk.regions.Region;
 
 /**
  * <p>
@@ -38,9 +39,9 @@ public class StsProperties {
     private String endpoint;
 
     /**
-     * 阿里云 oss 这些需要
+     * region
      */
-    private String region;
+    private String region = Region.AWS_GLOBAL.id();
 
     /**
      * 角色ARN
@@ -50,6 +51,6 @@ public class StsProperties {
     /**
      * sts token 过期时间，默认3600
      */
-    private Integer durationSeconds;
+    private Integer durationSeconds = 3600;
 
 }

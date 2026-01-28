@@ -18,10 +18,13 @@ package com.fuhouyu.framework.s3;
 import com.aliyuncs.IAcsClient;
 import com.fuhouyu.framework.s3.properties.S3Properties;
 import com.fuhouyu.framework.s3.properties.StsProperties;
+import com.fuhouyu.framework.s3.service.StsOperation;
 import com.fuhouyu.framework.s3.service.impl.AliOssStsOperationImpl;
 import com.fuhouyu.framework.s3.service.impl.S3StsOperationImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +38,7 @@ import java.net.URI;
 
 /**
  * <p>
- *
+ * sts自动装配类
  * </p>
  *
  * @author fuhouyu
@@ -74,8 +77,8 @@ public class S3StsConfiguration {
      * @return sts 操作类
      */
     @Bean
-    @ConditionalOnMissingClass({"com.aliyuncs.IAcsClient"})
-    public S3StsOperationImpl s3StsOperation(StsClient stsClient) {
+    @ConditionalOnMissingBean(StsOperation.class)
+    public StsOperation s3StsOperation(StsClient stsClient) {
         return new S3StsOperationImpl(stsClient, stsProperties, s3Properties);
     }
 
@@ -87,7 +90,8 @@ public class S3StsConfiguration {
      */
     @Bean
     @ConditionalOnClass(IAcsClient.class)
-    public AliOssStsOperationImpl aliStsOperation() {
+    @ConditionalOnMissingBean(StsOperation.class)
+    public StsOperation aliStsOperation() {
         return new AliOssStsOperationImpl(stsProperties, s3Properties);
     }
 }

@@ -22,6 +22,7 @@ import com.fuhouyu.framework.cache.service.impl.CaffeineCacheServiceImpl;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -49,7 +50,7 @@ public class CaffeineCacheConfiguration {
                 // 这里先行固定写死，永不过期
                 .expireAfter(new Expiry<String, Object>() {
                     @Override
-                    public long expireAfterCreate(String key, Object value, long currentTime) {
+                    public long expireAfterCreate(@NonNull String key, @NonNull Object value, long currentTime) {
                         return Long.MAX_VALUE;
                     }
 

@@ -20,16 +20,14 @@ import cn.hutool.crypto.asymmetric.SM2;
 import cn.hutool.crypto.digest.SM3;
 import cn.hutool.crypto.symmetric.SM4;
 import com.fuhouyu.framework.kms.properties.KmsProviderProperties;
-import com.fuhouyu.framework.kms.properties.LocalKmsProviderProperties;
+import com.fuhouyu.framework.kms.properties.LocalProperties;
 import com.fuhouyu.framework.kms.service.KmsService;
-import com.fuhouyu.framework.kms.service.impl.DefaultKmsServiceImpl;
+import com.fuhouyu.framework.kms.service.impl.SmKmsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 
 import java.util.Base64;
@@ -42,16 +40,13 @@ import java.util.Base64;
  * @author fuhouyu
  * @since 2025/7/27 10:30
  */
-@Slf4j
+@RequiredArgsConstructor
 @ConditionalOnProperty(prefix = KmsProviderProperties.PREFIX,
         name = "provider", havingValue = "local")
-@Configuration(proxyBeanMethods = false)
-@RequiredArgsConstructor
-@EnableConfigurationProperties(LocalKmsProviderProperties.class)
+@EnableConfigurationProperties(LocalProperties.class)
 public class LocalKmsConfiguration implements InitializingBean {
 
-    private final LocalKmsProviderProperties localProperties;
-
+    private final KmsProviderProperties kmsProviderProperties;
     /**
      * kms服务
      *
@@ -59,14 +54,16 @@ public class LocalKmsConfiguration implements InitializingBean {
      */
     @Bean
     public KmsService kmsService() {
+        LocalProperties localProperties = this.kmsProviderProperties.getLocal();
         SM2 sm2 = SmUtil.sm2(localProperties.getSm2().getPrivateKey(), localProperties.getSm2().getPublicKey());
         SM3 sm3 = SmUtil.sm3WithSalt(Base64.getDecoder().decode(localProperties.getSm3().getSecret()));
         SM4 sm4 = SmUtil.sm4(Base64.getDecoder().decode(localProperties.getSm4().getKey()));
-        return new DefaultKmsServiceImpl(sm2, sm3, sm4);
+        return new SmKmsServiceImpl(sm2, sm3, sm4);
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        LocalProperties localProperties = this.kmsProviderProperties.getLocal();
         Assert.hasText(localProperties.getSm2().getPrivateKey(), "SM2 私钥未配置");
         Assert.hasText(localProperties.getSm2().getPublicKey(), "SM2 公钥未配置");
         Assert.hasText(localProperties.getSm3().getSecret(), "SM3 密钥未配置");

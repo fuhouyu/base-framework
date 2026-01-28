@@ -47,6 +47,6 @@ public class KmsProviderProperties {
     /**
      * 本地配置
      */
-    private LocalKmsProviderProperties local = new LocalKmsProviderProperties();
+    private LocalProperties local = new LocalProperties();
 
 }

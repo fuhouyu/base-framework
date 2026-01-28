@@ -22,6 +22,7 @@ import com.fuhouyu.framework.s3.model.StsTokenResponse;
 import lombok.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -106,6 +107,10 @@ public interface StsOperation {
                                      @NonNull StsActionEnum... actionEnums) {
         List<String> resources = new ArrayList<>(objectKeys.size());
         for (String objectKey : objectKeys) {
+            if (Arrays.stream(actionEnums).anyMatch(actionEnum -> actionEnum == StsActionEnum.ListBucket)) {
+                resources.add(this.getPolicyResourcePrefix() + bucket + "/*");
+                break;
+            }
             resources.add(this.getPolicyResourcePrefix() + bucket + "/" + objectKey);
         }
         Collection<StsStatement> statements = new ArrayList<>(actionEnums.length);

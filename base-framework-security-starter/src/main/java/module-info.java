@@ -32,6 +32,7 @@ module base.framework.security.starter {
     requires spring.web;
     requires spring.security.oauth2.client;
     requires spring.security.oauth2.jose;
+    requires spring.boot.security.oauth2.client;
     opens com.fuhouyu.framework.security to spring.core;
 
     exports com.fuhouyu.framework.security.core.provider.refreshtoken;

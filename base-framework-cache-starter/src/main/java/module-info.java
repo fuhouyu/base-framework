@@ -25,6 +25,8 @@ module base.framework.cache.starter {
     requires spring.context;
     requires spring.tx;
     requires org.jspecify;
+    requires spring.boot.data.redis;
+    requires tools.jackson.databind;
 
     // 需要导出的类
     exports com.fuhouyu.framework.cache;

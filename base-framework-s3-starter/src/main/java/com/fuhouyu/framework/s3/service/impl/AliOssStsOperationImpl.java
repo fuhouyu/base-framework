@@ -39,7 +39,7 @@ import java.util.UUID;
 
 /**
  * <p>
- *
+ * 阿里云oss sts 操作类实现
  * </p>
  *
  * @author fuhouyu

@@ -67,7 +67,9 @@ public class Ip2RegionTemplate implements AutoCloseable {
             // 从宿主机文件系统加载
             dbBuffer = Searcher.loadVectorIndexFromFile(dbPath);
         }
-        return Searcher.newWithBuffer(Version.IPv4, new LongByteArray(dbBuffer));
+        LongByteArray longByteArray = new LongByteArray(dbBuffer.length);
+        longByteArray.append(dbBuffer);
+        return Searcher.newWithBuffer(Version.IPv4, longByteArray);
     }
 
 

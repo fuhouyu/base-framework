@@ -53,8 +53,6 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
         this.setOperations = redisTemplate.opsForSet();
     }
 
-    // ===== String Operations =====
-
     @Override
     public void set(byte[] key, byte[] value) {
         this.doExecute(redisConnection -> {
@@ -106,7 +104,26 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
 
     }
 
-    // ===== Hash Operations =====
+    @Override
+    public long increment(K key, long delta) {
+        Long result = redisTemplate.opsForValue().increment(key, delta);
+        return result != null ? result : 0L;
+    }
+
+    @Override
+    public long decrement(K key, long delta) {
+        return redisTemplate.opsForValue().decrement(key, delta);
+    }
+
+    @Override
+    public boolean setIfAbsent(K key, V value) {
+        return Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, value));
+    }
+
+    @Override
+    public boolean setIfAbsent(K key, V value, long timeout, TimeUnit unit) {
+        return Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, value, timeout, unit));
+    }
 
     @Override
     public void putHash(K key, K hashKey, V value) {
@@ -145,8 +162,6 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
         redisTemplate.expire(key, timeout, unit);
     }
 
-    // ===== List Operations =====
-
     @Override
     public void pushToList(K key, V value) {
         listOperations.rightPush(key, value);
@@ -167,8 +182,6 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
     public List<V> getList(K key) {
         return listOperations.range(key, 0, -1);
     }
-
-    // ===== Set Operations =====
 
     @Override
     @SuppressWarnings("unchecked")
@@ -193,11 +206,25 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
         setOperations.remove(key, value);
     }
 
-    // ===== Common Operations =====
+    @Override
+    public void addToZSet(K key, V value, double score) {
+        redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    @Override
+    public Set<V> rangeFromZSet(K key, long start, long end) {
+        return redisTemplate.opsForZSet().range(key, start, end);
+    }
+
+    @SafeVarargs
+    @Override
+    public final void removeFromZSet(K key, V... values) {
+        redisTemplate.opsForZSet().remove(key, (Object[]) values);
+    }
 
     @Override
     public boolean exists(K key) {
-        return Objects.isNull(redisTemplate.hasKey(key));
+        return redisTemplate.hasKey(key);
     }
 
     @Override
@@ -212,7 +239,7 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
 
     @Override
     public long size(K key) {
-        Long result = redisTemplate.opsForValue().size(key);
+        Long result = redisTemplate.opsForHash().size(key);
         return Objects.isNull(result) ? 0 : result;
     }
 
@@ -234,6 +261,17 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
                         connection.keyCommands().keys(keyPrefix));
     }
 
+    @Override
+    public long getExpire(K key, TimeUnit unit) {
+        return this.redisTemplate.getExpire(key, unit);
+    }
+
+    /**
+     * 执行 Redis 操作并确保连接被正确关闭。
+     *
+     * @param redisConnectionFunction Redis 连接操作函数
+     * @return 操作结果
+     */
     private byte[] doExecute(Function<RedisConnection, byte[]> redisConnectionFunction) {
         return redisTemplate.opsForValue().getOperations()
                 .execute((RedisCallback<byte[]>) connection -> {

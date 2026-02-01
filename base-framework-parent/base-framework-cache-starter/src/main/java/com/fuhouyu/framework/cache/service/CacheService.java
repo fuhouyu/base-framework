@@ -30,8 +30,6 @@ import java.util.concurrent.TimeUnit;
  */
 public interface CacheService<K, V> {
 
-    // ===== String Operations =====
-
     /**
      * 设置字符串值到缓存中。
      *
@@ -98,7 +96,43 @@ public interface CacheService<K, V> {
      */
     void delete(byte[] key);
 
-    // ===== Hash Operations =====
+    /**
+     * 原子自增操作。
+     *
+     * @param key 缓存键
+     * @param delta 增量（必须大于0）
+     * @return 自增后的值
+     */
+    long increment(K key, long delta);
+
+    /**
+     * 原子自减操作。
+     *
+     * @param key 缓存键
+     * @param delta 减量（必须大于0）
+     * @return 自减后的值
+     */
+    long decrement(K key, long delta);
+
+    /**
+     * 只有当键不存在时才设置值（SET IF NOT EXISTS）。
+     *
+     * @param key   缓存键
+     * @param value 缓存值
+     * @return 如果设置成功返回 true，如果键已存在返回 false
+     */
+    boolean setIfAbsent(K key, V value);
+
+    /**
+     * 只有当键不存在时才设置值，并指定过期时间。
+     *
+     * @param key     缓存键
+     * @param value   缓存值
+     * @param timeout 过期时间
+     * @param unit    时间单位
+     * @return 如果设置成功返回 true，如果键已存在返回 false
+     */
+    boolean setIfAbsent(K key, V value, long timeout, TimeUnit unit);
 
     /**
      * 将哈希值放入缓存中。
@@ -163,8 +197,6 @@ public interface CacheService<K, V> {
      */
     void putHashAll(K key, Map<K, V> map, long timeout, TimeUnit unit);
 
-    // ===== List Operations =====
-
     /**
      * 将值加入列表缓存中。
      *
@@ -198,8 +230,6 @@ public interface CacheService<K, V> {
      * @return 列表值
      */
     List<V> getList(K key);
-
-    // ===== Set Operations =====
 
     /**
      * 将值加入集合缓存中。
@@ -235,7 +265,33 @@ public interface CacheService<K, V> {
      */
     void removeFromSet(K key, V value);
 
-    // ===== Common Operations =====
+    /**
+     * 向有序集合中添加元素。
+     *
+     * @param key   缓存键
+     * @param value 成员值
+     * @param score 分数
+     */
+    void addToZSet(K key, V value, double score);
+
+    /**
+     * 获取有序集合中指定范围的成员（按分数从低到高）。
+     *
+     * @param key   缓存键
+     * @param start 开始位置
+     * @param end   结束位置
+     * @return 成员集合
+     */
+    Set<V> rangeFromZSet(K key, long start, long end);
+
+    /**
+     * 移除有序集合中的指定成员。
+     *
+     * @param key   缓存键
+     * @param values 成员值
+     */
+    void removeFromZSet(K key, V... values);
+
 
     /**
      * 检查缓存中是否存在指定键。
@@ -293,4 +349,13 @@ public interface CacheService<K, V> {
      * @return 匹配到的所有值集合
      */
     Set<byte[]> keys(byte[] keyPrefix);
+
+    /**
+     * 获取缓存键的剩余过期时间。
+     *
+     * @param key 缓存键
+     * @param unit 时间单位
+     * @return 剩余时间，-1 表示永不过期，-2 表示键不存在
+     */
+    long getExpire(K key, TimeUnit unit);
 }

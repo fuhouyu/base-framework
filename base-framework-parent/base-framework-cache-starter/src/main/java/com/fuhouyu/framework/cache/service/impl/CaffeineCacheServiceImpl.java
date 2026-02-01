@@ -18,9 +18,14 @@ package com.fuhouyu.framework.cache.service.impl;
 
 
 import com.fuhouyu.framework.cache.service.CacheService;
+import com.fuhouyu.framework.common.utils.NumberFormatUtil;
 import com.github.benmanes.caffeine.cache.Cache;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -34,13 +39,11 @@ import java.util.stream.Collectors;
  */
 public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
 
-
     private final Cache<K, V> cache;
 
     public CaffeineCacheServiceImpl(Cache<K, V> cache) {
         this.cache = cache;
     }
-
 
     @Override
     @SuppressWarnings("unchecked")
@@ -272,6 +275,103 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public long increment(K key, long delta) {
+        Object result = cache.asMap().compute(key, (k, v) -> {
+            long currentValue = (v instanceof Number) ? ((Number) v).longValue() : 0L;
+            return (V) Long.valueOf(currentValue + delta);
+        });
+        return ((Number) result).longValue();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public long decrement(K key, long delta) {
+        Object result = cache.asMap().compute(key, (k, v) -> {
+            long currentValue = 0L;
+            if (v instanceof Number) {
+                currentValue = ((Number) v).longValue();
+            } else if (v instanceof String numberStr) {
+                currentValue = NumberFormatUtil.toLong(numberStr, 0L);
+            }
+            long newValue = currentValue - delta;
+
+            return (V) Long.valueOf(newValue);
+        });
+
+        return ((Number) result).longValue();
+    }
+
+    @Override
+    public boolean setIfAbsent(K key, V value) {
+        V existing = cache.getIfPresent(key);
+        if (existing == null) {
+            cache.put(key, value);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean setIfAbsent(K key, V value, long timeout, TimeUnit unit) {
+        V existing = cache.getIfPresent(key);
+        if (existing == null) {
+            this.addPolicyExpireTime(key, value, timeout, unit);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void addToZSet(K key, V value, double score) {
+        NavigableSet<ZSetEntry<V>> zset = (NavigableSet<ZSetEntry<V>>) cache.asMap()
+                .computeIfAbsent(key, k -> (V) new ConcurrentSkipListSet<ZSetEntry<V>>());
+        ZSetEntry<V> entry = new ZSetEntry<>(value, score);
+        zset.remove(entry);
+        zset.add(entry);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Set<V> rangeFromZSet(K key, long start, long end) {
+        V v = cache.getIfPresent(key);
+        if (!(v instanceof NavigableSet)) {
+            return Collections.emptySet();
+        }
+
+        NavigableSet<ZSetEntry<V>> zSet = (NavigableSet<ZSetEntry<V>>) v;
+        // 分页截取
+        return zSet.stream()
+                .skip(Math.max(0, start))
+                .limit(end < 0 ? Long.MAX_VALUE : (end - start + 1))
+                .map(ZSetEntry::getValue)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void removeFromZSet(K key, V... values) {
+        V v = cache.getIfPresent(key);
+        if (v instanceof NavigableSet && values != null) {
+            NavigableSet<ZSetEntry<V>> zSet = (NavigableSet<ZSetEntry<V>>) v;
+            for (V val : values) {
+                zSet.removeIf(entry -> Objects.equals(entry.getValue(), val));
+            }
+        }
+    }
+
+    @Override
+    public long getExpire(K key, TimeUnit unit) {
+        return cache.policy().expireVariably()
+                // 2. map 返回 Optional<OptionalLong>
+                .map(policy -> policy.getExpiresAfter(key, unit))
+                // 3. 如果 policy 存在，处理 OptionalLong；否则返回 -2
+                .map(optionalLong -> optionalLong.orElse(-1L))
+                .orElse(-2L);
+    }
+
     /**
      * 添加键值过期时间
      *
@@ -282,8 +382,9 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
      */
     private void addPolicyExpireTime(K key, V value, long timeout, TimeUnit unit) {
         cache.policy().expireVariably()
-                .ifPresent(e ->
-                        e.put(key, value, timeout, unit)
+                .ifPresent(e -> {
+                            V ignored = e.put(key, value, timeout, unit);
+                        }
                 );
     }
 
@@ -300,5 +401,27 @@ public class CaffeineCacheServiceImpl<K, V> implements CacheService<K, V> {
             }
         }
         return true;
+    }
+
+    /**
+     * ZSet 内部存储条目
+     */
+    @Getter
+    @AllArgsConstructor
+    @EqualsAndHashCode(of = "value")
+    private static class ZSetEntry<V> implements Comparable<ZSetEntry<V>> {
+        private final V value;
+        private final double score;
+
+        @Override
+        public int compareTo(ZSetEntry<V> o) {
+            // 先按分数排序
+            int comp = Double.compare(this.score, o.score);
+            if (comp != 0) {
+                return comp;
+            }
+            // 分数相同时，按值的 toString 排序（保证唯一性）
+            return Integer.compare(System.identityHashCode(this.value), System.identityHashCode(o.value));
+        }
     }
 }

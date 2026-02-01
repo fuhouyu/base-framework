@@ -49,6 +49,26 @@ public class RequestEntity implements Request {
     }
 
     /**
+     * 请求id
+     */
+    private String requestId;
+
+    /**
+     * 请求方法
+     */
+    private String requestMethod;
+
+    /**
+     * 请求uri
+     */
+    private String requestUri;
+
+    /**
+     * 请求时间
+     */
+    private long requestTime;
+
+    /**
      * 请求
      */
     private HttpServletRequest httpServletRequest;

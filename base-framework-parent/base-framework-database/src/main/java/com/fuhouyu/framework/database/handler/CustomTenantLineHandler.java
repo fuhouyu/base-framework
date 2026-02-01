@@ -16,7 +16,7 @@
 package com.fuhouyu.framework.database.handler;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
-import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.ContextHolder;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.database.properties.DatabaseProperties;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class CustomTenantLineHandler implements TenantLineHandler {
 
     @Override
     public Expression getTenantId() {
-        User user = ContextHolderStrategy.getContext().getUser();
+        User user = ContextHolder.getContext().getUser();
         Long tenantId = user.getTenantId();
         return new LongValue(tenantId);
     }
@@ -54,6 +54,6 @@ public class CustomTenantLineHandler implements TenantLineHandler {
     @Override
     public boolean ignoreTable(String tableName) {
         List<String> ignoreTables = tenantProperties.getIgnoreTables();
-        return ignoreTables.contains(tableName) || Objects.isNull(ContextHolderStrategy.getContext().getUser());
+        return ignoreTables.contains(tableName) || Objects.isNull(ContextHolder.getContext().getUser());
     }
 }

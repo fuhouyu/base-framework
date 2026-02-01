@@ -16,7 +16,6 @@
 
 package com.fuhouyu.framework.context;
 
-import com.fuhouyu.framework.context.exception.ContextNotFoundException;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.user.User;
 
@@ -28,37 +27,25 @@ import com.fuhouyu.framework.context.user.User;
  * @author fuhouyu
  * @since 2024/8/14 10:33
  */
-public interface ContextFactory {
+public interface Context {
 
     /**
-     * 获取用户上下文
-     *
-     * @return 用户上下文
+     * 获取用户，这依然是最高频的需求，建议保留快捷方法
      */
     User getUser();
 
     /**
-     * 获取请求上下文
-     *
-     * @return 请求上下文
+     * 获取请求信息
      */
     Request getRequest();
 
     /**
-     * 通过名称获取上下文
-     * @param contextName 上下文名称
-     * @return 上下文对象
-     * @throws ContextNotFoundException 上下文不存在时抛出该异常
+     * 获取扩展属性（类型安全）
      */
-    Object getContext(String contextName) throws ContextNotFoundException;
-
+    <T> T getAttribute(Class<T> type);
 
     /**
-     * 通过类型，获取上下文
-     * @param type 上下文类型
-     * @return 上下文
-     * @param <T> 上下文类型
-     * @throws ContextNotFoundException 上下文不存在时抛出该异常
+     * 设置扩展属性
      */
-    <T> T getContext(Class<T> type) throws ContextNotFoundException;
+    void setAttribute(Object attribute);
 }

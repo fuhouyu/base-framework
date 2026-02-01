@@ -71,5 +71,5 @@ public @interface LogRecord {
      *
      * @return 操作人
      */
-    String operationUser() default "#{T(com.fuhouyu.framework.context.ContextHolderStrategy).context.user.username}";
+    String operationUser() default "#{T(com.fuhouyu.framework.context.ContextHolder).user.username}";
 }

@@ -17,8 +17,8 @@ package com.fuhouyu.framework.database;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.DefaultListableContextFactory;
+import com.fuhouyu.framework.context.ContextHolder;
+import com.fuhouyu.framework.context.DefaultContext;
 import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.database.mapper.UserMapper;
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +26,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -59,12 +58,12 @@ class DatabaseTest {
 
     @BeforeEach
     void setup() {
-        DefaultListableContextFactory context = new DefaultListableContextFactory();
+        DefaultContext context = new DefaultContext();
         UserEntity user = new UserEntity();
         user.setUsername("admin");
         user.setTenantId(1L);
         context.setUser(user);
-        ContextHolderStrategy.setContext(context);
+        ContextHolder.setContext(context);
     }
 
     @Test
@@ -73,7 +72,7 @@ class DatabaseTest {
         for (int i = 0; i < 10; i++) {
             Users users;
             if (i % 2 == 0) {
-                users = this.buildUsers(i, ContextHolderStrategy.getContext().getUser().getTenantId());
+                users = this.buildUsers(i, ContextHolder.getContext().getUser().getTenantId());
             } else {
                 users = this.buildUsers(i, 2L);
             }

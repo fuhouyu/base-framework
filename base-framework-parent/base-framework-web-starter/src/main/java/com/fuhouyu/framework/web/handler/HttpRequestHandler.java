@@ -16,8 +16,8 @@
 
 package com.fuhouyu.framework.web.handler;
 
-import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.DefaultListableContextFactory;
+import com.fuhouyu.framework.context.ContextHolder;
+import com.fuhouyu.framework.context.DefaultContext;
 import com.fuhouyu.framework.context.request.Request;
 import com.fuhouyu.framework.context.user.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,10 +47,10 @@ public class HttpRequestHandler implements AsyncHandlerInterceptor {
         User user = parseHttpRequest.parseUser(request, response, handler);
         Request requestEntity = parseHttpRequest.parseRequest(request, response);
         requestEntity.putAdditionalInformation(HttpServletResponse.class.getCanonicalName(), response);
-        DefaultListableContextFactory context = new DefaultListableContextFactory();
+        DefaultContext context = new DefaultContext();
         context.setUser(user);
         context.setRequest(requestEntity);
-        ContextHolderStrategy.setContext(context);
+        ContextHolder.setContext(context);
         return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
     }
 
@@ -58,7 +58,7 @@ public class HttpRequestHandler implements AsyncHandlerInterceptor {
     @Override
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception ex)
             throws Exception {
-        ContextHolderStrategy.clearContext();
+        ContextHolder.clear();
         AsyncHandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 }

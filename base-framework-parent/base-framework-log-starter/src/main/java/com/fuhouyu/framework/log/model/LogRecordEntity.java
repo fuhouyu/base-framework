@@ -17,7 +17,7 @@
 package com.fuhouyu.framework.log.model;
 
 
-import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.ContextHolder;
 import com.fuhouyu.framework.context.request.Request;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
@@ -134,7 +134,7 @@ public class LogRecordEntity {
      * 初始化请求
      */
     private void initRequest() {
-        Request request = ContextHolderStrategy.getContext().getRequest();
+        Request request = ContextHolder.getContext().getRequest();
         if (Objects.nonNull(request)) {
             HttpServletRequest httpServletRequest = request.getHttpServletRequest();
             this.requestUri = httpServletRequest.getRequestURI();

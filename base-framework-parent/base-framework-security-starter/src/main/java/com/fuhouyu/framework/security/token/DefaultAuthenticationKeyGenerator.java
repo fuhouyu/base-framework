@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.security.token;
 
-import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.ContextHolder;
 import com.fuhouyu.framework.context.request.Request;
 import org.springframework.security.core.Authentication;
 
@@ -45,9 +45,9 @@ public class DefaultAuthenticationKeyGenerator implements AuthenticationKeyGener
         Map<String, Object> map = new HashMap<>();
         map.put("principal", principal);
 
-        if (Objects.nonNull(ContextHolderStrategy.getContext())
-                && Objects.nonNull(ContextHolderStrategy.getContext().getRequest())) {
-            Request request = ContextHolderStrategy.getContext().getRequest();
+        if (Objects.nonNull(ContextHolder.getContext())
+                && Objects.nonNull(ContextHolder.getContext().getRequest())) {
+            Request request = ContextHolder.getContext().getRequest();
             map.put("ip", request.getRequestIp());
         }
         return this.generateKey(map);

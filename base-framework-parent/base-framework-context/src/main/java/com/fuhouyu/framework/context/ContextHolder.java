@@ -17,6 +17,7 @@
 package com.fuhouyu.framework.context;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
+import com.fuhouyu.framework.context.user.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -29,45 +30,37 @@ import lombok.RequiredArgsConstructor;
  * @since 2024/8/14 10:08
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ContextHolderStrategy {
+public class ContextHolder {
 
-    private static final ThreadLocal<ContextFactory> THREAD_LOCAL;
+    private static final ThreadLocal<Context> CONTEXT_HOLDER = new TransmittableThreadLocal<>();
 
-    static {
-        THREAD_LOCAL = new TransmittableThreadLocal<>();
+    /**
+     * 设置上下文
+     * @param context 上下文
+     */
+    public static void setContext(Context context) {
+        CONTEXT_HOLDER.set(context);
     }
 
     /**
-     * 清除上下文
+     * 获取用户
+     * @return 用户
      */
-    public static void clearContext() {
-        THREAD_LOCAL.remove();
+    public static User getUser() {
+        Context ctx = CONTEXT_HOLDER.get();
+        return ctx != null ? ctx.getUser() : null;
     }
 
     /**
      * 获取上下文
-     *
      * @return 上下文
      */
-    public static ContextFactory getContext() {
-        return THREAD_LOCAL.get();
+    public static Context getContext() {
+        return CONTEXT_HOLDER.get();
     }
 
-    /**
-     * 设置上下文
-     *
-     * @param contextFactory 上下文
-     */
-    public static void setContext(ContextFactory contextFactory) {
-        THREAD_LOCAL.set(contextFactory);
-    }
-
-    /**
-     * 是否为空的上下文
-     *
-     * @return true/false
-     */
-    public static Boolean isEmptyContext() {
-        return THREAD_LOCAL.get() == null;
+    // 记得保留清除方法
+    public static void clear() {
+        CONTEXT_HOLDER.remove();
     }
 }

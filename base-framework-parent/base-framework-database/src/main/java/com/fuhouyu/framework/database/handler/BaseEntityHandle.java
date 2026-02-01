@@ -16,9 +16,8 @@
 package com.fuhouyu.framework.database.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.fuhouyu.framework.context.ContextHolderStrategy;
+import com.fuhouyu.framework.context.ContextHolder;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -67,7 +66,7 @@ public class BaseEntityHandle implements MetaObjectHandler {
             return null;
         }
         Object value = metaObject.getValue(field);
-        return Objects.isNull(value) ? ContextHolderStrategy.getContext().getUser().getUsername() : value.toString();
+        return Objects.isNull(value) ? ContextHolder.getContext().getUser().getUsername() : value.toString();
     }
 
     /**
@@ -83,7 +82,7 @@ public class BaseEntityHandle implements MetaObjectHandler {
         }
         Object value = metaObject.getValue(fieldName);
         if (Objects.isNull(value)) {
-            return ContextHolderStrategy.getContext().getUser().getTenantId();
+            return ContextHolder.getContext().getUser().getTenantId();
         }
         return (Long) value;
     }

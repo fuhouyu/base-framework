@@ -17,8 +17,8 @@
 package com.fuhouyu.framework.log;
 
 import com.fuhouyu.framework.common.utils.LoggerUtil;
-import com.fuhouyu.framework.context.ContextHolderStrategy;
-import com.fuhouyu.framework.context.DefaultListableContextFactory;
+import com.fuhouyu.framework.context.ContextHolder;
+import com.fuhouyu.framework.context.DefaultContext;
 import com.fuhouyu.framework.context.user.User;
 import com.fuhouyu.framework.log.annotaions.LogRecord;
 import com.fuhouyu.framework.log.core.LogRecordStoreService;
@@ -56,8 +56,8 @@ class LogRecordEntityStoreTest {
 
     @BeforeEach
     void setUp() {
-        DefaultListableContextFactory contextFactory = new DefaultListableContextFactory();
-        contextFactory.setUser(new User() {
+        DefaultContext context = new DefaultContext();
+        context.setUser(new User() {
             @Override
             public Long getId() {
                 return 0L;
@@ -104,7 +104,7 @@ class LogRecordEntityStoreTest {
             }
         });
 
-        ContextHolderStrategy.setContext(contextFactory);
+        ContextHolder.setContext(context);
     }
 
     @Test
@@ -119,7 +119,7 @@ class LogRecordEntityStoreTest {
 
 
         @LogRecord(content = """
-                #{'currentUserName = ' + T(com.fuhouyu.framework.context.ContextHolderStrategy).context.user.username 
+                #{'currentUserName = ' + T(com.fuhouyu.framework.context.ContextHolder).context.user.username 
                 + " query param is: " + #query
                 + " result is: " + #result}""", operationType = OperationTypeEnum.QUERY)
         public Boolean success(String query) {

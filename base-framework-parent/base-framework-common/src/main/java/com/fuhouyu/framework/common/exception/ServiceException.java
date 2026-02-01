@@ -34,7 +34,7 @@ import lombok.ToString;
 @Setter
 public class ServiceException extends RuntimeException {
 
-    private final int status;
+    private final String code;
 
     private final String message;
 
@@ -47,7 +47,7 @@ public class ServiceException extends RuntimeException {
      */
     public ServiceException(BaseResponseStatus responseStatus) {
         this.responseStatus = responseStatus;
-        this.status = responseStatus.getCode();
+        this.code = responseStatus.getCode();
         this.message = responseStatus.getMessage();
     }
 
@@ -57,7 +57,7 @@ public class ServiceException extends RuntimeException {
      * @param errorMessage 错误信息
      */
     public ServiceException(BaseResponseStatus responseStatus, String errorMessage) {
-        this.status = responseStatus.getCode();
+        this.code = responseStatus.getCode();
         this.message = errorMessage;
         this.responseStatus = responseStatus;
     }
@@ -70,7 +70,7 @@ public class ServiceException extends RuntimeException {
      * @param args           字符串参数
      */
     public ServiceException(BaseResponseStatus responseStatus, String format, Object... args) {
-        this.status = responseStatus.getCode();
+        this.code = responseStatus.getCode();
         this.message = String.format(format, args);
         this.responseStatus = responseStatus;
     }

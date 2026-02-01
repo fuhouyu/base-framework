@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fuhouyu.framework.web.handler;
+package com.fuhouyu.framework.web.components;
 
 import com.fuhouyu.framework.common.utils.HttpRequestUtil;
 import com.fuhouyu.framework.context.request.Request;

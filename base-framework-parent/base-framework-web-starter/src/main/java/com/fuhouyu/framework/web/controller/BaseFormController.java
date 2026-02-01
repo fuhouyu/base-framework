@@ -17,8 +17,7 @@
 package com.fuhouyu.framework.web.controller;
 
 import com.fuhouyu.framework.cache.service.CacheService;
-import com.fuhouyu.framework.common.response.BaseResponse;
-import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.common.response.R;
 import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
 import com.fuhouyu.framework.web.constants.FormTokenConstant;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,10 +61,10 @@ public class BaseFormController {
     @GetMapping("/token")
     @Operation(summary = "生成表单唯一的token，默认十分钟")
     @PrepareHttpBody
-    public BaseResponse<String> formToken() {
+    public R<String> formToken() {
         String token = String.format("%s_%s", applicationName, UUID.randomUUID().toString().replace("-", ""));
         cacheService.set(FormTokenConstant.TOKEN_PREFIX + token,
                 true, FormTokenConstant.EXPIRE_TIME, TimeUnit.SECONDS);
-        return ResponseHelper.success(token);
+        return R.ok(token);
     }
 }

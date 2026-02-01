@@ -19,9 +19,8 @@ package com.fuhouyu.framework.web;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
 import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
-import com.fuhouyu.framework.common.response.BaseResponse;
-import com.fuhouyu.framework.common.response.ErrorResponse;
-import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.response.R;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.kms.KmsAutoConfiguration;
 import com.fuhouyu.framework.web.annotaions.NoRepeatSubmit;
@@ -29,6 +28,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.boot.jdbc.autoconfigure.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,6 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2024/8/17 23:10
  */
 @SpringBootTest(classes = {
+        MessageSourceAutoConfiguration.class,
         DataSourceAutoConfiguration.class,
         JdbcTemplateAutoConfiguration.class,
         KmsAutoConfiguration.class,
@@ -79,10 +80,10 @@ class WebFormNoRepeatSubmitTest {
                 )
                 .andExpect(status().isOk()).andReturn();
 
-        BaseResponse<ErrorLevelEnum> baseResponse = JacksonUtil.readValue(mvcResult.getResponse().getContentAsString(),
-                new TypeReference<ErrorResponse<ErrorLevelEnum>>() {
+        R<ErrorLevelEnum> baseResponse = JacksonUtil.readValue(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<>() {
                 });
-        Assertions.assertEquals(400, baseResponse.getCode());
+        Assertions.assertEquals(ResponseStatusEnum.INVALID_PARAM.getCode(), baseResponse.getCode());
     }
 
     @RestController
@@ -90,8 +91,8 @@ class WebFormNoRepeatSubmitTest {
 
         @NoRepeatSubmit
         @PostMapping("/v1/noRepeatSubmit")
-        public BaseResponse<Boolean> success() {
-            return ResponseHelper.success(true);
+        public R<Boolean> success() {
+            return R.ok(true);
         }
 
     }

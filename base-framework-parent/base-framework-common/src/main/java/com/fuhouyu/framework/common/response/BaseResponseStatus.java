@@ -17,6 +17,7 @@
 package com.fuhouyu.framework.common.response;
 
 import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
+import org.slf4j.MDC;
 
 /**
  * <p>
@@ -29,25 +30,39 @@ import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
 public interface BaseResponseStatus {
 
     /**
-     * 获取响应码
-     *
-     * @return 响应码
+     * 获取响应编码
+     * @return 状态码
      */
-    int getCode();
+    String getCode();
+
 
     /**
-     * 获取具体的响应信息
-     *
-     * @return 响应信息
+     * 获取请求ID
+     * @return 请求ID
+     */
+    default String getRequestId() {
+        return MDC.get("requestId");
+    }
+
+    /**
+     * 获取响应消息
+     * @return 消息内容
      */
     String getMessage();
 
     /**
      * 获取错误级别
-     *
-     * @return 错误级别
+     * @return 错误级别枚举
      */
     default ErrorLevelEnum getErrorLevel() {
         return ErrorLevelEnum.ERROR;
+    }
+
+    /**
+     * 获取 I18n 对应的 Key
+     * 默认规则：response.code.{code}，例如 response.code.00000
+     */
+    default String getI18nKey() {
+        return "response.code." + getCode();
     }
 }

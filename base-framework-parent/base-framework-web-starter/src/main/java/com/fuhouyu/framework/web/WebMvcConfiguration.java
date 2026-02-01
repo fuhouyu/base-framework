@@ -16,22 +16,24 @@
 
 package com.fuhouyu.framework.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fuhouyu.framework.web.handler.HttpRequestHandler;
-import com.fuhouyu.framework.web.handler.ParseHttpRequest;
+import com.fuhouyu.framework.web.components.HttpRequestHandler;
+import com.fuhouyu.framework.web.components.ParseHttpRequest;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverters;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import tools.jackson.databind.ext.javatime.deser.LocalDateDeserializer;
+import tools.jackson.databind.ext.javatime.deser.LocalDateTimeDeserializer;
+import tools.jackson.databind.ext.javatime.ser.LocalDateSerializer;
+import tools.jackson.databind.ext.javatime.ser.LocalDateTimeSerializer;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.std.ToStringSerializer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -59,30 +61,25 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
             "yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        ObjectMapper objectMapper = jackson2HttpMessageConverter.getObjectMapper();
+    public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {
         // 不显示为null的字段, 将Long类型，转换为String类型，否则前端会精度丢失
-
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
         simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        LocalDateTimeDeserializer localDateTimeDeserializer = new LocalDateTimeDeserializer(DATE_TIME_FORMATTER);
 
         // 日期时间序列化与反序列化
         simpleModule.addSerializer(LocalDate.class, new LocalDateSerializer(DATE_FORMATTER));
         simpleModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DATE_FORMATTER));
 
         // 日期时间序列化与反序列化
-        LocalDateTimeDeserializer localDateTimeDeserializer = new LocalDateTimeDeserializer(
-                DATE_TIME_FORMATTER);
-        simpleModule.addSerializer(LocalDateTime.class,
-                new LocalDateTimeSerializer(DATE_TIME_FORMATTER));
+        simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DATE_TIME_FORMATTER));
         simpleModule.addDeserializer(LocalDateTime.class, localDateTimeDeserializer);
-        objectMapper.registerModule(simpleModule);
 
-        jackson2HttpMessageConverter.setObjectMapper(objectMapper);
-        //放到第一个
-        converters.addFirst(jackson2HttpMessageConverter);
+        JsonMapper.Builder mapperBuilder = JsonMapper.builder();
+        mapperBuilder.addModule(simpleModule);
+        JacksonJsonHttpMessageConverter jacksonJsonHttpMessageConverter = new JacksonJsonHttpMessageConverter(mapperBuilder);
+        builder.addCustomConverter(jacksonJsonHttpMessageConverter);
     }
 
     @Override

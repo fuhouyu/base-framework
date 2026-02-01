@@ -18,8 +18,7 @@ package com.fuhouyu.framework.web;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
-import com.fuhouyu.framework.common.response.BaseResponse;
-import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.common.response.R;
 import com.fuhouyu.framework.common.utils.HexUtil;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.kms.KmsAutoConfiguration;
@@ -27,6 +26,7 @@ import com.fuhouyu.framework.kms.service.KmsService;
 import com.fuhouyu.framework.web.annotaions.PrepareHttpBody;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.boot.jdbc.autoconfigure.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,6 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2024/8/21 23:15
  */
 @SpringBootTest(classes = {
+        MessageSourceAutoConfiguration.class,
         DataSourceAutoConfiguration.class,
         JdbcTemplateAutoConfiguration.class,
         KmsAutoConfiguration.class,
@@ -74,11 +75,11 @@ class HttpControllerTest {
 
     @Test
     void testEnc() throws Exception {
-        ObjectNode objectNode = JacksonUtil.getObjectMapper().createObjectNode();
-        objectNode.put("username", "fuhouyu");
-        objectNode.put("password", "fuhouyu");
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("username", "fuhouyu");
+        paramMap.put("password", "fuhouyu");
 
-        byte[] bodyBytes = kmsService.asymmetricEncrypt(JacksonUtil.writeValueAsBytes(objectNode));
+        byte[] bodyBytes = kmsService.asymmetricEncrypt(JacksonUtil.writeValueAsBytes(paramMap));
 
         Map<String, String> map = new HashMap<>();
         map.put("body", HexUtil.encodeToHexString(bodyBytes));
@@ -96,8 +97,8 @@ class HttpControllerTest {
 
         @PostMapping("/v1/test/enc")
         @PrepareHttpBody
-        public BaseResponse<Object> post(@RequestBody ObjectNode body) {
-            return ResponseHelper.success(body);
+        public R<Object> post(@RequestBody Map<String, String> body) {
+            return R.ok(body);
         }
 
     }

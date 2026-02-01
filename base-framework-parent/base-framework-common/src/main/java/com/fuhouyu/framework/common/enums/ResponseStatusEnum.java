@@ -17,84 +17,88 @@
 package com.fuhouyu.framework.common.enums;
 
 import com.fuhouyu.framework.common.response.BaseResponseStatus;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
+ * 系统通用响应状态枚举
  * <p>
- * 响应码枚举类
+ * 仅存放跨模块、跨项目的公共状态码。
  * </p>
- *
  * @author fuhouyu
  * @since 2024/8/13 17:40
  */
+@Getter
+@AllArgsConstructor
 public enum ResponseStatusEnum implements BaseResponseStatus {
 
-    // 200
+    /**
+     * 操作成功
+     */
+    SUCCESS("00000", "success"),
 
     /**
-     * 成功
+     * 用户端通用错误
      */
-    SUCCESS(200, "成功"),
-
-    // 400
-    /**
-     * 参数错误
-     */
-    INVALID_PARAM(400, "参数错误"),
+    CLIENT_ERROR("A0001", "client.error"),
 
     /**
-     * 无权限
+     * 参数校验失败
      */
-    NOT_AUTH(401, "用户无权限"),
+    INVALID_PARAM("A0400", "invalid.parameter"),
 
     /**
-     * 用户登录信息已过期
+     * 未认证/登录失效
      */
-    TOKEN_EXPIRE(402, "用户登录信息已过期"),
+    UNAUTHORIZED("A0401", "unauthorized"),
 
     /**
-     * 刷新令牌已过期
+     * 刷新令牌已过期（Refresh Token 过期，必须重新登录）
      */
-    REFRESH_TOKEN_EXPIRE(403, "刷新令牌已失效"),
+    REFRESH_TOKEN_EXPIRE("A0402", "refresh.token.expire"),
 
     /**
-     * 资源不存在或已被删除
+     * 权限不足
      */
-    NOT_FOUND(404, "资源不存在或已被删除"),
+    FORBIDDEN("A0403", "forbidden"),
 
     /**
-     * 不支持的方法
+     * 资源不存在
      */
-    METHOD_NOT_ALLOWED(405, "不支持的方法"),
+    NOT_FOUND("A0404", "not.found"),
 
     /**
-     * 不支持的媒体类型
+     * 请求方法不支持
      */
-    NOT_SUPPORT_MEDIA_TYPE(415, "不支持的媒体类型"),
+    METHOD_NOT_ALLOWED("A0405", "method.not.allowed"),
 
     /**
-     * 服务内部错误
+     * 不支持的媒体类型 (415)
      */
-    SERVER_ERROR(500, "服务器内部错误"),
-    ;
+    NOT_SUPPORT_MEDIA_TYPE("A0415", "not.support.media.type"),
 
 
-    private final int code;
+    /**
+     * 服务器内部错误
+     */
+    SERVER_ERROR("B0001", "server.error"),
 
+    /**
+     * 业务处理异常
+     */
+    BUSINESS_ERROR("B0100", "business.process.error"),
+
+    /**
+     * 系统限流
+     */
+    FLOW_LIMIT("B0210", "flow.limit"),
+
+    /**
+     * 第三方服务异常
+     */
+    THIRD_PARTY_ERROR("C0001", "third.party.error");
+
+
+    private final String code;
     private final String message;
-
-
-    ResponseStatusEnum(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
-    @Override
-    public int getCode() {
-        return this.code;
-    }
-
-    @Override
-    public String getMessage() {
-        return this.message;
-    }
 }

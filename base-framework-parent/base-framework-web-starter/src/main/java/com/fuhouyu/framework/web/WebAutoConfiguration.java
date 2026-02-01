@@ -20,12 +20,8 @@ import com.fuhouyu.framework.common.constants.HttpRequestHeaderConstant;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.context.user.UserEntity;
 import com.fuhouyu.framework.kms.KmsAutoConfiguration;
-import com.fuhouyu.framework.kms.service.KmsService;
-import com.fuhouyu.framework.web.filter.DefaultHttpBodyFilter;
-import com.fuhouyu.framework.web.filter.HttpBodyFilter;
-import com.fuhouyu.framework.web.handler.ParseHttpRequest;
+import com.fuhouyu.framework.web.components.ParseHttpRequest;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
@@ -44,25 +40,11 @@ import java.util.Objects;
  * @author fuhouyu
  * @since 2024/8/15 20:18
  */
-@Import({WebMvcConfiguration.class, FormConfiguration.class, Ip2RegionConfiguration.class})
+@Import({WebMvcConfiguration.class, Ip2RegionConfiguration.class})
 @ComponentScan(basePackageClasses = WebAutoConfiguration.class)
 @ConfigurationPropertiesScan(basePackages = "com.fuhouyu.framework.web.properties")
 @AutoConfigureAfter({KmsAutoConfiguration.class})
 public class WebAutoConfiguration {
-
-
-    /**
-     * 返回一个默认加解密body的过滤器
-     *
-     * @param kmsService kms
-     * @return body 过滤器
-     */
-    @Bean
-    @ConditionalOnMissingBean(HttpBodyFilter.class)
-    @ConditionalOnBean(KmsService.class)
-    public HttpBodyFilter httpBodyFilter(KmsService kmsService) {
-        return new DefaultHttpBodyFilter(kmsService);
-    }
 
 
     @Bean

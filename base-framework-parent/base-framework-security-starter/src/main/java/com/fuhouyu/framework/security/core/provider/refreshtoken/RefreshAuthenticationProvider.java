@@ -22,6 +22,7 @@ import com.fuhouyu.framework.common.exception.ServiceException;
 import com.fuhouyu.framework.security.token.TokenStore;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -61,7 +62,7 @@ public class RefreshAuthenticationProvider implements AuthenticationProvider {
     }
 
     @Override
-    public boolean supports(Class<?> authentication) {
+    public boolean supports(@NonNull Class<?> authentication) {
         return RefreshAuthenticationToken.class.isAssignableFrom(authentication);
     }
 

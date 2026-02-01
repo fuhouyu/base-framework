@@ -1,0 +1,108 @@
+/*
+ * Copyright 2024-2025 fuhouyu.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.fuhouyu.framework.web.components;
+
+import com.fuhouyu.framework.common.utils.HexUtil;
+import com.fuhouyu.framework.common.utils.JacksonUtil;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
+import com.fuhouyu.framework.kms.service.KmsService;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
+
+/**
+ * <p>
+ * http body 过滤器接口，
+ * 针对http post 发起的请求, 对body进行加解密的处理操作
+ * 方法上需要有{@link org.springframework.web.bind.annotation.PostMapping}
+ * 和{@link com.fuhouyu.framework.web.annotaions.PrepareHttpBody}注解
+ * </p>
+ *
+ * @author fuhouyu
+ * @since 2024/8/22 11:20
+ */
+public interface HttpBodyFilter {
+
+
+    /**
+     * 对已经加密过的字节数组进行解密
+     *
+     * @param encryptBodyBytes 加密的body字节数组
+     * @return 解密后的字节数组对象
+     */
+    byte[] decryptionBody(byte[] encryptBodyBytes);
+
+
+    /**
+     * 对原始数据进行加密
+     *
+     * @param originBody 原始body
+     * @return 加密后的数据
+     */
+    byte[] encryptionBody(byte[] originBody);
+
+    /**
+     * <p>
+     * 默认的http body 加解密过滤器
+     * </p>
+     *
+     * @author fuhouyu
+     * @since 2024/8/22 12:16
+     */
+    @RequiredArgsConstructor
+    @Slf4j
+    @Component
+    class DefaultHttpBodyFilter implements HttpBodyFilter {
+
+        private final KmsService kmsService;
+
+        @Override
+        public byte[] decryptionBody(byte[] encryptBodyBytes) {
+            HttpBodyEncryptionModel httpBodyEncryptionModel = JacksonUtil.readValue(encryptBodyBytes, HttpBodyEncryptionModel.class);
+            if (Objects.isNull(httpBodyEncryptionModel)) {
+                LoggerUtil.warn(log,
+                        "需要解密转换后的body对象为空，直接返回");
+                return encryptBodyBytes;
+            }
+            return kmsService.asymmetricDecrypt(HexUtil.decodeHex(httpBodyEncryptionModel.getBody()));
+        }
+
+        @Override
+        public byte[] encryptionBody(byte[] originBody) {
+            return kmsService.asymmetricEncrypt(originBody);
+        }
+    }
+
+    /**
+     * http body 加密的实体
+     */
+    @ToString
+    @Getter
+    @Setter
+    class HttpBodyEncryptionModel {
+        /**
+         * 加密的body体
+         */
+        private String body;
+
+    }
+}

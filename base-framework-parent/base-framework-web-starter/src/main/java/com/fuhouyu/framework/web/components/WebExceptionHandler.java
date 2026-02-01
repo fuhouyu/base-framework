@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.exception;
+package com.fuhouyu.framework.web.components;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.exception.ServiceException;
-import com.fuhouyu.framework.common.response.BaseResponse;
 import com.fuhouyu.framework.common.response.BaseResponseStatus;
-import com.fuhouyu.framework.common.response.ResponseHelper;
+import com.fuhouyu.framework.common.response.R;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.common.utils.LoggerUtil;
 import com.fuhouyu.framework.web.model.MethodArgumentErrorField;
@@ -71,9 +70,9 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(Exception.class)
-    public BaseResponse<Void> exceptionHandle(ServletWebRequest request, Exception e) {
+    public R<Void> exceptionHandle(ServletWebRequest request, Exception e) {
         this.printExceptionLog(e, Exception.class.getSimpleName(), request);
-        return ResponseHelper.failed(ResponseStatusEnum.SERVER_ERROR);
+        return R.fail(ResponseStatusEnum.SERVER_ERROR);
     }
 
     /**
@@ -84,9 +83,9 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(NoResourceFoundException.class)
-    public BaseResponse<ErrorLevelEnum> noResourceFoundException(ServletWebRequest request, NoResourceFoundException e) {
+    public R<ErrorLevelEnum> noResourceFoundException(ServletWebRequest request, NoResourceFoundException e) {
         this.printExceptionLog(e, Exception.class.getSimpleName(), request);
-        return ResponseHelper.failed(ResponseStatusEnum.NOT_FOUND,
+        return R.fail(ResponseStatusEnum.NOT_FOUND,
                 String.format("当前访问地址：%s 不存在", e.getMessage().replace("No static resource ", "").trim()));
     }
 
@@ -98,9 +97,9 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public BaseResponse<ErrorLevelEnum> methodNotSupportException(ServletWebRequest request, HttpRequestMethodNotSupportedException e) {
+    public R<ErrorLevelEnum> methodNotSupportException(ServletWebRequest request, HttpRequestMethodNotSupportedException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
-        return ResponseHelper.failed(ResponseStatusEnum.METHOD_NOT_ALLOWED);
+        return R.fail(ResponseStatusEnum.METHOD_NOT_ALLOWED);
     }
 
     /**
@@ -111,9 +110,9 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ResponseStatusException.class)
-    public BaseResponse<ErrorLevelEnum> notFoundException(ServletWebRequest request, ResponseStatusException e) {
+    public R<ErrorLevelEnum> notFoundException(ServletWebRequest request, ResponseStatusException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
-        return ResponseHelper.failed(ResponseStatusEnum.SERVER_ERROR, e.getMessage());
+        return R.fail(ResponseStatusEnum.SERVER_ERROR, e.getMessage());
     }
 
     /**
@@ -123,8 +122,8 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ServiceException.class)
-    public BaseResponse<ErrorLevelEnum> serviceExceptionHandler(ServiceException serviceException) {
-        return ResponseHelper.failed(serviceException.getResponseStatus(), serviceException.getMessage());
+    public R<ErrorLevelEnum> serviceExceptionHandler(ServiceException serviceException) {
+        return R.fail(serviceException.getResponseStatus(), serviceException.getMessage());
     }
 
     /**
@@ -133,18 +132,18 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public BaseResponse<List<MethodArgumentErrorField>> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
+    public R<List<MethodArgumentErrorField>> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
         Object target = ex.getBindingResult().getTarget();
         if (Objects.isNull(target)) {
-            return ResponseHelper.failed(ResponseStatusEnum.INVALID_PARAM);
+            return R.fail(ResponseStatusEnum.INVALID_PARAM);
         }
 
         List<MethodArgumentErrorField> details = new ArrayList<>();
 
         for (FieldError fieldError : fieldErrors) {
             String field = fieldError.getField();
-            int code = ResponseStatusEnum.INVALID_PARAM.getCode();
+            String code = ResponseStatusEnum.INVALID_PARAM.getCode();
             String message = fieldError.getDefaultMessage();
             String errorLevel = ErrorLevelEnum.ERROR.name();
             Field declaredField = ReflectionUtils.findField(target.getClass(), field);
@@ -166,7 +165,7 @@ public class WebExceptionHandler {
             }
             details.add(new MethodArgumentErrorField(code, field, message, errorLevel));
         }
-        return ResponseHelper.failed(ResponseStatusEnum.INVALID_PARAM, details);
+        return R.fail(ResponseStatusEnum.INVALID_PARAM, details);
     }
 
 
@@ -185,10 +184,10 @@ public class WebExceptionHandler {
             NumberFormatException.class,
             HttpMessageConversionException.class
     })
-    public BaseResponse<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request,
+    public R<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request,
                                                                      Exception e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
-        return ResponseHelper.failed(ResponseStatusEnum.INVALID_PARAM, e.getMessage());
+        return R.fail(ResponseStatusEnum.INVALID_PARAM, e.getMessage());
     }
 
     /**
@@ -199,9 +198,9 @@ public class WebExceptionHandler {
      * @return 包装后的响应
      */
     @ExceptionHandler(HttpMediaTypeException.class)
-    public BaseResponse<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request, HttpMediaTypeException e) {
+    public R<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request, HttpMediaTypeException e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
-        return ResponseHelper.failed(ResponseStatusEnum.NOT_SUPPORT_MEDIA_TYPE, e.getMessage());
+        return R.fail(ResponseStatusEnum.NOT_SUPPORT_MEDIA_TYPE, e.getMessage());
     }
 
 
@@ -213,7 +212,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public BaseResponse<ErrorLevelEnum> constraintViolationException(ServletWebRequest request, ConstraintViolationException e) {
+    public R<ErrorLevelEnum> constraintViolationException(ServletWebRequest request, ConstraintViolationException e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         StringBuilder sb = new StringBuilder();
@@ -222,7 +221,7 @@ public class WebExceptionHandler {
             sb.append(message).append("\n");
         }
         // 直接返回参数异常
-        return ResponseHelper.failed(ResponseStatusEnum.INVALID_PARAM, sb.toString());
+        return R.fail(ResponseStatusEnum.INVALID_PARAM, sb.toString());
     }
 
     /**

@@ -16,6 +16,9 @@
 package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
+import com.fuhouyu.framework.cache.RedisCacheConfiguration;
+import org.jspecify.annotations.NonNull;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
 import org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestComponent;
@@ -25,8 +28,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,16 +45,28 @@ import java.util.List;
  * @since 2024/11/5 20:51
  */
 @SpringBootTest(classes = {
+        RedisCacheConfiguration.class,
         BaseTest.BaseComponent.class,
         CacheAutoConfiguration.class,
         SecurityAutoConfiguration.class,
         OAuth2ClientAutoConfiguration.class,
         AuthenticationAutoConfiguration.class
 })
-@TestPropertySource(locations = {"classpath:application.yaml"})
+@ActiveProfiles("test")
 @EnableWebSecurity
 abstract class BaseTest {
 
+    @SuppressWarnings("resource")
+    static final GenericContainer<?> REDIS_GENERIC_CONTAINER =
+            new GenericContainer<>(DockerImageName.parse("redis:7.2-alpine"))
+                    .withCommand("redis-server --requirepass password")
+                    .withExposedPorts(6379);
+
+    static {
+        REDIS_GENERIC_CONTAINER.start();
+        System.setProperty("spring.data.redis.host", REDIS_GENERIC_CONTAINER.getHost());
+        System.setProperty("spring.data.redis.port", REDIS_GENERIC_CONTAINER.getMappedPort(6379).toString());
+    }
 
     @TestComponent
     static class BaseComponent {
@@ -63,7 +80,7 @@ abstract class BaseTest {
         public UserDetailsService userDetailsService() {
             UserDetails userDetails = new UserDetails() {
                 @Override
-                public Collection<? extends GrantedAuthority> getAuthorities() {
+                public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
                     return List.of();
                 }
 
@@ -73,7 +90,7 @@ abstract class BaseTest {
                 }
 
                 @Override
-                public String getUsername() {
+                public @NonNull String getUsername() {
                     return "admin";
                 }
             };

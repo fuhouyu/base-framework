@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.aspectj;
+package com.fuhouyu.framework.web.components;
 
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -43,6 +44,7 @@ import java.util.Objects;
  * @since 2024/8/17 22:52
  */
 @Aspect
+@Component
 @RequiredArgsConstructor
 public class NoRepeatSubmitAspectj {
 

@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -44,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.*;
         CacheAutoConfiguration.class,
         DataRedisAutoConfiguration.class,
 })
-@TestPropertySource(locations = {"classpath:application.yaml"})
+@ActiveProfiles("test")
 class CacheServiceTest {
 
     private String cacheBigKey;

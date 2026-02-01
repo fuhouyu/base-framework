@@ -29,7 +29,7 @@ import java.io.Serializable;
  * @since 2025/4/9 10:14
  */
 @Schema(name = "MethodArgumentErrorField", description = "方法参数异常")
-public record MethodArgumentErrorField(@Schema(name = "code", description = "错误码") Integer code,
+public record MethodArgumentErrorField(@Schema(name = "code", description = "错误码") String code,
                                        @Schema(name = "field", description = "字段") String field,
                                        @Schema(name = "message", description = "错误信息") String message,
                                        @Schema(name = "errorLevel", description = "错误等级") String errorLevel) implements Serializable {

@@ -1,0 +1,13 @@
+base:
+  framework:
+    cache:
+      service:
+        cache-service-type: redis
+spring:
+  data:
+    redis:
+      timeout: 10000
+      database: 0
+      host: 127.0.0.1
+      port: 6379
+      password: password

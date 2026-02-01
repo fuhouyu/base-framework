@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fuhouyu.framework.web.handler;
+package com.fuhouyu.framework.web.components;
 
 import com.fuhouyu.framework.context.ContextHolder;
 import com.fuhouyu.framework.context.DefaultContext;
@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 /**

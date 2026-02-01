@@ -1,4 +1,8 @@
 spring:
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    fallback-to-system-locale: true
   application:
     name: test
   datasource:

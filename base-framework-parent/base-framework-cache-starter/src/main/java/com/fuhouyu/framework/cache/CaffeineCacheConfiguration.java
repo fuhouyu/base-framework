@@ -24,6 +24,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -47,25 +48,6 @@ public class CaffeineCacheConfiguration {
     @ConditionalOnMissingBean(CacheService.class)
     public CacheService<String, Object> cacheService() {
         Cache<String, Object> cache = Caffeine.newBuilder()
-                // 这里先行固定写死，永不过期
-                .expireAfter(new Expiry<String, Object>() {
-                    @Override
-                    public long expireAfterCreate(@NonNull String key, @NonNull Object value, long currentTime) {
-                        return Long.MAX_VALUE;
-                    }
-
-                    @Override
-                    @NullMarked
-                    public long expireAfterUpdate(String key, Object value, long currentTime, long currentDuration) {
-                        return currentDuration;
-                    }
-
-                    @Override
-                    @NullMarked
-                    public long expireAfterRead(String key, Object value, long currentTime, long currentDuration) {
-                        return currentDuration;
-                    }
-                })
                 .initialCapacity(10000)
                 .maximumSize(10000)
                 .build();

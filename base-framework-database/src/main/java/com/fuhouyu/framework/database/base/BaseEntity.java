@@ -17,6 +17,7 @@ package com.fuhouyu.framework.database.base;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -45,6 +46,7 @@ public class BaseEntity implements Serializable {
      * 是否删除标记
      */
     @TableField(fill = FieldFill.INSERT)
+    @TableLogic(delval = "true", value = "false")
     private Boolean isDeleted;
 
     /**

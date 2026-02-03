@@ -2,7 +2,7 @@ base:
   framework:
     cache:
       service:
-        cache-service-type: redis
+        cache-service-type: caffeine
 spring:
   data:
     redis:

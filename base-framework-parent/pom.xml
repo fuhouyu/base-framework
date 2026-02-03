@@ -39,7 +39,7 @@
         <module>base-framework-web-starter</module>
         <module>base-framework-s3-starter</module>
         <module>base-framework-kms-starter</module>
-        <module>base-framework-database</module>
+        <module>base-framework-database-starter</module>
     </modules>
 
 

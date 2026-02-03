@@ -45,7 +45,6 @@ import java.util.List;
  * @since 2024/11/5 20:51
  */
 @SpringBootTest(classes = {
-        RedisCacheConfiguration.class,
         BaseTest.BaseComponent.class,
         CacheAutoConfiguration.class,
         SecurityAutoConfiguration.class,
@@ -56,17 +55,7 @@ import java.util.List;
 @EnableWebSecurity
 abstract class BaseTest {
 
-    @SuppressWarnings("resource")
-    static final GenericContainer<?> REDIS_GENERIC_CONTAINER =
-            new GenericContainer<>(DockerImageName.parse("redis:7.2-alpine"))
-                    .withCommand("redis-server --requirepass password")
-                    .withExposedPorts(6379);
 
-    static {
-        REDIS_GENERIC_CONTAINER.start();
-        System.setProperty("spring.data.redis.host", REDIS_GENERIC_CONTAINER.getHost());
-        System.setProperty("spring.data.redis.port", REDIS_GENERIC_CONTAINER.getMappedPort(6379).toString());
-    }
 
     @TestComponent
     static class BaseComponent {

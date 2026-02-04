@@ -20,8 +20,6 @@ import org.babyfish.jimmer.sql.GeneratedValue;
 import org.babyfish.jimmer.sql.GenerationType;
 import org.babyfish.jimmer.sql.Id;
 
-import java.time.LocalDateTime;
-
 /**
  * <p>
  *
@@ -31,24 +29,15 @@ import java.time.LocalDateTime;
  * @since 2024/12/18 21:24
  */
 @Entity
-public interface Users {
+public interface Users extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id();
 
-    String username();
+    CipherText username();
 
     String password();
 
-    LocalDateTime createdAt();
-
-    String createdBy();
-
-    LocalDateTime updatedAt();
-
-    String updatedBy();
-
     long ownerTenantId();
-
 }

@@ -18,6 +18,7 @@ package com.fuhouyu.framework.database;
 import com.fuhouyu.framework.context.ContextHolder;
 import com.fuhouyu.framework.context.DefaultContext;
 import com.fuhouyu.framework.context.user.UserEntity;
+import com.fuhouyu.framework.kms.KmsAutoConfiguration;
 import org.babyfish.jimmer.Page;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.junit.jupiter.api.Assertions;
@@ -46,7 +47,10 @@ import java.util.UUID;
  * @since 2024/12/18 21:22
  */
 @ExtendWith({SpringExtension.class})
-@SpringBootTest
+@SpringBootTest(classes = {
+        KmsAutoConfiguration.class,
+        DatabaseAutoConfiguration.class,
+})
 @SpringBootApplication
 @TestPropertySource(locations = {"classpath:application.yaml"})
 @Disabled
@@ -92,7 +96,7 @@ class DatabaseTest {
     private Users buildUsers(Integer id, Long ownerTenantId) {
         return UsersDraft.$.produce(users -> {
             users.setId(Long.valueOf(id));
-            users.setUsername(UUID.randomUUID().toString());
+            users.setUsername(new CipherText(UUID.randomUUID().toString()));
             users.setPassword(UUID.randomUUID().toString());
             users.setCreatedAt(LocalDateTime.now());
             users.setCreatedBy("admin");

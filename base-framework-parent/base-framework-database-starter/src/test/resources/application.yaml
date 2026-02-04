@@ -17,3 +17,15 @@ logging:
   level:
     org.springframework.jdbc.datasource.init: DEBUG
     com.fuhouyu.framework.database.mapper: DEBUG
+base:
+  framework:
+    kms:
+      local:
+        sm2:
+          public-key: MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEZ7mDDExQshaVInXol+TVDmG/0ZYEDgDhmByVO0rqk7Gyg2IU7Hwkj2dXDZl2iZ2IK64udRlGvcQdR/xqkfKxlw==
+          private-key: MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQgZxdYYFf5uRw8EMYPcaggkJqgvG1Q+JefzBwhFLTkeuCgCgYIKoEcz1UBgi2hRANCAARnuYMMTFCyFpUideiX5NUOYb/RlgQOAOGYHJU7SuqTsbKDYhTsfCSPZ1cNmXaJnYgrri51GUa9xB1H/GqR8rGX
+        sm3:
+          secret: PAqZ0DxlGXw7Rln+QAy1yQ==
+        sm4:
+          key: JfMIhbIEAywP7/PCbXBVkQ==
+      provider: local

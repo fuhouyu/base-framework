@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,8 +72,7 @@ public interface KmsService {
      * @return true/false
      */
     boolean verifySignature(byte[] signatureData,
-                         byte[] originData);
-
+                            byte[] originData);
 
 
     /**
@@ -83,7 +82,6 @@ public interface KmsService {
      * @return 字节数组
      */
     byte[] symmetryEncrypt(byte[] originData);
-
 
 
     /**

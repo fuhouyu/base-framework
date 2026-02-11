@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.fuhouyu.framework.security.token;
-
-import org.springframework.security.core.Authentication;
+package com.fuhouyu.framework.security.constants;
 
 /**
  * <p>
- * 从认证信息中提取key信息
+ * token 前缀
  * </p>
  *
  * @author fuhouyu
- * @since 2024/8/14 22:09
+ * @since 2026/2/10 10:32
  */
-public interface AuthenticationKeyGenerator {
+public interface TokenPrefixConstant {
 
-    /**
-     * 提取关键key信息
-     *
-     * @param authentication 认证信息
-     * @return key
-     */
-    String extractKey(Authentication authentication);
+    String PREFIX = "oauth2:auth:";
+
+    String ID_PREFIX = PREFIX + "id:";
+
+    String CODE_PREFIX = PREFIX + "code:";
+
+    String ACCESS_TOKEN_PREFIX = PREFIX + "access_token:";
+
+    String REFRESH_TOKEN_PREFIX = PREFIX + "refresh_token:";
 }

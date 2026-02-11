@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
@@ -55,7 +56,7 @@ import java.util.Objects;
  * @since 2025/2/9 15:23
  */
 @SpringBootTest(classes = {S3AutoConfiguration.class})
-@TestPropertySource(locations = {"classpath:application.yaml"})
+@ActiveProfiles("test")
 @Slf4j
 class S3ClientTest {
 
@@ -64,13 +65,6 @@ class S3ClientTest {
     private static final String ACCESS_KEY = "test_username";
 
     private static final String SECRET_KEY = "test_password";
-
-    private static final String BUCKET_NAME = "test-bucket";
-
-    private static final String PUT_OBJECT_KEY = "test-put-object-key";
-
-    private static final String PUT_OBJECT_CONTENT = "This is a test object content.";
-
     static final GenericContainer<?> MINIO_CONTAINER =
             new FixedHostPortGenericContainer<>("quay.io/minio/minio")
                     .withFixedExposedPort(PORT, PORT, InternetProtocol.TCP)
@@ -78,10 +72,20 @@ class S3ClientTest {
                     .withEnv("MINIO_ROOT_PASSWORD", SECRET_KEY)
                     .withCommand("server", "/data")
                     .waitingFor(Wait.forHttp("/minio/health/live").forPort(9000));
+    private static final String BUCKET_NAME = "test-bucket";
+    private static final String PUT_OBJECT_KEY = "test-put-object-key";
+    private static final String PUT_OBJECT_CONTENT = "This is a test object content.";
 
     static {
         MINIO_CONTAINER.start();
     }
+
+    @Autowired
+    private S3Client s3Client;
+    @Autowired
+    private StsOperation stsOperation;
+    @Autowired
+    private S3Properties s3Properties;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -93,15 +97,6 @@ class S3ClientTest {
         registry.add("s3.access-key", () -> ACCESS_KEY);
         registry.add("s3.secret-key", () -> SECRET_KEY);
     }
-
-    @Autowired
-    private S3Client s3Client;
-
-    @Autowired
-    private StsOperation stsOperation;
-
-    @Autowired
-    private S3Properties s3Properties;
 
     @Test
     void testS3Client() throws IOException {

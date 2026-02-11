@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,15 +35,8 @@ public class ContextHolder {
     private static final ThreadLocal<Context> CONTEXT_HOLDER = new TransmittableThreadLocal<>();
 
     /**
-     * 设置上下文
-     * @param context 上下文
-     */
-    public static void setContext(Context context) {
-        CONTEXT_HOLDER.set(context);
-    }
-
-    /**
      * 获取用户
+     *
      * @return 用户
      */
     public static User getUser() {
@@ -53,10 +46,20 @@ public class ContextHolder {
 
     /**
      * 获取上下文
+     *
      * @return 上下文
      */
     public static Context getContext() {
         return CONTEXT_HOLDER.get();
+    }
+
+    /**
+     * 设置上下文
+     *
+     * @param context 上下文
+     */
+    public static void setContext(Context context) {
+        CONTEXT_HOLDER.set(context);
     }
 
     // 记得保留清除方法

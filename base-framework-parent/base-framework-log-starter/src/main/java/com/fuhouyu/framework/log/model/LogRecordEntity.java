@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,16 +124,21 @@ public class LogRecordEntity {
     private Long costTime;
 
 
-    public LogRecordEntity() {
-        this.isSuccess = true;
-        this.operationTime = LocalDateTime.now().format(DATE_TIME_FORMATTER);
-        this.initRequest();
+    /**
+     * 静态工厂方法：创建一个带默认值和请求信息的实体
+     */
+    public static LogRecordEntity createDefault() {
+        LogRecordEntity entity = new LogRecordEntity();
+        entity.setIsSuccess(true);
+        entity.setOperationTime(LocalDateTime.now().format(DATE_TIME_FORMATTER));
+        entity.fillRequestInfo();
+        return entity;
     }
 
     /**
-     * 初始化请求
+     * 提取请求信息
      */
-    private void initRequest() {
+    public void fillRequestInfo() {
         Request request = ContextHolder.getContext().getRequest();
         if (Objects.nonNull(request)) {
             HttpServletRequest httpServletRequest = request.getHttpServletRequest();

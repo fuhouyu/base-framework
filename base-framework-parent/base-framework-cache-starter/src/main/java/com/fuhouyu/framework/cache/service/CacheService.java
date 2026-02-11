@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,7 +99,7 @@ public interface CacheService<K, V> {
     /**
      * 原子自增操作。
      *
-     * @param key 缓存键
+     * @param key   缓存键
      * @param delta 增量（必须大于0）
      * @return 自增后的值
      */
@@ -108,7 +108,7 @@ public interface CacheService<K, V> {
     /**
      * 原子自减操作。
      *
-     * @param key 缓存键
+     * @param key   缓存键
      * @param delta 减量（必须大于0）
      * @return 自减后的值
      */
@@ -287,7 +287,7 @@ public interface CacheService<K, V> {
     /**
      * 移除有序集合中的指定成员。
      *
-     * @param key   缓存键
+     * @param key    缓存键
      * @param values 成员值
      */
     void removeFromZSet(K key, V... values);
@@ -353,7 +353,7 @@ public interface CacheService<K, V> {
     /**
      * 获取缓存键的剩余过期时间。
      *
-     * @param key 缓存键
+     * @param key  缓存键
      * @param unit 时间单位
      * @return 剩余时间，-1 表示永不过期，-2 表示键不存在
      */

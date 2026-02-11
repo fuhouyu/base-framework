@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -39,7 +40,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
         Ip2RegionConfiguration.class
 })
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(locations = {"classpath:application.yaml"})
+@ActiveProfiles("test")
 class Ip2RegionTemplateTest {
 
     @Autowired

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ public interface BaseResponseStatus {
 
     /**
      * 获取响应编码
+     *
      * @return 状态码
      */
     String getCode();
@@ -38,6 +39,7 @@ public interface BaseResponseStatus {
 
     /**
      * 获取请求ID
+     *
      * @return 请求ID
      */
     default String getRequestId() {
@@ -46,12 +48,14 @@ public interface BaseResponseStatus {
 
     /**
      * 获取响应消息
+     *
      * @return 消息内容
      */
     String getMessage();
 
     /**
      * 获取错误级别
+     *
      * @return 错误级别枚举
      */
     default ErrorLevelEnum getErrorLevel() {

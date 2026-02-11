@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,10 +54,10 @@ public class NoRepeatSubmitAspectj {
      * 切面，当在使用{@link com.fuhouyu.framework.web.annotaions.NoRepeatSubmit}
      * 注解后，会在这里进行拦截，判断当前表单是否已经提交
      *
-     * @param joinPoint 连接点
+     * @param joinPoint      连接点
      * @param noRepeatSubmit 防重复提交注解
-     * @throws Throwable 异常信息
      * @return obj
+     * @throws Throwable 异常信息
      */
     @Around(value = "@annotation(noRepeatSubmit)")
     public Object doAround(ProceedingJoinPoint joinPoint, NoRepeatSubmit noRepeatSubmit) throws Throwable {

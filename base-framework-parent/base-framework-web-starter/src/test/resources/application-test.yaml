@@ -11,6 +11,13 @@ spring:
     username: username
     password: password
     type: com.alibaba.druid.pool.DruidDataSource
+  data:
+    redis:
+      timeout: 10000
+      database: 0
+      host: 127.0.0.1
+      port: 6379
+      password: password
 base:
   framework:
     kms:
@@ -25,7 +32,7 @@ base:
           key: JfMIhbIEAywP7/PCbXBVkQ==
     cache:
       service:
-        cache-service-type: caffeine
+        cache-service-type: redis
     ip2region:
       enabled: true
       db-path: classpath:ip2region.xdb

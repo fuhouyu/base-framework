@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.fuhouyu.framework.web.components;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fuhouyu.framework.common.annotations.ParamErrorResponse;
 import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
@@ -44,6 +43,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -185,7 +185,7 @@ public class WebExceptionHandler {
             HttpMessageConversionException.class
     })
     public R<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request,
-                                                                     Exception e) {
+                                                          Exception e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         return R.fail(ResponseStatusEnum.INVALID_PARAM, e.getMessage());
     }

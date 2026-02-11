@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,64 +43,53 @@ public class RequestEntity implements Request {
     private static final long serialVersionUID = 1926319862948712381L;
 
     private final Map<String, Object> additionalInformation;
-
-    public RequestEntity() {
-        this.additionalInformation = new HashMap<>(2);
-    }
-
     /**
      * 请求id
      */
     private String requestId;
-
     /**
      * 请求方法
      */
     private String requestMethod;
-
     /**
      * 请求uri
      */
     private String requestUri;
-
     /**
      * 请求时间
      */
     private long requestTime;
-
     /**
      * 请求
      */
     private HttpServletRequest httpServletRequest;
-
     /**
      * 响应
      */
     private HttpServletResponse response;
-
     /**
      * 认证信息
      */
     private String authorization;
-
     /**
      * 请求ip
      */
     private String requestIp;
-
     /**
      * 请求主机
      */
     private String requestHost;
-
     /**
      * 请求目标
      */
     private String requestTarget;
-
     /**
      * userAgent
      */
     private String userAgent;
+
+    public RequestEntity() {
+        this.additionalInformation = new HashMap<>(2);
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,9 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class BaseFormController {
 
+    private final CacheService<String, Object> cacheService;
     @Value("${spring.application.name}")
     private String applicationName;
-
-    private final CacheService<String, Object> cacheService;
-
 
     /**
      * 生成表单唯一token并缓存

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -48,12 +47,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class CacheServiceTest {
 
-    private String cacheBigKey;
-    private String cacheValue;
-
-    @Autowired
-    private CacheService<String, Object> cacheService;
-
     @SuppressWarnings("resource")
     static final GenericContainer<?> REDIS_GENERIC_CONTAINER =
             new GenericContainer<>(DockerImageName.parse("redis:7.2-alpine"))
@@ -65,6 +58,11 @@ class CacheServiceTest {
         System.setProperty("spring.data.redis.host", REDIS_GENERIC_CONTAINER.getHost());
         System.setProperty("spring.data.redis.port", REDIS_GENERIC_CONTAINER.getMappedPort(6379).toString());
     }
+
+    private String cacheBigKey;
+    private String cacheValue;
+    @Autowired
+    private CacheService<String, Object> cacheService;
 
     @BeforeEach
     void setup() {

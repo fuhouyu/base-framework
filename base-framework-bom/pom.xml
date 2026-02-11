@@ -43,7 +43,7 @@
 
         <spring-boot-dependencies.version>4.1.0-M1</spring-boot-dependencies.version>
         <spring-cloud-dependencies.version>2025.1.1</spring-cloud-dependencies.version>
-        <spring-cloud-alibaba-dependencies.version>2025.0.0.0-preview</spring-cloud-alibaba-dependencies.version>
+        <spring-cloud-alibaba-dependencies.version>2025.1.0.0</spring-cloud-alibaba-dependencies.version>
         <springdoc-openapi-starter-webmvc-api.version>3.0.1</springdoc-openapi-starter-webmvc-api.version>
         <spring-boot-starter-data-redis.version>4.1.0-M1</spring-boot-starter-data-redis.version>
         <kryo5.version>5.6.0</kryo5.version>
@@ -53,10 +53,10 @@
         <hutool-bom.version>5.8.43</hutool-bom.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <lombok.version>1.18.42</lombok.version>
-        <mapstruct-processor.version>1.6.3</mapstruct-processor.version>
+        <mapstruct-processor.version>1.7.0.Beta1</mapstruct-processor.version>
         <jasypt-spring-boot-starter.version>4.0.4</jasypt-spring-boot-starter.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <bom.version>2.41.19</bom.version>
+        <bom.version>2.41.26</bom.version>
         <docs-integration-sdk.version>1.7.1</docs-integration-sdk.version>
         <ip2region.version>3.3.4</ip2region.version>
         <sts20150401.version>1.2.0</sts20150401.version>

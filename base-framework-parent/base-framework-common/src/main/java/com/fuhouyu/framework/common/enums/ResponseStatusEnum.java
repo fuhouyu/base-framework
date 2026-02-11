@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import lombok.Getter;
  * <p>
  * 仅存放跨模块、跨项目的公共状态码。
  * </p>
+ *
  * @author fuhouyu
  * @since 2024/8/13 17:40
  */

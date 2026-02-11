@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.framework.common.response;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -35,30 +37,26 @@ public class R<T> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 响应状态码
-     */
-    @Schema(description = "状态码", example = "200", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String code;
-
     /**
      * 响应描述信息
      */
     @Schema(description = "描述信息", example = "操作成功", requiredMode = Schema.RequiredMode.REQUIRED)
     private final String message;
-
     /**
      * 业务执行是否成功标志
      */
     @Schema(description = "执行结果", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
     private final boolean success;
-
     /**
      * 响应负载数据
      */
     @Schema(description = "负载数据")
     private final T data;
+    /**
+     * 响应状态码
+     */
+    @Schema(description = "状态码", example = "200", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String code;
 
     /**
      * 私有构造函数，强制通过静态工厂方法创建对象
@@ -68,20 +66,15 @@ public class R<T> implements Serializable {
      * @param success 成功标志
      * @param data    负载数据
      */
-    private R(String code, String message, boolean success, T data) {
+    @JsonCreator
+    private R(@JsonProperty("code") String code,
+              @JsonProperty("message") String message,
+              @JsonProperty("success") boolean success,
+              @JsonProperty("data") T data) {
         this.code = code;
         this.message = message;
         this.success = success;
         this.data = data;
-    }
-
-    /**
-     * 更新message
-     * @param newMessage message
-     * @return R
-     */
-    public R<T> updateMessage(String newMessage) {
-        return new R<>(this.code, newMessage, this.success, this.data);
     }
 
     /**
@@ -106,7 +99,6 @@ public class R<T> implements Serializable {
     public static <T> R<T> ok(T data) {
         return new R<>(ResponseStatusEnum.SUCCESS.getCode(), ResponseStatusEnum.SUCCESS.getMessage(), true, data);
     }
-
 
     /**
      * 根据预定义状态码构建失败响应
@@ -158,5 +150,14 @@ public class R<T> implements Serializable {
         return new R<>(code, message, false, data);
     }
 
+    /**
+     * 更新message
+     *
+     * @param newMessage message
+     * @return R
+     */
+    public R<T> updateMessage(String newMessage) {
+        return new R<>(this.code, newMessage, this.success, this.data);
+    }
 
 }

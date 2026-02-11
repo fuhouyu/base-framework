@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.fuhouyu.framework.cache;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fuhouyu.framework.cache.properties.CacheServiceProperties;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.cache.service.impl.RedisCacheService;
@@ -30,7 +31,15 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.std.ToStringSerializer;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -49,6 +58,7 @@ public class RedisCacheConfiguration {
 
 
     @Bean
+    @ConditionalOnMissingBean(RedisTemplate.class)
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -56,8 +66,23 @@ public class RedisCacheConfiguration {
         redisTemplate.setKeySerializer(stringRedisSerializer);
         redisTemplate.setHashKeySerializer(stringRedisSerializer);
 
-        GenericJacksonJsonRedisSerializer jackson2JsonRedisSerializer = new GenericJacksonJsonRedisSerializer(new ObjectMapper());
-
+        SimpleModule timeModule = new SimpleModule();
+        timeModule.addSerializer(LocalDateTime.class, ToStringSerializer.instance);
+        BasicPolymorphicTypeValidator ptv =
+                BasicPolymorphicTypeValidator.builder()
+                        .allowIfSubType("java.util")
+                        .build();
+        ObjectMapper objectMapper = JsonMapper.builder()
+                .addModule(timeModule)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .activateDefaultTyping(
+                        ptv,
+                        DefaultTyping.NON_FINAL,
+                        JsonTypeInfo.As.PROPERTY
+                )
+                .build();
+        GenericJacksonJsonRedisSerializer jackson2JsonRedisSerializer = new GenericJacksonJsonRedisSerializer(objectMapper);
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.afterPropertiesSet();

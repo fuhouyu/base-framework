@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ CREATE TABLE users
     username        VARCHAR(255)       NOT NULL,
     password        VARCHAR(255)       NOT NULL,
     owner_tenant_id BIGINT             NOT NULL,
-    created_at TIMESTAMP    NOT NULL,
-    created_by VARCHAR(255) NOT NULL,
-    updated_at TIMESTAMP    NOT NULL,
-    updated_by VARCHAR(255) NOT NULL
+    created_at      TIMESTAMP          NOT NULL,
+    created_by      VARCHAR(255)       NOT NULL,
+    updated_at      TIMESTAMP          NOT NULL,
+    updated_by      VARCHAR(255)       NOT NULL
 );

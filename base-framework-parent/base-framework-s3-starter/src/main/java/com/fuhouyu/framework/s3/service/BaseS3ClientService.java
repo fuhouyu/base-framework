@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -327,7 +327,7 @@ public interface BaseS3ClientService {
      * 获取对象
      *
      * @param objectKey 对象Key
-     * @return  响应流
+     * @return 响应流
      */
     default ResponseInputStream<GetObjectResponse> getObject(String objectKey, String rangeHeader) {
         return this.getObject(this.getBucketName(), objectKey, rangeHeader);
@@ -338,7 +338,7 @@ public interface BaseS3ClientService {
      *
      * @param bucketName 存储桶名称（建议从配置读取或作为参数）
      * @param objectKey  对象Key
-     * @return  响应流
+     * @return 响应流
      */
     default ResponseInputStream<GetObjectResponse> getObject(String bucketName, String objectKey,
                                                              String rangeHeader) {
@@ -353,9 +353,10 @@ public interface BaseS3ClientService {
 
     /**
      * 统一的 S3 操作执行器（使用默认错误消息）
+     *
      * @param action 具体要执行的 S3 调用逻辑
+     * @param <T>    返回值的类型
      * @return 执行结果
-     * @param <T> 返回值的类型
      */
     default <T> T executeS3Action(Supplier<T> action) {
         // 这里的 "操作失败" 是默认值

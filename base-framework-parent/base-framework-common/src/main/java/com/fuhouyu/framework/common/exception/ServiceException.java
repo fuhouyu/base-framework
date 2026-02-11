@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,9 @@ public class ServiceException extends RuntimeException {
 
     /**
      * 构造函数
+     *
      * @param responseStatus 响应状态
-     * @param errorMessage 错误信息
+     * @param errorMessage   错误信息
      */
     public ServiceException(BaseResponseStatus responseStatus, String errorMessage) {
         this.code = responseStatus.getCode();

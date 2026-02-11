@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,7 @@ public class Sm3PasswordEncoder implements PasswordEncoder {
 
     /**
      * 构造函数
+     *
      * @param random 安全随机数
      */
     public Sm3PasswordEncoder(SecureRandom random) {
@@ -72,6 +73,7 @@ public class Sm3PasswordEncoder implements PasswordEncoder {
 
     /**
      * 构造函数
+     *
      * @param prefix 密码前缀
      * @param random 安全随机数
      */
@@ -91,7 +93,7 @@ public class Sm3PasswordEncoder implements PasswordEncoder {
 
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
-        if (!encodedPassword.startsWith(this.prefix)) {
+        if (encodedPassword != null && !encodedPassword.startsWith(this.prefix)) {
             LoggerUtil.error(log, "encodedPassword is {}, 非sm3国密编码", rawPassword, encodedPassword);
             return false;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ module base.framework.common {
     requires transitive com.fasterxml.jackson.databind;
     requires io.swagger.v3.oas.annotations;
     requires spring.core;
+    requires tools.jackson.databind;
 
     exports com.fuhouyu.framework.common;
     exports com.fuhouyu.framework.common.constants;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,11 @@
 
 package com.fuhouyu.framework.cache;
 
+import com.fuhouyu.framework.cache.properties.CacheServiceProperties;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -28,10 +33,18 @@ import org.springframework.context.annotation.Import;
  * @author fuhouyu
  * @since 2024/8/13 21:00
  */
-@Configuration
-@Import({RedisCacheConfiguration.class, CaffeineCacheConfiguration.class})
+@Configuration(proxyBeanMethods = false)
+@Import({RedisCacheConfiguration.class})
 @ConfigurationPropertiesScan(value = "com.fuhouyu.framework.cache.properties")
-public class CacheAutoConfiguration {
+@RequiredArgsConstructor
+@Slf4j
+public class CacheAutoConfiguration implements InitializingBean {
+
+    private final CacheServiceProperties cacheServiceProperties;
 
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        LoggerUtil.info(log, "使用的缓存类型:{}", cacheServiceProperties.getCacheServiceType());
+    }
 }

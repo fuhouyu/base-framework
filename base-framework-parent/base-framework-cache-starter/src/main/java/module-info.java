@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 module base.framework.cache.starter {
     // 透传
-    requires static com.github.benmanes.caffeine;
     requires static spring.data.redis;
     requires transitive base.framework.common;
     requires transitive com.fasterxml.jackson.annotation;
@@ -27,6 +26,9 @@ module base.framework.cache.starter {
     requires org.jspecify;
     requires spring.boot.data.redis;
     requires tools.jackson.databind;
+    requires spring.beans;
+    requires spring.security.core;
+    requires spring.security.oauth2.authorization.server;
 
     // 需要导出的类
     exports com.fuhouyu.framework.cache;

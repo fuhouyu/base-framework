@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ public interface ParseHttpRequest {
     /**
      * 解析请求
      *
-     * @param request 请求
-     * @param handler 处理器
+     * @param request  请求
+     * @param handler  处理器
      * @param response 响应
      * @return 用户详情
      */

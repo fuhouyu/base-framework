@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 
 package com.fuhouyu.framework.web;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
-import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.response.R;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
@@ -29,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.boot.jdbc.autoconfigure.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,7 +35,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -44,6 +43,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
+import tools.jackson.core.type.TypeReference;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,22 +58,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2024/8/17 23:10
  */
 @SpringBootTest(classes = {
+        CacheAutoConfiguration.class,
+        DataRedisAutoConfiguration.class,
         MessageSourceAutoConfiguration.class,
         DataSourceAutoConfiguration.class,
         JdbcTemplateAutoConfiguration.class,
         KmsAutoConfiguration.class,
         WebAutoConfiguration.class,
-        CacheAutoConfiguration.class
+
 })
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @EnableWebMvc
-@TestPropertySource(locations = {"classpath:application.yaml"})
+@ActiveProfiles("test")
 @EnableAspectJAutoProxy
 class WebFormNoRepeatSubmitTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @SuppressWarnings("resource")
+    static final GenericContainer<?> REDIS_GENERIC_CONTAINER =
+            new GenericContainer<>(DockerImageName.parse("redis:7.2-alpine"))
+                    .withCommand("redis-server --requirepass password")
+                    .withExposedPorts(6379);
+
+    static {
+        REDIS_GENERIC_CONTAINER.start();
+        System.setProperty("spring.data.redis.host", REDIS_GENERIC_CONTAINER.getHost());
+        System.setProperty("spring.data.redis.port", REDIS_GENERIC_CONTAINER.getMappedPort(6379).toString());
+    }
 
     @Test
     void testNoRepeatSubmit() throws Exception {
@@ -80,7 +96,7 @@ class WebFormNoRepeatSubmitTest {
                 )
                 .andExpect(status().isOk()).andReturn();
 
-        R<ErrorLevelEnum> baseResponse = JacksonUtil.readValue(mvcResult.getResponse().getContentAsString(),
+        R<Void> baseResponse = JacksonUtil.readValue(mvcResult.getResponse().getContentAsString(),
                 new TypeReference<>() {
                 });
         Assertions.assertEquals(ResponseStatusEnum.INVALID_PARAM.getCode(), baseResponse.getCode());

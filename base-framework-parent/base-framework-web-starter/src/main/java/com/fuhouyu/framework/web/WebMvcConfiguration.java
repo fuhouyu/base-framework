@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,9 @@ package com.fuhouyu.framework.web;
 import com.fuhouyu.framework.web.components.HttpRequestHandler;
 import com.fuhouyu.framework.web.components.ParseHttpRequest;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.converter.HttpMessageConverters;
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -38,7 +36,6 @@ import tools.jackson.databind.ser.std.ToStringSerializer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 /**
  * <p>
@@ -52,13 +49,11 @@ import java.util.List;
 @EnableWebMvc
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-    private final ApplicationContext applicationContext;
-
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
             "yyyy-MM-dd");
-
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
             "yyyy-MM-dd HH:mm:ss");
+    private final ApplicationContext applicationContext;
 
     @Override
     public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {

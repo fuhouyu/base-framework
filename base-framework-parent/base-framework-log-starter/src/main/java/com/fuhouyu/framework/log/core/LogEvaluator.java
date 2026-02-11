@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
  */
 public class LogEvaluator {
 
+
     /**
      * SpEL解析器
      */
@@ -63,5 +64,4 @@ public class LogEvaluator {
     private Expression getExpression(String expression) {
         return parser.parseExpression(expression, template);
     }
-
 }

@@ -2,7 +2,7 @@ base:
   framework:
     cache:
       service:
-        cache-service-type: caffeine
+        cache-service-type: redis
 spring:
   data:
     redis:
@@ -11,3 +11,12 @@ spring:
       host: 127.0.0.1
       port: 6379
       password: password
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:database_test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: username
+    password: password
+    type: com.alibaba.druid.pool.DruidDataSource
+  sql:
+    init:
+      schema-locations: sql/client_init.sql

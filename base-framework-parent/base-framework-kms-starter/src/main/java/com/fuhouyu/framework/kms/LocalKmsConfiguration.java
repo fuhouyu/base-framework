@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ import java.util.Base64;
 public class LocalKmsConfiguration implements InitializingBean {
 
     private final KmsProviderProperties kmsProviderProperties;
+
     /**
      * kms服务
      *

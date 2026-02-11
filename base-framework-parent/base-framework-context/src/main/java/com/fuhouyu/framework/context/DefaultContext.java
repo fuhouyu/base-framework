@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,14 +35,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @ToString
 public class DefaultContext implements Context {
 
-    @Getter @Setter
-    private User user;
-
-    @Getter @Setter
-    private Request request;
-
     // 仅保留类型映射，足以应对 99% 的扩展场景
     private final Map<Class<?>, Object> attributes = new ConcurrentHashMap<>();
+    @Getter
+    @Setter
+    private User user;
+    @Getter
+    @Setter
+    private Request request;
 
     @Override
     @SuppressWarnings("unchecked")

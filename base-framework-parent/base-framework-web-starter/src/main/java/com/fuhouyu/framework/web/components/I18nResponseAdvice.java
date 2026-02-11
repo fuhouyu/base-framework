@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,7 @@ public class I18nResponseAdvice implements ResponseBodyAdvice<Object> {
                                   @NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response) {
         if (body instanceof R<?> r) {
             String i18nMessage = I18nMessageUtil.getMessage(r.getMessage());
-            r.updateMessage(i18nMessage);
-            return r;
+            return r.updateMessage(i18nMessage);
         }
         return body;
     }

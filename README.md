@@ -16,7 +16,7 @@
 |    [base-framework-cache-starter](base-framework-cache-starter)    | 缓存Starter，caffine及redis实现 |
 |           [base-framework-common](base-framework-common)           |        公共组件，常用工具类         |
 |          [base-framework-context](base-framework-context)          |       上下文组件，用户、请求定义       |
-|     [base-framework-bom](base-framework-bom)     |          内部模块组件           |
+|              [base-framework-bom](base-framework-bom)              |          内部模块组件           |
 |      [base-framework-log-starter](base-framework-log-starter)      |    日志组件，logback和业务日志切面    |
 |    [base-framework-s3-starter](base-framework-resource-starter)    |        s3 starter         |
 | [base-framework-security-starter](base-framework-security-starter) |     安全认证组件，security封装     |

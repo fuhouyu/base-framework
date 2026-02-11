@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,9 @@ public class I18nMessageUtil {
 
     /**
      * 获取翻译后的文案
+     *
      * @param msgKey I18n 文件中的 Key (即 ResponseStatusEnum 里的 message)
-     * @param args 动态参数（用于替换 {0} {1} 等占位符）
+     * @param args   动态参数（用于替换 {0} {1} 等占位符）
      * @return 翻译后的字符串
      */
     public static String getMessage(String msgKey, Object... args) {

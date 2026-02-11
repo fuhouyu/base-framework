@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.Assert;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Map;
 
@@ -47,8 +49,9 @@ import java.util.Map;
  */
 @SpringBootTest
 @SpringBootApplication
-@TestPropertySource(locations = {"classpath:application.yaml"})
+@ActiveProfiles("test")
 @EnableAspectJAutoProxy
+@EnableWebMvc
 class LogRecordEntityStoreTest {
 
     @Autowired

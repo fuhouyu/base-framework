@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,13 +34,17 @@ module base.framework.security.starter {
     requires spring.security.oauth2.jose;
     requires spring.boot.security.oauth2.client;
     requires org.jspecify;
+    requires spring.security.oauth2.authorization.server;
+    requires spring.security.web;
+    requires spring.security.config;
+    requires tools.jackson.databind;
+    requires com.nimbusds.jose.jwt;
+    requires org.bouncycastle.provider;
+    requires spring.beans;
+    requires spring.jdbc;
+    requires spring.boot.jdbc;
     opens com.fuhouyu.framework.security to spring.core;
 
-    exports com.fuhouyu.framework.security.core.provider.refreshtoken;
     exports com.fuhouyu.framework.security;
     exports com.fuhouyu.framework.security.core;
-    exports com.fuhouyu.framework.security.core.provider.oidc;
-    exports com.fuhouyu.framework.security.serializer;
-    exports com.fuhouyu.framework.security.token;
-    opens com.fuhouyu.framework.security.token to com.esotericsoftware.kryo.kryo5;
 }

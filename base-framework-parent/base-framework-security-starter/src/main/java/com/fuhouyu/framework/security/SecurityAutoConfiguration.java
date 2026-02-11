@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@
 package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
-import com.fuhouyu.framework.cache.service.CacheService;
-import com.fuhouyu.framework.security.token.TokenStore;
-import com.fuhouyu.framework.security.token.TokenStoreCache;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.jdbc.autoconfigure.JdbcTemplateAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 
 /**
  * <p>
@@ -35,20 +35,15 @@ import org.springframework.context.annotation.Configuration;
  * @since 2024/8/15 16:22
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter(CacheAutoConfiguration.class)
+@AutoConfigureAfter({
+        CacheAutoConfiguration.class,
+        JdbcTemplateAutoConfiguration.class
+})
+@RequiredArgsConstructor
 public class SecurityAutoConfiguration {
 
-    /**
-     * redisToken存储.
-     *
-     * @param cacheService 缓存对象
-     * @return token存储.
-     */
     @Bean
-    @ConditionalOnMissingBean(TokenStore.class)
-    @ConditionalOnBean(CacheService.class)
-    public TokenStore tokenStore(CacheService<String, Object> cacheService) {
-        return new TokenStoreCache("user:", cacheService);
+    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
+        return new JdbcRegisteredClientRepository(jdbcTemplate);
     }
-
 }

@@ -17,6 +17,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
 @AutoConfigureAfter(KmsAutoConfiguration.class)
-@ComponentScan(basePackageClasses =  DatabaseAutoConfiguration.class)
+@ComponentScan(basePackageClasses = DatabaseAutoConfiguration.class)
 public class DatabaseAutoConfiguration {
 }

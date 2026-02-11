@@ -17,24 +17,28 @@ public interface BaseEntity {
 
     /**
      * 创建人
+     *
      * @return 创建人
      */
     String createdBy();
 
     /**
      * 创建时间
+     *
      * @return 创建时间
      */
     LocalDateTime createdAt();
 
     /**
      * 更新人
+     *
      * @return 更新人
      */
     String updatedBy();
 
     /**
      * 更新时间
+     *
      * @return 更新时间
      */
     LocalDateTime updatedAt();

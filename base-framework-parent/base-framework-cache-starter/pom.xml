@@ -24,12 +24,12 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    
+
     <artifactId>base-framework-cache-starter</artifactId>
     <name>Base Framework Cache Stater</name>
     <description>基础框架缓存starter</description>
     <packaging>jar</packaging>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -49,10 +49,6 @@
             <artifactId>spring-boot-autoconfigure-processor</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.fuhouyu</groupId>
             <artifactId>base-framework-common</artifactId>
         </dependency>
@@ -61,6 +57,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-testcontainers</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-authorization-server</artifactId>
         </dependency>
     </dependencies>
 </project>

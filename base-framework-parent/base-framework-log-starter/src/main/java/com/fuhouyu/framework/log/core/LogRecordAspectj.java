@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 fuhouyu.
+ * Copyright 2024-present fuhouyu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import com.fuhouyu.framework.log.model.LogRecordEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -34,11 +33,12 @@ import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.ParseException;
-import org.springframework.util.StopWatch;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>
@@ -53,30 +53,15 @@ import java.util.*;
 @Slf4j
 public class LogRecordAspectj {
 
-
-    private final ParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
-
-    /**
-     * 日志SpEL解析器
-     */
+    private static final ParameterNameDiscoverer DISCOVERER = new DefaultParameterNameDiscoverer();
     private final LogEvaluator evaluator = new LogEvaluator();
-
-    /**
-     * 日志存储接口
-     */
     private final List<LogRecordStoreService> logRecordStoreServiceList;
-
-    /**
-     * 系统名称
-     */
     private final String systemName;
-
-    /**
-     * bean工厂解析器
-     */
     private final BeanFactoryResolver beanFactoryResolver;
 
-    public LogRecordAspectj(List<LogRecordStoreService> logRecordStoreServiceList, String systemName, BeanFactoryResolver beanFactoryResolver) {
+    public LogRecordAspectj(List<LogRecordStoreService> logRecordStoreServiceList,
+                            String systemName,
+                            BeanFactoryResolver beanFactoryResolver) {
         this.logRecordStoreServiceList = logRecordStoreServiceList;
         this.systemName = systemName;
         this.beanFactoryResolver = beanFactoryResolver;
@@ -84,9 +69,7 @@ public class LogRecordAspectj {
 
     @Around("@annotation(logRecord)")
     public Object logAround(ProceedingJoinPoint joinPoint, LogRecord logRecord) throws Throwable {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-
+        long startTime = System.currentTimeMillis();
         Object result = null;
         Throwable throwable = null;
         try {
@@ -96,170 +79,118 @@ public class LogRecordAspectj {
             throwable = e;
             throw e;
         } finally {
-            stopWatch.stop();
-            long cost = stopWatch.getTotalTimeMillis();
-            this.handleLog(joinPoint, logRecord, throwable, result, cost);
+            long costTime = System.currentTimeMillis() - startTime;
+            // 使用try-catch包裹日志逻辑，确保日志记录失败不影响主业务响应
+            try {
+                this.handleLog(joinPoint, logRecord, throwable, result, costTime);
+            } catch (Exception ex) {
+                LoggerUtil.error(log, "Log collection failed", ex);
+            }
         }
     }
 
-    /**
-     * 处理日志信息
-     *
-     * @param joinPoint    切入点
-     * @param logRecord    日志注解
-     * @param e            异常信息
-     * @param objectResult 返回结果
-     */
-    protected void handleLog(final JoinPoint joinPoint,
-                             LogRecord logRecord,
-                             final Throwable e,
-                             Object objectResult,
-                             long costTime) {
-        LogRecordEntity logRecordEntity = this.buildLogRecordEntity(e,
-                joinPoint, logRecord, objectResult);
-        logRecordEntity.setCostTime(costTime);
-        for (LogRecordStoreService logRecordStoreService : logRecordStoreServiceList) {
-            logRecordStoreService.saveLogRecord(logRecordEntity);
+    protected void handleLog(final JoinPoint joinPoint, LogRecord logRecord, final Throwable e, Object result, long cost) {
+        LogRecordEntity entity = this.buildLogRecordEntity(e, joinPoint, logRecord, result);
+        entity.setCostTime(cost);
+        for (LogRecordStoreService storeService : logRecordStoreServiceList) {
+            storeService.saveLogRecord(entity);
         }
     }
 
-    /**
-     * 获取方法评估上下文
-     *
-     * @param joinPoint 切入点
-     * @return 方法评估上下文
-     */
     private MethodBasedEvaluationContext getMethodBasedEvaluationContext(JoinPoint joinPoint) {
-        Signature signature = joinPoint.getSignature();
-        MethodSignature methodSignature = (MethodSignature) signature;
-        Method method = methodSignature.getMethod();
-        Object[] args = joinPoint.getArgs();
-        MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(joinPoint.getTarget(),
-                method,
-                args,
-                discoverer);
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(
+                joinPoint.getTarget(),
+                methodSignature.getMethod(),
+                joinPoint.getArgs(),
+                DISCOVERER);
         context.setBeanResolver(this.beanFactoryResolver);
         return context;
     }
 
-    /**
-     * 构建日志实体
-     *
-     * @param exception 异常
-     * @param joinPoint 切入点
-     * @return 日志记录实体
-     */
-    private LogRecordEntity buildLogRecordEntity(Throwable exception,
-                                                 JoinPoint joinPoint,
-                                                 LogRecord logRecord,
-                                                 Object objectResult) {
+    private LogRecordEntity buildLogRecordEntity(Throwable exception, JoinPoint joinPoint, LogRecord logRecord, Object result) {
         LogModule module = joinPoint.getTarget().getClass().getAnnotation(LogModule.class);
-        LogRecordEntity logRecordEntity = new LogRecordEntity();
-        logRecordEntity.setModuleName(Objects.isNull(module) ? "" : module.value());
+        LogRecordEntity entity = LogRecordEntity.createDefault();
+        entity.setModuleName(Objects.isNull(module) ? "" : module.value());
+        entity.setSystemName(systemName);
+        entity.setOperationType(logRecord.operationType().name());
+        entity.setRiskType(logRecord.riskType().name());
 
         MethodBasedEvaluationContext context = getMethodBasedEvaluationContext(joinPoint);
-        // 如果返回值存在，则设置返回值
-        // 使SpEL表达式可以获取到结果中的值
-        Optional.ofNullable(objectResult)
-                .ifPresent(o -> {
-                    context.setVariable("result", o);
-                    logRecordEntity.setResponseData(JacksonUtil.writeValueAsString(o));
-                });
-        Optional.ofNullable(exception)
-                .ifPresent(e -> {
-                    logRecordEntity.setIsSuccess(false);
-                    logRecordEntity.setErrorMessage(exception.getMessage());
-                });
-        String logContent = this.parseContent(logRecord.content(), context);
-        String logContentEn = this.parseContent(logRecord.contentEn(), context);
-        String operationUser = this.parseContent(logRecord.operationUser(), context);
-        logRecordEntity.setOperationType(logRecord.operationType().name());
-        logRecordEntity.setContent(logContent);
-        logRecordEntity.setContentEn(logContentEn);
-        logRecordEntity.setRiskType(logRecord.riskType().name());
-        logRecordEntity.setSystemName(systemName);
-        logRecordEntity.setOperationUser(operationUser);
-        this.processMethodParameters(joinPoint, logRecordEntity);
 
-        return logRecordEntity;
+        // 处理返回值变量
+        if (Objects.nonNull(result)) {
+            context.setVariable("result", result);
+            entity.setResponseData(JacksonUtil.writeValueAsString(result));
+        }
+
+        // 处理异常信息
+        if (Objects.nonNull(exception)) {
+            entity.setIsSuccess(false);
+            entity.setErrorMessage(exception.getMessage());
+        }
+
+        // 解析SpEL内容
+        entity.setContent(this.parseContent(logRecord.content(), context));
+        entity.setContentEn(this.parseContent(logRecord.contentEn(), context));
+        entity.setOperationUser(this.parseContent(logRecord.operationUser(), context));
+
+        // 处理参数序列化
+        this.processMethodParameters(joinPoint, entity);
+
+        return entity;
     }
 
-    /**
-     * 解析日志具体内容
-     *
-     * @param content 日志内容
-     * @param context 上下文
-     * @return 解析后的信息
-     */
-    private String parseContent(String content,
-                                MethodBasedEvaluationContext context) {
+    private String parseContent(String content, MethodBasedEvaluationContext context) {
         if (!StringUtils.hasText(content)) {
             return "";
         }
         try {
             return String.valueOf(evaluator.parse(content, context));
         } catch (ParseException ex) {
-            LoggerUtil.error(log, "log content: {} parse failed", content, ex);
+            LoggerUtil.error(log, "Log SpEL content parse failed: {}", content, ex);
             throw new LogException(ex);
         } catch (Exception ex) {
-            LoggerUtil.error(log, "log other error: {} ", content, ex);
+            LoggerUtil.error(log, "Log parse unknown error: {}", content, ex);
             throw new LogException(ex);
         }
     }
 
-
-    /**
-     * 处理方法参数
-     *
-     * @param joinPoint       切入点
-     * @param logRecordEntity 日志记录
-     */
-    private void processMethodParameters(JoinPoint joinPoint, LogRecordEntity logRecordEntity) {
+    private void processMethodParameters(JoinPoint joinPoint, LogRecordEntity entity) {
         Object[] args = joinPoint.getArgs();
-        if (args.length == 0) {
-            logRecordEntity.setRequestParam("");
+        if (args == null || args.length == 0) {
+            entity.setRequestParam("");
             return;
         }
-        // 获取方法签名
+
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String[] parameterNames = signature.getParameterNames();
         Class<?>[] parameterTypes = signature.getParameterTypes();
-
-        // 创建参数名-值映射
-        Map<String, Object> paramMap = new LinkedHashMap<>();
+        Map<String, Object> paramMap = new LinkedHashMap<>(args.length);
 
         for (int i = 0; i < args.length; i++) {
-            String paramName = parameterNames != null && i < parameterNames.length
-                    ? parameterNames[i]
-                    : "arg" + i;
+            String paramName = (parameterNames != null && i < parameterNames.length) ? parameterNames[i] : "arg" + i;
+            Object paramValue = args[i];
 
-            // 处理参数值为null的情况
-            Object paramValue = args[i] != null ? args[i] : "null";
-
-            // 对于简单类型直接存储，复杂类型转换为JSON字符串
-            if (isSimpleType(parameterTypes[i])) {
+            if (Objects.isNull(paramValue)) {
+                paramMap.put(paramName, "null");
+            } else if (isSimpleType(parameterTypes[i])) {
                 paramMap.put(paramName, paramValue);
             } else {
+                // 复杂对象序列化
                 paramMap.put(paramName, JacksonUtil.writeValueAsString(paramValue));
             }
         }
-        // 将参数Map转换为JSON字符串
-        logRecordEntity.setRequestParam(JacksonUtil.writeValueAsString(paramMap));
+        entity.setRequestParam(JacksonUtil.writeValueAsString(paramMap));
     }
 
-    /**
-     * 判断是否为简单类型
-     *
-     * @param clazz class
-     * @return true / false
-     */
     private boolean isSimpleType(Class<?> clazz) {
         return clazz.isPrimitive() ||
                 clazz.equals(String.class) ||
                 Number.class.isAssignableFrom(clazz) ||
                 clazz.equals(Boolean.class) ||
                 clazz.equals(Character.class) ||
-                clazz.equals(java.util.Date.class) ||
-                clazz.equals(java.time.temporal.Temporal.class);
+                java.time.temporal.Temporal.class.isAssignableFrom(clazz) ||
+                java.util.Date.class.isAssignableFrom(clazz);
     }
 }

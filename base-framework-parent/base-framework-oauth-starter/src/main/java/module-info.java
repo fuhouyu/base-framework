@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module base.framework.security.starter {
+module base.framework.oauth.starter {
     requires static com.github.benmanes.caffeine;
     requires static spring.data.redis;
     requires transitive base.framework.cache.starter;

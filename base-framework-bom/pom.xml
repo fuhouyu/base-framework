@@ -234,7 +234,7 @@
             </dependency>
             <dependency>
                 <groupId>com.fuhouyu</groupId>
-                <artifactId>base-framework-security-starter</artifactId>
+                <artifactId>base-framework-oauth-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

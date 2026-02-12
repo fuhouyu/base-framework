@@ -25,6 +25,8 @@ import com.fuhouyu.framework.security.constants.TokenPrefixConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -74,9 +76,21 @@ public class CacheOAuth2AuthorizationService implements OAuth2AuthorizationServi
     @Override
     public void remove(OAuth2Authorization authorization) {
         this.cacheService.delete(TokenPrefixConstant.ID_PREFIX + authorization.getId());
-        this.cacheService.delete(TokenPrefixConstant.ACCESS_TOKEN_PREFIX + authorization.getAccessToken().getToken().getTokenValue());
-        if (authorization.getRefreshToken() != null) {
-            this.cacheService.delete(TokenPrefixConstant.REFRESH_TOKEN_PREFIX + authorization.getRefreshToken().getToken().getTokenValue());
+        OAuth2Authorization.Token<OAuth2AccessToken> accessToken = authorization.getAccessToken();
+        if (Objects.nonNull(accessToken)) {
+            LoggerUtil.debug(log, "删除令牌:[{}]", accessToken.getToken().getTokenValue());
+            this.cacheService.delete(TokenPrefixConstant.ACCESS_TOKEN_PREFIX + accessToken.getToken().getTokenValue());
+        }
+
+        OAuth2Authorization.Token<OAuth2RefreshToken> refreshToken = authorization.getRefreshToken();
+        if (Objects.nonNull(refreshToken)) {
+            LoggerUtil.debug(log, "删除刷新令牌:[{}]", refreshToken.getToken().getTokenValue());
+            this.cacheService.delete(TokenPrefixConstant.REFRESH_TOKEN_PREFIX + refreshToken.getToken().getTokenValue());
+        }
+        OAuth2Authorization.Token<OAuth2AuthorizationCode> codeToken = authorization.getToken(OAuth2AuthorizationCode.class);
+        if (Objects.nonNull(codeToken)) {
+            LoggerUtil.debug(log, "删除临时令牌:[{}]", codeToken.getToken().getTokenValue());
+            this.cacheService.delete(TokenPrefixConstant.CODE_PREFIX + codeToken.getToken().getTokenValue());
         }
     }
 

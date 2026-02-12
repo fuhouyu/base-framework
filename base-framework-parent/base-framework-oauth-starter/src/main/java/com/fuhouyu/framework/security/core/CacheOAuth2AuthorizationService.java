@@ -99,7 +99,7 @@ public class CacheOAuth2AuthorizationService implements OAuth2AuthorizationServi
         Object o = this.cacheService.get(TokenPrefixConstant.ID_PREFIX + id);
         OAuth2Authorization result = null;
         if (Objects.nonNull(o)) {
-            result = deserialize(Base64.getDecoder().decode(o.toString()), OAuth2Authorization.class);
+            result = deserialize(Base64.getDecoder().decode(o.toString()));
         }
         return result;
     }
@@ -152,18 +152,17 @@ public class CacheOAuth2AuthorizationService implements OAuth2AuthorizationServi
     /**
      * 反序列化对象
      *
-     * @param data  data
-     * @param clazz 结果类型
-     * @param <T>   类型
+     * @param <T>  类型
+     * @param data data
      * @return 反序列化后的对象
      */
     @SuppressWarnings("unchecked")
-    private <T> T deserialize(byte[] data, Class<T> clazz) {
+    private <T> T deserialize(byte[] data) {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
              ObjectInputStream in = new ObjectInputStream(bis)) {
             Object obj = in.readObject();
-            if (!clazz.isInstance(obj)) {
-                throw new IllegalStateException("Deserialized object is not of type " + clazz.getName());
+            if (!(obj instanceof OAuth2Authorization)) {
+                throw new IllegalStateException("Deserialized object is not of type " + OAuth2Authorization.class.getName());
             }
             return (T) obj;
         } catch (IOException | ClassNotFoundException e) {

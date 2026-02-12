@@ -74,9 +74,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableAspectJAutoProxy
 class WebFormNoRepeatSubmitTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @SuppressWarnings("resource")
     static final GenericContainer<?> REDIS_GENERIC_CONTAINER =
             new GenericContainer<>(DockerImageName.parse("redis:7.2-alpine"))
@@ -88,6 +85,9 @@ class WebFormNoRepeatSubmitTest {
         System.setProperty("spring.data.redis.host", REDIS_GENERIC_CONTAINER.getHost());
         System.setProperty("spring.data.redis.port", REDIS_GENERIC_CONTAINER.getMappedPort(6379).toString());
     }
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     void testNoRepeatSubmit() throws Exception {

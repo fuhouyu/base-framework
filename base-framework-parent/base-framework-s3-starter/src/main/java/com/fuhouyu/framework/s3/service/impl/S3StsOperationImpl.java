@@ -103,7 +103,7 @@ public class S3StsOperationImpl implements StsOperation {
         AssumeRoleRequest assumeRoleRequest = AssumeRoleRequest.builder()
                 .roleArn(stsProperties.getRoleArn())
                 .roleSessionName(UUID.randomUUID().toString().replace("-", "").substring(16))
-                .policy(JacksonUtil.writeValueAsString(stsPolicy))
+                .policy(JacksonUtil.toJsonString(stsPolicy))
                 .durationSeconds(stsProperties.getDurationSeconds())
                 .build();
         AssumeRoleResponse assumeRoleResponse = this.stsClient.assumeRole(assumeRoleRequest);

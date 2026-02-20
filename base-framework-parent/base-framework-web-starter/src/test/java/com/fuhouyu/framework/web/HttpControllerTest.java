@@ -93,14 +93,14 @@ class HttpControllerTest {
         paramMap.put("username", "fuhouyu");
         paramMap.put("password", "fuhouyu");
 
-        byte[] bodyBytes = kmsService.asymmetricEncrypt(JacksonUtil.writeValueAsBytes(paramMap));
+        byte[] bodyBytes = kmsService.asymmetricEncrypt(JacksonUtil.toBytes(paramMap));
 
         Map<String, String> map = new HashMap<>();
         map.put("body", HexUtil.encodeToHexString(bodyBytes));
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/v1/test/enc")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JacksonUtil.writeValueAsBytes(map))
+                        .content(JacksonUtil.toBytes(map))
         ).andExpect(status().isOk());
 
     }

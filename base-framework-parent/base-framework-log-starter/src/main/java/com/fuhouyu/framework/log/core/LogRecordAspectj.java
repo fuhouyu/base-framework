@@ -121,7 +121,7 @@ public class LogRecordAspectj {
         // 处理返回值变量
         if (Objects.nonNull(result)) {
             context.setVariable("result", result);
-            entity.setResponseData(JacksonUtil.writeValueAsString(result));
+            entity.setResponseData(JacksonUtil.toJsonString(result));
         }
 
         // 处理异常信息
@@ -178,10 +178,10 @@ public class LogRecordAspectj {
                 paramMap.put(paramName, paramValue);
             } else {
                 // 复杂对象序列化
-                paramMap.put(paramName, JacksonUtil.writeValueAsString(paramValue));
+                paramMap.put(paramName, JacksonUtil.toJsonString(paramValue));
             }
         }
-        entity.setRequestParam(JacksonUtil.writeValueAsString(paramMap));
+        entity.setRequestParam(JacksonUtil.toJsonString(paramMap));
     }
 
     private boolean isSimpleType(Class<?> clazz) {

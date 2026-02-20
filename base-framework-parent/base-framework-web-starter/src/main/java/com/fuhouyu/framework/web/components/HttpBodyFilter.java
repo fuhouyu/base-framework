@@ -77,7 +77,7 @@ public interface HttpBodyFilter {
 
         @Override
         public byte[] decryptionBody(byte[] encryptBodyBytes) {
-            HttpBodyEncryptionModel httpBodyEncryptionModel = JacksonUtil.readValue(encryptBodyBytes, HttpBodyEncryptionModel.class);
+            HttpBodyEncryptionModel httpBodyEncryptionModel = JacksonUtil.parseObject(encryptBodyBytes, HttpBodyEncryptionModel.class);
             if (Objects.isNull(httpBodyEncryptionModel)) {
                 LoggerUtil.warn(log,
                         "需要解密转换后的body对象为空，直接返回");

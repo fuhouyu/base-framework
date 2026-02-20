@@ -56,7 +56,7 @@ public class WebAutoConfiguration {
                 return null;
             }
             String userinfoJsonStr = URLDecoder.decode(userinfoHeader, StandardCharsets.UTF_8);
-            return JacksonUtil.readValue(userinfoJsonStr, UserEntity.class);
+            return JacksonUtil.parseObject(userinfoJsonStr, UserEntity.class);
         };
     }
 

@@ -88,7 +88,7 @@ public class AliOssStsOperationImpl implements StsOperation {
         request.setSysMethod(MethodType.POST);
         request.setRoleArn(this.stsProperties.getRoleArn());
         request.setRoleSessionName(UUID.randomUUID().toString().replace("-", "").substring(16));
-        request.setPolicy(JacksonUtil.writeValueAsString(policy));
+        request.setPolicy(JacksonUtil.toJsonString(policy));
         request.setDurationSeconds(this.stsProperties.getDurationSeconds().longValue());
         AssumeRoleResponse response;
         try {

@@ -96,7 +96,7 @@ class WebFormNoRepeatSubmitTest {
                 )
                 .andExpect(status().isOk()).andReturn();
 
-        R<Void> baseResponse = JacksonUtil.readValue(mvcResult.getResponse().getContentAsString(),
+        R<Void> baseResponse = JacksonUtil.parseObject(mvcResult.getResponse().getContentAsString(),
                 new TypeReference<>() {
                 });
         Assertions.assertEquals(ResponseStatusEnum.INVALID_PARAM.getCode(), baseResponse.getCode());

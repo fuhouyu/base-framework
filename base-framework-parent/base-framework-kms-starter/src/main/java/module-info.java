@@ -23,23 +23,13 @@ module base.framework.kms.starter {
     requires spring.context;
     requires spring.core;
     requires cn.hutool.core;
-    requires com.baomidou.mybatis.plus.annotation;
     requires static lombok;
-    requires com.baomidou.mybatis.plus.spring;
-    requires com.baomidou.mybatis.plus.core;
-    requires com.baomidou.mybatis.plus;
-    requires com.baomidou.mybatis.plus.extension;
-    requires org.mybatis.spring;
     requires spring.beans;
-    requires com.baomidou.mybatis.plus.spring.boot.autoconfigure;
 
 
     exports com.fuhouyu.framework.kms;
-    exports com.fuhouyu.framework.kms.exception;
     exports com.fuhouyu.framework.kms.properties;
     exports com.fuhouyu.framework.kms.service;
-    exports com.fuhouyu.framework.kms.entity;
-    exports com.fuhouyu.framework.kms.provider;
 
     uses com.fuhouyu.framework.kms.service.KmsService;
     // spring 需要反射访问当前包

@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.Assert;
@@ -41,7 +42,7 @@ import java.util.Objects;
 @SpringBootTest
 @SpringBootApplication
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(locations = {"classpath:application.yaml"})
+@ActiveProfiles("test")
 class KmsServiceTest {
 
     private static final String ORIGIN_DATA = "test_enc";

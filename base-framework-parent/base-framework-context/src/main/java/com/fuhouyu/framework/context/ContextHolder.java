@@ -62,7 +62,9 @@ public class ContextHolder {
         CONTEXT_HOLDER.set(context);
     }
 
-    // 记得保留清除方法
+    /**
+     * 清理上下文
+     */
     public static void clear() {
         CONTEXT_HOLDER.remove();
     }

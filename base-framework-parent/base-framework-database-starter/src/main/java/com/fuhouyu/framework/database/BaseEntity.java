@@ -42,10 +42,10 @@ public interface BaseEntity {
      * @return 更新时间
      */
     LocalDateTime updatedAt();
-//
-//    /**
-//     * 是否删除
-//     * @return 是否删除标记
-//     */
-//    boolean isDeleted();
+
+    /**
+     * 是否删除
+     * @return 是否删除标记
+     */
+    boolean getIsDeleted();
 }

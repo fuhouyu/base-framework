@@ -48,6 +48,7 @@ import java.util.UUID;
  */
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = {
+        BaseEntityDraftInterceptor.class,
         KmsAutoConfiguration.class,
         DatabaseAutoConfiguration.class,
 })
@@ -100,6 +101,7 @@ class DatabaseTest {
             users.setPassword(UUID.randomUUID().toString());
             users.setCreatedAt(LocalDateTime.now());
             users.setCreatedBy("admin");
+            users.setIsDeleted(false);
             users.setOwnerTenantId(ownerTenantId);
             users.setUpdatedAt(LocalDateTime.now());
             users.setUpdatedBy("admin");

@@ -29,12 +29,16 @@ public class BaseEntityDraftInterceptor implements DraftInterceptor<BaseEntity, 
         if (!ImmutableObjects.isLoaded(draft, BaseEntityProps.UPDATED_BY)) {
             draft.setUpdatedBy(username);
         }
+
         if (original == null) {
             if (!ImmutableObjects.isLoaded(draft, BaseEntityProps.CREATED_AT)) {
                 draft.setCreatedAt(LocalDateTime.now());
             }
             if (!ImmutableObjects.isLoaded(draft, BaseEntityProps.CREATED_BY)) {
                 draft.setCreatedBy(username);
+            }
+            if (!ImmutableObjects.isLoaded(draft, BaseEntityProps.IS_DELETED)) {
+                draft.setIsDeleted(false);
             }
         }
     }

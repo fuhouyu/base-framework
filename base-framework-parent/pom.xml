@@ -48,9 +48,56 @@
             <dependency>
                 <groupId>com.fuhouyu</groupId>
                 <artifactId>base-framework-bom</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!--内部依赖-->
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-cache-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-context</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-database-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-kms-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-log-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-oauth-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-s3-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fuhouyu</groupId>
+                <artifactId>base-framework-web-starter</artifactId>
+                <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

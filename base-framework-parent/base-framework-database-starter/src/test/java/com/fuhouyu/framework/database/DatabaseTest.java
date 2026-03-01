@@ -32,7 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -99,11 +99,11 @@ class DatabaseTest {
             users.setId(Long.valueOf(id));
             users.setUsername(new CipherText(UUID.randomUUID().toString()));
             users.setPassword(UUID.randomUUID().toString());
-            users.setCreatedAt(LocalDateTime.now());
+            users.setCreatedAt(OffsetDateTime.now());
             users.setCreatedBy("admin");
             users.setIsDeleted(false);
             users.setOwnerTenantId(ownerTenantId);
-            users.setUpdatedAt(LocalDateTime.now());
+            users.setUpdatedAt(OffsetDateTime.now());
             users.setUpdatedBy("admin");
         });
     }

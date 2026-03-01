@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.slf4j.MDC;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -37,24 +38,19 @@ public class R<T> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    /**
-     * 响应描述信息
-     */
+
+    @Schema(description = "请求ID", requiredMode = Schema.RequiredMode.REQUIRED)
+    private final String requestId;
+
     @Schema(description = "描述信息", example = "操作成功", requiredMode = Schema.RequiredMode.REQUIRED)
     private final String message;
-    /**
-     * 业务执行是否成功标志
-     */
+
     @Schema(description = "执行结果", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
     private final boolean success;
-    /**
-     * 响应负载数据
-     */
+
     @Schema(description = "负载数据")
     private final T data;
-    /**
-     * 响应状态码
-     */
+
     @Schema(description = "状态码", example = "200", requiredMode = Schema.RequiredMode.REQUIRED)
     private String code;
 
@@ -71,6 +67,7 @@ public class R<T> implements Serializable {
               @JsonProperty("message") String message,
               @JsonProperty("success") boolean success,
               @JsonProperty("data") T data) {
+        this.requestId = MDC.get("traceId");
         this.code = code;
         this.message = message;
         this.success = success;

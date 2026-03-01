@@ -15,6 +15,8 @@
  */
 package com.fuhouyu.framework.web.components;
 
+import com.fuhouyu.framework.common.utils.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -30,6 +32,7 @@ import java.util.Locale;
  * @since 2026/2/1 18:10
  */
 @Component
+@Slf4j
 public class I18nMessageUtil {
 
     private static MessageSource messageSource;
@@ -51,6 +54,7 @@ public class I18nMessageUtil {
             return messageSource.getMessage(msgKey, args, LocaleContextHolder.getLocale());
         } catch (Exception e) {
             // 如果找不到 Key，直接返回 Key 本身，避免报错
+            LoggerUtil.error(log, "找不到 Key: {}, 错误信息:{}", msgKey, e.getMessage());
             return msgKey;
         }
     }

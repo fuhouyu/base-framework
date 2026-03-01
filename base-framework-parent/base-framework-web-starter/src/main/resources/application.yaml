@@ -1,0 +1,5 @@
+spring:
+  messages:
+    basename: i18n/messages  # 对应路径 resources/i18n/messages_*.properties
+    encoding: UTF-8
+    fallback-to-system-locale: true

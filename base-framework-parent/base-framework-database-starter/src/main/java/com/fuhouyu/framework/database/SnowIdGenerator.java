@@ -15,53 +15,23 @@
  */
 package com.fuhouyu.framework.database;
 
-import org.babyfish.jimmer.sql.MappedSuperclass;
-
-import java.time.OffsetDateTime;
+import cn.hutool.core.lang.generator.SnowflakeGenerator;
+import org.babyfish.jimmer.sql.meta.UserIdGenerator;
 
 /**
  * <p>
- * 基类
+ * 雪花id生成器
  * </p>
  *
  * @author fuhouyu
- * @since 2026/2/4 20:15
+ * @since 2026/3/1 10:19
  */
-@MappedSuperclass
-public interface BaseEntity {
+public class SnowIdGenerator implements UserIdGenerator<Long> {
 
-    /**
-     * 创建人
-     *
-     * @return 创建人
-     */
-    String createdBy();
+    private final SnowflakeGenerator snowflakeGenerator = new SnowflakeGenerator();
 
-    /**
-     * 创建时间
-     *
-     * @return 创建时间
-     */
-    OffsetDateTime createdAt();
-
-    /**
-     * 更新人
-     *
-     * @return 更新人
-     */
-    String updatedBy();
-
-    /**
-     * 更新时间
-     *
-     * @return 更新时间
-     */
-    OffsetDateTime updatedAt();
-
-    /**
-     * 是否删除
-     *
-     * @return 是否删除标记
-     */
-    boolean getIsDeleted();
+    @Override
+    public Long generate(Class<?> entityType) {
+        return snowflakeGenerator.next();
+    }
 }

@@ -15,6 +15,7 @@
  */
 package com.fuhouyu.framework.database;
 
+import org.babyfish.jimmer.sql.LogicalDeleted;
 import org.babyfish.jimmer.sql.MappedSuperclass;
 
 import java.time.OffsetDateTime;
@@ -63,5 +64,6 @@ public interface BaseEntity {
      *
      * @return 是否删除标记
      */
+    @LogicalDeleted(value = "true")
     boolean getIsDeleted();
 }

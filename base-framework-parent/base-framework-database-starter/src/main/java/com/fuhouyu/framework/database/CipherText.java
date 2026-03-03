@@ -15,6 +15,9 @@
  */
 package com.fuhouyu.framework.database;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * CipherText
  *
@@ -38,5 +41,10 @@ package com.fuhouyu.framework.database;
  * @author fuhouyu
  * @since 2026/2/4 21:42
  */
-public record CipherText(String value) {
+public record CipherText(@JsonValue String value) {
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static CipherText of(String value) {
+        return new CipherText(value);
+    }
 }

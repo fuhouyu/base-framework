@@ -28,7 +28,6 @@ module base.framework.cache.starter {
     requires tools.jackson.databind;
     requires spring.beans;
     requires spring.security.core;
-    requires spring.security.oauth2.authorization.server;
 
     // 需要导出的类
     exports com.fuhouyu.framework.cache;

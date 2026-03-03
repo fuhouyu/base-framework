@@ -92,7 +92,7 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
      * @return 创建的实体
      */
     @Transactional(rollbackFor = Exception.class)
-    default E create(I input) {
+    default E insert(I input) {
         SimpleSaveResult<E> result = this.getSqlClient()
                 .saveCommand(input)
                 .setMode(SaveMode.INSERT_ONLY)
@@ -107,7 +107,7 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
      * @return 创建后的实体列表（包含自动生成的 ID 等字段）
      */
     @Transactional(rollbackFor = Exception.class)
-    default List<E> createBatch(Collection<I> inputs) {
+    default List<E> insertBatch(Collection<I> inputs) {
         if (CollectionUtils.isEmpty(inputs)) {
             return Collections.emptyList();
         }
@@ -161,7 +161,7 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
      * @return 保存后的实体（包含自增 ID、默认值等）
      */
     @Transactional(rollbackFor = Exception.class)
-    default E createEntity(E entity) {
+    default E insertEntity(E entity) {
         return this.getSqlClient()
                 .saveCommand(entity)
                 .setMode(SaveMode.INSERT_ONLY)
@@ -176,7 +176,7 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
      * @return 保存后的实体列表
      */
     @Transactional(rollbackFor = Exception.class)
-    default List<E> createEntities(Collection<E> entities) {
+    default List<E> insertEntities(Collection<E> entities) {
         if (CollectionUtils.isEmpty(entities)) {
             return Collections.emptyList();
         }

@@ -32,6 +32,7 @@ module base.framework.web.starter {
     requires ip2region;
     requires org.jspecify;
     requires tools.jackson.databind;
+    requires spring.webflux;
 
     exports com.fuhouyu.framework.web;
     exports com.fuhouyu.framework.web.annotaions;

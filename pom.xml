@@ -95,7 +95,7 @@
         <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
         <spotless-maven-plugin.version>3.2.1</spotless-maven-plugin.version>
         <dependency-check-maven.version>10.0.4</dependency-check-maven.version>
-        <spring-boot-maven-plugin.version>4.1.0-M1</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>4.0.3</spring-boot-maven-plugin.version>
         <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
         <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
         <clirr-maven-plugin.version>2.8</clirr-maven-plugin.version>

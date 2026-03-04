@@ -30,16 +30,14 @@ module base.framework.web.starter {
     requires spring.web;
     requires spring.webmvc;
     requires ip2region;
+    requires org.jspecify;
+    requires tools.jackson.databind;
 
     exports com.fuhouyu.framework.web;
     exports com.fuhouyu.framework.web.annotaions;
-    exports com.fuhouyu.framework.web.aspectj;
     exports com.fuhouyu.framework.web.constants;
     exports com.fuhouyu.framework.web.controller;
-    exports com.fuhouyu.framework.web.exception;
-    exports com.fuhouyu.framework.web.filter;
-    exports com.fuhouyu.framework.web.handler;
-    exports com.fuhouyu.framework.web.utils;
+    exports com.fuhouyu.framework.web.components;
     exports com.fuhouyu.framework.web.properties;
     exports com.fuhouyu.framework.web.model;
 

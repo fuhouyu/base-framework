@@ -1,8 +1,7 @@
 base:
   framework:
     cache:
-      service:
-        cache-service-type: redis
+        type: redis
 spring:
   data:
     redis:

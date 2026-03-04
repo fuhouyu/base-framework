@@ -52,7 +52,7 @@ import java.time.LocalDateTime;
 @AutoConfigureAfter(DataRedisAutoConfiguration.class)
 @Configuration
 @ConditionalOnProperty(prefix = CacheServiceProperties.PREFIX,
-        name = "cache-service-type",
+        name = "type",
         havingValue = "redis")
 public class RedisCacheConfiguration {
 

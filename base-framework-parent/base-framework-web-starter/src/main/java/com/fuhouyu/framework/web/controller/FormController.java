@@ -40,10 +40,10 @@ import java.util.concurrent.TimeUnit;
  * @since 2024/8/17 18:45
  */
 @RestController
-@RequestMapping("/v1/base/form")
-@Tag(name = "base form表单 前端控制器")
+@RequestMapping("/v1/form")
+@Tag(name = "from 表单 api接口")
 @RequiredArgsConstructor
-public class BaseFormController {
+public class FormController {
 
     private final CacheService<String, Object> cacheService;
     @Value("${spring.application.name}")

@@ -19,12 +19,8 @@ package com.fuhouyu.framework.security;
 import com.fuhouyu.framework.cache.CacheAutoConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.jdbc.autoconfigure.JdbcTemplateAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.context.annotation.Import;
 
 /**
  * <p>
@@ -37,13 +33,8 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter({
         CacheAutoConfiguration.class,
-        JdbcTemplateAutoConfiguration.class
 })
+@Import(JdbcClientRegisteredConfiguration.class)
 @RequiredArgsConstructor
 public class SecurityAutoConfiguration {
-
-    @Bean
-    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
-        return new JdbcRegisteredClientRepository(jdbcTemplate);
-    }
 }

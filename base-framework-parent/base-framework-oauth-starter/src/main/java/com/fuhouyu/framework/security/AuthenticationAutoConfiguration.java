@@ -16,6 +16,10 @@
 package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.service.CacheService;
+import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
+import com.fuhouyu.framework.common.response.BaseResponseStatus;
+import com.fuhouyu.framework.common.response.R;
+import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.security.core.CacheOAuth2AuthorizationService;
 import com.fuhouyu.framework.security.core.passwordencoder.PasswordEncoderFactory;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,9 +28,11 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientAutoConfiguration;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -47,8 +53,11 @@ import org.springframework.security.oauth2.server.authorization.token.Delegating
 import org.springframework.security.oauth2.server.authorization.token.OAuth2RefreshTokenGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -73,6 +82,8 @@ public class AuthenticationAutoConfiguration {
     private final CacheService<String, Object> cacheService;
 
     private final RegisteredClientRepository registeredClientRepository;
+
+    private final MessageSource messageSource;
 
     /**
      * dao层实现
@@ -162,19 +173,31 @@ public class AuthenticationAutoConfiguration {
                     .registeredClientRepository(registeredClientRepository);
         });
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
-
+        R<Void> unauthorized = R.fail(ResponseStatusEnum.UNAUTHORIZED);
+        unauthorized.updateMessage(messageSource.getMessage(unauthorized.getMessage(), null,
+                LocaleContextHolder.getLocale()));
         http
                 .securityMatcher(endpointsMatcher)
                 .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
                 .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                            response.getWriter().write("{\"code\": 401, \"message\": \"Unauthorized, please login first.\"}");
-                        })
-                )
-                .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher));
+                        // 根据请求头决定是重定向还是回 JSON
+                        .defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint("/login"),
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                        )
+                        .defaultAuthenticationEntryPointFor(
+                                (request, response, authException) -> {
+                                    response.setCharacterEncoding(StandardCharsets.UTF_8);
+                                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                                    response.getWriter().write(JacksonUtil.toJsonString(unauthorized));
+                                },
+                                new MediaTypeRequestMatcher(MediaType.APPLICATION_JSON)
+                        )
+                );
 
         return http.build();
     }

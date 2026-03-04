@@ -45,6 +45,6 @@ public class CacheAutoConfiguration implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        LoggerUtil.info(log, "使用的缓存类型:{}", cacheServiceProperties.getCacheServiceType());
+        LoggerUtil.info(log, "使用的缓存类型:{}", cacheServiceProperties.getType());
     }
 }

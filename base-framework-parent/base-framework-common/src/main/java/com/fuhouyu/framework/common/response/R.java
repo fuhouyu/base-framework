@@ -43,7 +43,7 @@ public class R<T> implements Serializable {
     private final String requestId;
 
     @Schema(description = "描述信息", example = "操作成功", requiredMode = Schema.RequiredMode.REQUIRED)
-    private final String message;
+    private String message;
 
     @Schema(description = "执行结果", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
     private final boolean success;
@@ -67,7 +67,7 @@ public class R<T> implements Serializable {
               @JsonProperty("message") String message,
               @JsonProperty("success") boolean success,
               @JsonProperty("data") T data) {
-        this.requestId = MDC.get("traceId");
+        this.requestId = "";
         this.code = code;
         this.message = message;
         this.success = success;
@@ -151,10 +151,12 @@ public class R<T> implements Serializable {
      * 更新message
      *
      * @param newMessage message
-     * @return R
      */
-    public R<T> updateMessage(String newMessage) {
-        return new R<>(this.code, newMessage, this.success, this.data);
+    public void updateMessage(String newMessage) {
+        this.message = newMessage;
     }
 
+    public String getRequestId() {
+        return MDC.get("traceId");
+    }
 }

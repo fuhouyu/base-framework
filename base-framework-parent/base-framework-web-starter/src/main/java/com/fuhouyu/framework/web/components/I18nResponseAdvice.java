@@ -47,7 +47,7 @@ public class I18nResponseAdvice implements ResponseBodyAdvice<Object> {
                                   @NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response) {
         if (body instanceof R<?> r) {
             String i18nMessage = I18nMessageUtil.getMessage(r.getMessage());
-            return r.updateMessage(i18nMessage);
+            r.updateMessage(i18nMessage);
         }
         return body;
     }

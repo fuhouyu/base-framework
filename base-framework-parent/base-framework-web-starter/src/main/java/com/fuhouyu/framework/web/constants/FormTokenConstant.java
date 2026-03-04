@@ -16,6 +16,9 @@
 
 package com.fuhouyu.framework.web.constants;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+
 /**
  * <p>
  * 表单token常量
@@ -24,17 +27,16 @@ package com.fuhouyu.framework.web.constants;
  * @author fuhouyu
  * @since 2024/8/17 22:42
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class FormTokenConstant {
 
     /**
      * 缓存key
      */
-    public static final String TOKEN_PREFIX = "base:form:token:";
+    public static final String TOKEN_PREFIX = "form:token:";
+
     /**
      * 默认为十分钟过期
      */
     public static final long EXPIRE_TIME = 60 * 10L;
-
-    private FormTokenConstant() {
-    }
 }

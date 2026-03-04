@@ -38,7 +38,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class CacheServiceProperties {
 
     public static final String PREFIX =
-            ConfigPropertiesConstant.PROPERTIES_PREFIX + "cache.service";
+            ConfigPropertiesConstant.PROPERTIES_PREFIX + "cache";
 
-    private CacheServiceTypeEnum cacheServiceType;
+    private CacheServiceTypeEnum type;
 }

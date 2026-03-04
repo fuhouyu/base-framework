@@ -50,7 +50,6 @@ public class I18nMessageUtil {
      */
     public static String getMessage(String msgKey, Object... args) {
         try {
-            LocaleContextHolder.setDefaultLocale(Locale.CHINA);
             return messageSource.getMessage(msgKey, args, LocaleContextHolder.getLocale());
         } catch (Exception e) {
             // 如果找不到 Key，直接返回 Key 本身，避免报错

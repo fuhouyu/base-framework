@@ -36,16 +36,6 @@ public interface BaseResponseStatus {
      */
     String getCode();
 
-
-    /**
-     * 获取请求ID
-     *
-     * @return 请求ID
-     */
-    default String getRequestId() {
-        return MDC.get("requestId");
-    }
-
     /**
      * 获取响应消息
      *

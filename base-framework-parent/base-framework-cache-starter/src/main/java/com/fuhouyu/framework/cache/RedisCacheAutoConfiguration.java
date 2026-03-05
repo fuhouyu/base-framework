@@ -16,30 +16,21 @@
 
 package com.fuhouyu.framework.cache;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fuhouyu.framework.cache.properties.CacheServiceProperties;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.cache.service.impl.RedisCacheService;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import com.fuhouyu.framework.common.utils.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import tools.jackson.databind.DefaultTyping;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import tools.jackson.databind.module.SimpleModule;
-import tools.jackson.databind.ser.std.ToStringSerializer;
-
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -49,16 +40,16 @@ import java.time.LocalDateTime;
  * @author fuhouyu
  * @since 2024/8/13 21:06
  */
-@AutoConfigureAfter(DataRedisAutoConfiguration.class)
-@Configuration
 @ConditionalOnProperty(prefix = CacheServiceProperties.PREFIX,
         name = "type",
         havingValue = "redis")
-public class RedisCacheConfiguration {
+@Slf4j
+@ConfigurationPropertiesScan(value = "com.fuhouyu.framework.cache.properties")
+@ConditionalOnMissingBean(RedisTemplate.class)
+public class RedisCacheAutoConfiguration implements InitializingBean, BaseCacheConfiguration {
 
 
     @Bean
-    @ConditionalOnMissingBean(RedisTemplate.class)
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -66,23 +57,7 @@ public class RedisCacheConfiguration {
         redisTemplate.setKeySerializer(stringRedisSerializer);
         redisTemplate.setHashKeySerializer(stringRedisSerializer);
 
-        SimpleModule timeModule = new SimpleModule();
-        timeModule.addSerializer(LocalDateTime.class, ToStringSerializer.instance);
-        BasicPolymorphicTypeValidator ptv =
-                BasicPolymorphicTypeValidator.builder()
-                        .allowIfSubType("java.util")
-                        .build();
-        ObjectMapper objectMapper = JsonMapper.builder()
-                .addModule(timeModule)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .activateDefaultTyping(
-                        ptv,
-                        DefaultTyping.NON_FINAL,
-                        JsonTypeInfo.As.PROPERTY
-                )
-                .build();
-        GenericJacksonJsonRedisSerializer jackson2JsonRedisSerializer = new GenericJacksonJsonRedisSerializer(objectMapper);
+        GenericJacksonJsonRedisSerializer jackson2JsonRedisSerializer = this.createGenericJacksonJsonRedisSerializer();
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.afterPropertiesSet();
@@ -94,5 +69,10 @@ public class RedisCacheConfiguration {
     @ConditionalOnBean(RedisTemplate.class)
     public CacheService<String, Object> redisCacheService(RedisTemplate<String, Object> redisTemplate) {
         return new RedisCacheService<>(redisTemplate);
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        LoggerUtil.info(log, "缓存类型: redis");
     }
 }

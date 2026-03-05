@@ -28,6 +28,8 @@ module base.framework.cache.starter {
     requires tools.jackson.databind;
     requires spring.beans;
     requires spring.security.core;
+    requires spring.data.commons;
+    requires reactor.core;
 
     // 需要导出的类
     exports com.fuhouyu.framework.cache;

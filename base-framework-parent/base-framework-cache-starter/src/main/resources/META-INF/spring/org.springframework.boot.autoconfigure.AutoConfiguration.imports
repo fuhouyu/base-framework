@@ -1,1 +1,2 @@
-com.fuhouyu.framework.cache.CacheAutoConfiguration
+com.fuhouyu.framework.cache.RedisCacheAutoConfiguration
+com.fuhouyu.framework.cache.ReactiveCacheAutoConfiguration

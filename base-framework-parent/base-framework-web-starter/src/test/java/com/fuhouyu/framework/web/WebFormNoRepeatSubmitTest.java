@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.web;
 
-import com.fuhouyu.framework.cache.CacheAutoConfiguration;
+import com.fuhouyu.framework.cache.RedisCacheAutoConfiguration;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
 import com.fuhouyu.framework.common.response.R;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
@@ -58,7 +58,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2024/8/17 23:10
  */
 @SpringBootTest(classes = {
-        CacheAutoConfiguration.class,
+        RedisCacheAutoConfiguration.class,
         DataRedisAutoConfiguration.class,
         MessageSourceAutoConfiguration.class,
         DataSourceAutoConfiguration.class,

@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.cache.RedisCacheAutoConfiguration;
+import com.fuhouyu.framework.cache.RedisAutoConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter({
-        RedisCacheAutoConfiguration.class,
+        RedisAutoConfiguration.class,
 })
 @Import(JdbcClientRegisteredConfiguration.class)
 @RequiredArgsConstructor

@@ -41,16 +41,12 @@ public class R<T> implements Serializable {
 
     @Schema(description = "请求ID", requiredMode = Schema.RequiredMode.REQUIRED)
     private final String requestId;
-
-    @Schema(description = "描述信息", example = "操作成功", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String message;
-
     @Schema(description = "执行结果", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
     private final boolean success;
-
     @Schema(description = "负载数据")
     private final T data;
-
+    @Schema(description = "描述信息", example = "操作成功", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String message;
     @Schema(description = "状态码", example = "200", requiredMode = Schema.RequiredMode.REQUIRED)
     private String code;
 
@@ -132,6 +128,20 @@ public class R<T> implements Serializable {
     public static <T> R<T> fail(BaseResponseStatus status, T data) {
         return fail(status.getCode(), status.getMessage(), data);
     }
+
+    /**
+     * 基础失败构建方法（全参数版）
+     * <p>通常用于全局异常处理器手动构建特定的错误响应</p>
+     *
+     * @param code    自定义响应状态码
+     * @param message 自定义响应描述信息
+     * @param <T>     数据泛型类型
+     * @return 失败响应对象
+     */
+    public static <T> R<T> fail(String code, String message) {
+        return fail(code, message, null);
+    }
+
 
     /**
      * 基础失败构建方法（全参数版）

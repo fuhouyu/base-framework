@@ -19,13 +19,11 @@ package com.fuhouyu.framework.cache;
 import com.fuhouyu.framework.cache.properties.CacheServiceProperties;
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.cache.service.impl.RedisCacheService;
-import com.fuhouyu.framework.common.utils.LoggerUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -44,12 +42,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
         name = "type",
         havingValue = "redis")
 @Slf4j
-@ConfigurationPropertiesScan(value = "com.fuhouyu.framework.cache.properties")
+@ConditionalOnClass(RedisConnectionFactory.class)
 @ConditionalOnMissingBean(RedisTemplate.class)
-public class RedisCacheAutoConfiguration implements InitializingBean, BaseCacheConfiguration {
+public class RedisAutoConfiguration implements BaseRedisConfiguration {
 
 
     @Bean
+    @ConditionalOnMissingBean(RedisTemplate.class)
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -69,10 +68,5 @@ public class RedisCacheAutoConfiguration implements InitializingBean, BaseCacheC
     @ConditionalOnBean(RedisTemplate.class)
     public CacheService<String, Object> redisCacheService(RedisTemplate<String, Object> redisTemplate) {
         return new RedisCacheService<>(redisTemplate);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        LoggerUtil.info(log, "缓存类型: redis");
     }
 }

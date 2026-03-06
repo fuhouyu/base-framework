@@ -1,7 +1,6 @@
 package com.fuhouyu.framework.cache;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import tools.jackson.databind.DefaultTyping;
 import tools.jackson.databind.DeserializationFeature;
@@ -21,7 +20,7 @@ import java.time.LocalDateTime;
  * @author fuhouyu
  * @since 2026/3/5 22:35
  */
-public interface BaseCacheConfiguration {
+public interface BaseRedisConfiguration {
 
     /**
      * 创建一个 ObjectMapper 实例，用于序列化和反序列化 Redis 数据

@@ -15,7 +15,7 @@
  */
 package com.fuhouyu.framework.security;
 
-import com.fuhouyu.framework.cache.RedisCacheAutoConfiguration;
+import com.fuhouyu.framework.cache.RedisAutoConfiguration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +73,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableWebMvc
 @SpringBootTest(classes = {
         BaseTest.BaseComponent.class,
-        RedisCacheAutoConfiguration.class,
+        RedisAutoConfiguration.class,
         DataSourceAutoConfiguration.class,
         JdbcTemplateAutoConfiguration.class,
         DataRedisAutoConfiguration.class,

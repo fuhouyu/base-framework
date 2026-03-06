@@ -17,7 +17,6 @@
 package com.fuhouyu.framework.common.response;
 
 import com.fuhouyu.framework.common.enums.ErrorLevelEnum;
-import org.slf4j.MDC;
 
 /**
  * <p>

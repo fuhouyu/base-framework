@@ -190,6 +190,7 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
 
     /**
      * 更新实体
+     *
      * @param entity 实体对象
      * @return 更新后的实体
      */
@@ -204,6 +205,7 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
 
     /**
      * 批量更新实体
+     *
      * @param entities 实体对象集合
      * @return 更新后的实体
      */
@@ -218,7 +220,7 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
                 .execute();
         return result.getItems().stream().map(BatchSaveResult.Item::getModifiedEntity).toList();
     }
-    
+
     /**
      * 根据 ID 查询实体
      *

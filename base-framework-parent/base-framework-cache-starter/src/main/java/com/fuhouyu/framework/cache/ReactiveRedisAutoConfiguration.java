@@ -1,13 +1,10 @@
 package com.fuhouyu.framework.cache;
 
 import com.fuhouyu.framework.cache.properties.CacheServiceProperties;
-import com.fuhouyu.framework.common.utils.LoggerUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
@@ -28,8 +25,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
         havingValue = "redis")
 @Slf4j
 @ConditionalOnClass(ReactiveRedisConnectionFactory.class)
-@ConfigurationPropertiesScan(value = "com.fuhouyu.framework.cache.properties")
-public class ReactiveCacheAutoConfiguration implements InitializingBean, BaseCacheConfiguration {
+public class ReactiveRedisAutoConfiguration implements BaseRedisConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ReactiveRedisTemplate.class)
@@ -47,10 +43,5 @@ public class ReactiveCacheAutoConfiguration implements InitializingBean, BaseCac
                 .build();
 
         return new ReactiveRedisTemplate<>(factory, context);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        LoggerUtil.info(log, "缓存类型: reactive redis");
     }
 }

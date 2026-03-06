@@ -16,7 +16,7 @@
 
 package com.fuhouyu.framework.web;
 
-import com.fuhouyu.framework.cache.RedisCacheAutoConfiguration;
+import com.fuhouyu.framework.cache.RedisAutoConfiguration;
 import com.fuhouyu.framework.common.response.R;
 import com.fuhouyu.framework.common.utils.HexUtil;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
@@ -56,7 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2024/8/21 23:15
  */
 @SpringBootTest(classes = {
-        RedisCacheAutoConfiguration.class,
+        RedisAutoConfiguration.class,
         DataRedisAutoConfiguration.class,
         MessageSourceAutoConfiguration.class,
         DataSourceAutoConfiguration.class,

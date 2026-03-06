@@ -31,7 +31,7 @@ base:
         sm4:
           key: JfMIhbIEAywP7/PCbXBVkQ==
     cache:
-        type: redis
+      type: redis
     ip2region:
       enabled: true
       db-path: classpath:ip2region.xdb

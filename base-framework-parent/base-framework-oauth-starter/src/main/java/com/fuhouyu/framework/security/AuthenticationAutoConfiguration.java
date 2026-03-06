@@ -17,7 +17,6 @@ package com.fuhouyu.framework.security;
 
 import com.fuhouyu.framework.cache.service.CacheService;
 import com.fuhouyu.framework.common.enums.ResponseStatusEnum;
-import com.fuhouyu.framework.common.response.BaseResponseStatus;
 import com.fuhouyu.framework.common.response.R;
 import com.fuhouyu.framework.common.utils.JacksonUtil;
 import com.fuhouyu.framework.security.core.CacheOAuth2AuthorizationService;

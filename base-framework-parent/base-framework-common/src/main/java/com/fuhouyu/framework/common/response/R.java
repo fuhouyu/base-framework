@@ -74,10 +74,9 @@ public class R<T> implements Serializable {
      * 构建成功响应结果（不带数据负载）
      * <p>默认状态码：200，默认消息：操作成功</p>
      *
-     * @param <T> 数据泛型类型
      * @return 成功响应对象
      */
-    public static <T> R<T> ok() {
+    public static R<Void> ok() {
         return ok(null);
     }
 
@@ -97,10 +96,9 @@ public class R<T> implements Serializable {
      * 根据预定义状态码构建失败响应
      *
      * @param status 基础响应状态接口实现（通常为枚举）
-     * @param <T>    数据泛型类型
      * @return 失败响应对象
      */
-    public static <T> R<T> fail(BaseResponseStatus status) {
+    public static R<Void> fail(BaseResponseStatus status) {
         return fail(status.getCode(), status.getMessage(), null);
     }
 
@@ -110,10 +108,9 @@ public class R<T> implements Serializable {
      *
      * @param status  基础响应状态接口实现
      * @param message 自定义错误描述信息
-     * @param <T>     数据泛型类型
      * @return 失败响应对象
      */
-    public static <T> R<T> fail(BaseResponseStatus status, String message) {
+    public static R<Void> fail(BaseResponseStatus status, String message) {
         return fail(status.getCode(), message, null);
     }
 
@@ -135,10 +132,9 @@ public class R<T> implements Serializable {
      *
      * @param code    自定义响应状态码
      * @param message 自定义响应描述信息
-     * @param <T>     数据泛型类型
      * @return 失败响应对象
      */
-    public static <T> R<T> fail(String code, String message) {
+    public static R<Void> fail(String code, String message) {
         return fail(code, message, null);
     }
 

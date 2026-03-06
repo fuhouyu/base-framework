@@ -83,7 +83,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(NoResourceFoundException.class)
-    public R<ErrorLevelEnum> noResourceFoundException(ServletWebRequest request, NoResourceFoundException e) {
+    public R<Void> noResourceFoundException(ServletWebRequest request, NoResourceFoundException e) {
         this.printExceptionLog(e, Exception.class.getSimpleName(), request);
         return R.fail(ResponseStatusEnum.NOT_FOUND,
                 String.format("当前访问地址：%s 不存在", e.getMessage().replace("No static resource ", "").trim()));
@@ -97,7 +97,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public R<ErrorLevelEnum> methodNotSupportException(ServletWebRequest request, HttpRequestMethodNotSupportedException e) {
+    public R<Void> methodNotSupportException(ServletWebRequest request, HttpRequestMethodNotSupportedException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
         return R.fail(ResponseStatusEnum.METHOD_NOT_ALLOWED);
     }
@@ -110,7 +110,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ResponseStatusException.class)
-    public R<ErrorLevelEnum> notFoundException(ServletWebRequest request, ResponseStatusException e) {
+    public R<Void> notFoundException(ServletWebRequest request, ResponseStatusException e) {
         this.printExceptionLog(e, e.getClass().getName(), request);
         return R.fail(ResponseStatusEnum.SERVER_ERROR, e.getMessage());
     }
@@ -122,7 +122,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ServiceException.class)
-    public R<ErrorLevelEnum> serviceExceptionHandler(ServiceException serviceException) {
+    public R<Void> serviceExceptionHandler(ServiceException serviceException) {
         return R.fail(serviceException.getResponseStatus(), serviceException.getMessage());
     }
 
@@ -136,7 +136,7 @@ public class WebExceptionHandler {
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
         Object target = ex.getBindingResult().getTarget();
         if (Objects.isNull(target)) {
-            return R.fail(ResponseStatusEnum.INVALID_PARAM);
+            return R.fail(ResponseStatusEnum.INVALID_PARAM, Collections.emptyList());
         }
 
         List<MethodArgumentErrorField> details = new ArrayList<>();
@@ -159,7 +159,6 @@ public class WebExceptionHandler {
                     if (Objects.nonNull(responseStatusEnum)) {
                         code = responseStatusEnum.getCode();
                         message = responseStatusEnum.getMessage();
-                        errorLevel = responseStatusEnum.getErrorLevel().name();
                     }
                 }
             }
@@ -184,7 +183,7 @@ public class WebExceptionHandler {
             NumberFormatException.class,
             HttpMessageConversionException.class
     })
-    public R<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request,
+    public R<Void> handleHttpMediaTypeException(ServletWebRequest request,
                                                           Exception e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         return R.fail(ResponseStatusEnum.INVALID_PARAM, e.getMessage());
@@ -198,7 +197,7 @@ public class WebExceptionHandler {
      * @return 包装后的响应
      */
     @ExceptionHandler(HttpMediaTypeException.class)
-    public R<ErrorLevelEnum> handleHttpMediaTypeException(ServletWebRequest request, HttpMediaTypeException e) {
+    public R<Void> handleHttpMediaTypeException(ServletWebRequest request, HttpMediaTypeException e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         return R.fail(ResponseStatusEnum.NOT_SUPPORT_MEDIA_TYPE, e.getMessage());
     }
@@ -212,7 +211,7 @@ public class WebExceptionHandler {
      * @return 包装后的异常信息
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public R<ErrorLevelEnum> constraintViolationException(ServletWebRequest request, ConstraintViolationException e) {
+    public R<Void> constraintViolationException(ServletWebRequest request, ConstraintViolationException e) {
         this.printExceptionLog(e, e.getClass().getSimpleName(), request);
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         StringBuilder sb = new StringBuilder();

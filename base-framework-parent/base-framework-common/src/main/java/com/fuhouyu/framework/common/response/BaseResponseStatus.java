@@ -41,21 +41,4 @@ public interface BaseResponseStatus {
      * @return 消息内容
      */
     String getMessage();
-
-    /**
-     * 获取错误级别
-     *
-     * @return 错误级别枚举
-     */
-    default ErrorLevelEnum getErrorLevel() {
-        return ErrorLevelEnum.ERROR;
-    }
-
-    /**
-     * 获取 I18n 对应的 Key
-     * 默认规则：response.code.{code}，例如 response.code.00000
-     */
-    default String getI18nKey() {
-        return "response.code." + getCode();
-    }
 }

@@ -76,7 +76,7 @@ public class R<T> implements Serializable {
      *
      * @return 成功响应对象
      */
-    public static R<Void> ok() {
+    public static <T> R<T> ok() {
         return ok(null);
     }
 

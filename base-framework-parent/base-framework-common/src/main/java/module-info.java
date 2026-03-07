@@ -25,6 +25,7 @@ module base.framework.common {
     requires io.swagger.v3.oas.annotations;
     requires spring.core;
     requires tools.jackson.databind;
+    requires spring.web;
 
     exports com.fuhouyu.framework.common;
     exports com.fuhouyu.framework.common.constants;

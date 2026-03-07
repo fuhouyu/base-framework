@@ -20,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -41,49 +42,101 @@ public class IpUtil {
             "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"
     };
 
-    private static final String IP_V4 = "127.0.0.1";
-
-    private static final String IP_V6 = "0:0:0:0:0:0:0:1";
-
+    private static final String IP_V4_LOCAL = "127.0.0.1";
+    private static final String IP_V6_LOCAL = "0:0:0:0:0:0:0:1";
+    private static final String IP_V6_LOCAL_SHORT = "::1";
     private static final String UNKNOWN = "unknown";
 
 
     /**
-     * 获取客户端id
+     * 获取客户端 IP (Servlet 模式)
      *
-     * @param request http请求
-     * @return 真实ip
+     * @param request HTTP 请求
+     * @return 真实 IP
      */
     public static String getRequestIp(HttpServletRequest request) {
+        if (request == null) {
+            return IP_V4_LOCAL;
+        }
+
         String ip;
         for (String header : POSSIBLE_HEADERS) {
             ip = request.getHeader(header);
-            if (!StringUtils.isEmpty(ip) && !UNKNOWN.equalsIgnoreCase(ip)) {
-                return ip.contains(",") ?
-                        ip.substring(0, ip.indexOf(','))
-                        : ip;
+            if (StringUtils.isNotBlank(ip) && !UNKNOWN.equalsIgnoreCase(ip)) {
+                return extractFirstIp(ip);
             }
         }
+
         ip = request.getRemoteAddr();
-        if (IP_V6.equals(ip) || IP_V4.equals(ip)) {
-            return getLocalRealIp();
-        }
-        return ip;
+        return isLocalIp(ip) ? getLocalRealIp() : ip;
     }
 
     /**
-     * 获取本机IP地址
+     * 获取客户端 IP (WebFlux 模式)
      *
-     * @return 本机ip
+     * @param request Reactive HTTP 请求
+     * @return 真实 IP
+     */
+    public static String getRequestIp(ServerHttpRequest request) {
+        if (request == null) {
+            return IP_V4_LOCAL;
+        }
+
+        String ip;
+        for (String header : POSSIBLE_HEADERS) {
+            ip = request.getHeaders().getFirst(header);
+            if (StringUtils.isNotBlank(ip) && !UNKNOWN.equalsIgnoreCase(ip)) {
+                return extractFirstIp(ip);
+            }
+        }
+
+        ip = request.getRemoteAddress() != null
+                ? request.getRemoteAddress().getAddress().getHostAddress()
+                : null;
+
+        return isLocalIp(ip) ? getLocalRealIp() : ip;
+    }
+
+    /**
+     * 从逗号分隔的 IP 列表中提取第一个
+     *
+     * @param ip 可能包含多个 IP 的字符串
+     * @return 第一个 IP
+     */
+    private static String extractFirstIp(String ip) {
+        if (ip == null) {
+            return IP_V4_LOCAL;
+        }
+        int index = ip.indexOf(',');
+        return index > 0 ? ip.substring(0, index).trim() : ip.trim();
+    }
+
+    /**
+     * 判断是否为本地 IP
+     *
+     * @param ip IP 地址
+     * @return true 如果是本地地址
+     */
+    private static boolean isLocalIp(String ip) {
+        if (ip == null) {
+            return true;
+        }
+        return IP_V4_LOCAL.equals(ip)
+                || IP_V6_LOCAL.equals(ip)
+                || IP_V6_LOCAL_SHORT.equals(ip);
+    }
+
+    /**
+     * 获取本机 IP 地址
+     *
+     * @return 本机 IP，获取失败返回 127.0.0.1
      */
     public static String getLocalRealIp() {
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            LoggerUtil.error(log, "获取ip异常:{} 返回:{}", e.getMessage(), IP_V4);
-            return IP_V4;
+            log.error("获取本机 IP 失败: {}", e.getMessage(), e);
+            return IP_V4_LOCAL;
         }
     }
-
-
 }

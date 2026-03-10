@@ -26,6 +26,7 @@ import org.babyfish.jimmer.sql.ast.mutation.SimpleSaveResult;
 import org.babyfish.jimmer.sql.ast.query.MutableRootQuery;
 import org.babyfish.jimmer.sql.ast.query.Order;
 import org.babyfish.jimmer.sql.ast.table.spi.TableProxy;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -33,6 +34,8 @@ import org.springframework.util.StringUtils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
@@ -49,13 +52,12 @@ import java.util.function.Consumer;
  * @param <I> Input（输入类型）：用于保存或更新的 DTO（如 IamTenantsInput）。
  *            通常是 Jimmer 编译生成的 Input 对象，负责承载前端传入的业务数据并
  *            支持深度保存（Save Command）。
- * @param <V> View（视图类型）：用于返回给前端的静态对象视图（如 IamTenantDetailView）。
- *            利用 Jimmer 的 Object Fetcher 功能，实现“按需返回”字段，避免暴露
- *            不必要的敏感数据或产生冗余查询。
  * @author fuhouyu
  * @since 2026/3/3 19:22
  */
-public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Input<E>, V extends View<E>> {
+public interface BaseJSqlClientService<E, T extends TableProxy<E>, I extends Input<E>> {
+
+    Map<Class<?>, GenericMetadata> METADATA_CACHE = new ConcurrentHashMap<>();
 
     /**
      * 获取 JSqlClient 对象
@@ -63,27 +65,6 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
      * @return JSqlClient 对象
      */
     JSqlClient getSqlClient();
-
-    /**
-     * 获取视图类
-     *
-     * @return 视图类
-     */
-    Class<V> getViewClass();
-
-    /**
-     * 获取表对象
-     *
-     * @return 表对象
-     */
-    T getTable();
-
-    /**
-     * 获取实体类
-     *
-     * @return 实体类
-     */
-    Class<E> getEntityClass();
 
     /**
      * 创建实体
@@ -224,12 +205,14 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
     /**
      * 根据 ID 查询实体
      *
-     * @param id 实体 ID
+     * @param id          实体 ID
+     * @param resultClass 返回的结果类型
+     * @param <R>         返回的结果类型
      * @return 实体视图
      */
-    default V getById(Object id) {
+    default <R> R getById(Object id, Class<R> resultClass) {
         return this.getSqlClient()
-                .findById(this.getViewClass(), id);
+                .findById(resultClass, id);
     }
 
     /**
@@ -268,12 +251,14 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
      * 分页查询
      *
      * @param pageQueryVO 分页查询的vo对象
+     * @param resultClass 返回的结果类型
+     * @param <R>         返回的结果类型
      * @return 分页结果
      */
-    default PageResultVO<V> page(PageQueryVO pageQueryVO) {
-        Page<V> page = this.getSqlClient().createQuery(this.getTable())
+    default <R extends View<E>> PageResultVO<R> page(PageQueryVO pageQueryVO, Class<R> resultClass) {
+        Page<R> page = this.getSqlClient().createQuery(this.getTable())
                 .orderByIf(StringUtils.hasText(pageQueryVO.getOrderBy()), () -> Order.makeOrders(this.getTable(), pageQueryVO.getOrderBy()))
-                .select(this.getTable().fetch(this.getViewClass()))
+                .select(this.getTable().fetch(resultClass))
                 .fetchPage(pageQueryVO.getPageNum() - 1, pageQueryVO.getPageSize());
         return PageResultVO.of(page, pageQueryVO.getPageNum(), pageQueryVO.getPageSize());
     }
@@ -284,9 +269,11 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
      *
      * @param pageQueryVO 分页查询对象
      * @param customizer  自定义查询构造器（用于添加额外的 where 条件等）
+     * @param resultClass 返回的结果类型
+     * @param <R>         返回的结果类型
      * @return 分页结果
      */
-    default PageResultVO<V> page(PageQueryVO pageQueryVO, Consumer<MutableRootQuery<T>> customizer) {
+    default <R extends View<E>> PageResultVO<R> page(PageQueryVO pageQueryVO, Consumer<MutableRootQuery<T>> customizer, Class<R> resultClass) {
         // 创建初始查询
         MutableRootQuery<T> query = this.getSqlClient()
                 .createQuery(this.getTable())
@@ -301,8 +288,49 @@ public interface BaseJSqlClientService<T extends TableProxy<E>, E, I extends Inp
             customizer.accept(query);
         }
 
-        Page<V> page = query.select(this.getTable().fetch(this.getViewClass()))
+        Page<R> page = query.select(this.getTable().fetch(resultClass))
                 .fetchPage(Math.max(0, pageQueryVO.getPageNum() - 1), pageQueryVO.getPageSize());
         return PageResultVO.of(page, pageQueryVO.getPageNum(), pageQueryVO.getPageSize());
+    }
+
+    /**
+     * 获取 Jimmer 元数据
+     *
+     * @return 元数据
+     */
+    private GenericMetadata getMetadata() {
+        return METADATA_CACHE.computeIfAbsent(this.getClass(), clazz -> {
+            Class<?>[] args = GenericTypeResolver.resolveTypeArguments(clazz, BaseJSqlClientService.class);
+            if (args == null || args.length < 2) {
+                throw new IllegalArgumentException("无法解析泛型参数: " + clazz.getName());
+            }
+            try {
+                // 解析 Entity Class
+                Class<?> entityClass = args[0];
+                // 解析 TableProxy 实例（利用 Jimmer 的 $ 静态字段）
+                Class<?> tableClass = args[1];
+                TableProxy<?> tableInstance = (TableProxy<?>) tableClass.getField("$").get(null);
+                return new GenericMetadata(entityClass, tableInstance);
+            } catch (Exception e) {
+                throw new RuntimeException("初始化 Jimmer 元数据失败", e);
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    default Class<E> getEntityClass() {
+        return (Class<E>) getMetadata().entityClass();
+    }
+
+    @SuppressWarnings("unchecked")
+    default T getTable() {
+        return (T) getMetadata().table();
+    }
+
+    /**
+     * 获取实体类元数据
+     *
+     */
+    record GenericMetadata(Class<?> entityClass, TableProxy<?> table) {
     }
 }

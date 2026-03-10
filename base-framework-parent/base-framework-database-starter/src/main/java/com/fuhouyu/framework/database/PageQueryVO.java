@@ -22,12 +22,17 @@ public class PageQueryVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "当前页码", example = "1", defaultValue = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pageNum;
+    private int pageNum;
 
     @Schema(description = "每页数量", example = "10", defaultValue = "10", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pageSize;
+    private int pageSize;
 
     @Schema(description = "排序字段和排序方式，格式：字段1 asc, 字段2 desc",
             example = "createdAt desc, name asc", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String orderBy;
+
+    public PageQueryVO() {
+        this.pageNum = 1;
+        this.pageSize = 10;
+    }
 }

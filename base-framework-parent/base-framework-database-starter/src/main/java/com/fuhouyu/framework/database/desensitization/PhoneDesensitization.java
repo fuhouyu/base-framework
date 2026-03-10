@@ -37,4 +37,8 @@ public class PhoneDesensitization implements Converter<CipherText, String> {
         }
         return value.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
     }
+
+    @Override
+    public @NonNull CipherText input(@NonNull String value) {
+        return new CipherText(value);    }
 }

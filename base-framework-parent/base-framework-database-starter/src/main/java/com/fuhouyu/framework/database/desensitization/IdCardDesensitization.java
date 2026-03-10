@@ -36,4 +36,9 @@ public class IdCardDesensitization implements Converter<CipherText, String> {
         }
         return value.replaceAll("^(.).*(.)$", "$1****************$2");
     }
+
+    @Override
+    public @NonNull CipherText input(@NonNull String value) {
+        return new CipherText(value);
+    }
 }

@@ -111,7 +111,7 @@ public class S3StsOperationImpl implements StsOperation {
         return StsTokenResponse.builder()
                 .region(s3Properties.getRegion().id())
                 .endpoint(s3Properties.getEndpoint())
-                .enablePathStyle(s3Properties.getPathStyleEnabled())
+                .enablePathStyle(s3Properties.isPathStyleEnabled())
                 .accessKey(credentials.accessKeyId())
                 .secretAccessKey(credentials.secretAccessKey())
                 .sessionToken(credentials.sessionToken())

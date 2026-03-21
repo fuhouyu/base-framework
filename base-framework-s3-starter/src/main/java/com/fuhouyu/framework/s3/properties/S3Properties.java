@@ -60,7 +60,12 @@ public class S3Properties {
      * 使用路径风格
      * 如： https://oss.s3.com?bucketName=xxx
      */
-    private Boolean pathStyleEnabled;
+    private boolean pathStyleEnabled;
+
+    /**
+     * 分块编码启禁用
+     */
+    private boolean chunkedEncodingEnabled;
 
     /**
      * stsToken
@@ -75,6 +80,7 @@ public class S3Properties {
 
     public S3Properties() {
         this.pathStyleEnabled = false;
+        this.chunkedEncodingEnabled = false;
         this.region = Region.AWS_GLOBAL;
     }
 }

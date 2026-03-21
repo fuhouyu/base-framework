@@ -62,7 +62,11 @@ public class S3StsConfiguration {
                 .region(Region.AWS_GLOBAL)
                 .endpointOverride(URI.create(s3Properties.getEndpoint()))
                 .credentialsProvider(awsCredentialsProvider)
-                .serviceConfiguration(builder -> builder.pathStyleAccessEnabled(s3Properties.getPathStyleEnabled()))
+                .serviceConfiguration(builder -> {
+                    builder.pathStyleAccessEnabled(s3Properties.isPathStyleEnabled())
+                            .chunkedEncodingEnabled(s3Properties.isChunkedEncodingEnabled());
+
+                })
                 .build();
     }
 

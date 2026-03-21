@@ -101,7 +101,7 @@ public class AliOssStsOperationImpl implements StsOperation {
         return StsTokenResponse.builder()
                 .region(s3Properties.getRegion().id())
                 .endpoint(s3Properties.getEndpoint())
-                .enablePathStyle(s3Properties.getPathStyleEnabled())
+                .enablePathStyle(s3Properties.isPathStyleEnabled())
                 .accessKey(credentials.getAccessKeyId())
                 .secretAccessKey(credentials.getAccessKeySecret())
                 .sessionToken(credentials.getSecurityToken())
